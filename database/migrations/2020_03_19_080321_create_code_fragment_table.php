@@ -16,7 +16,7 @@ class CreateCodeFragmentTable extends Migration
         // 代码片段表
         Schema::create('code_fragment', function (Blueprint $table) {
             $table->id();
-            $table->timestamp('create_at')->nullable();
+            $table->timestamp('created_at')->nullable();
             $table->char('sha', 40)->index()->comment('GitHub Blob Hash');
             $table->text('content')->comment('Code Fragment With Keyword');
         });
