@@ -17,7 +17,7 @@ class CreateQueueJobTable extends Migration
         Schema::create('queue_job', function (Blueprint $table) {
             $table->id();
             $table->string('keyword', 255)->comment('GitHub Scan Keyword');
-            $table->timestamp('create_at')->nullable();
+            $table->timestamp('created_at')->nullable();
         });
     }
 
