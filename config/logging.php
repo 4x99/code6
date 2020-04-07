@@ -43,13 +43,13 @@ return [
 
         'single' => [
             'driver' => 'single',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path(sprintf('logs/%s.log', config('app.name'))),
             'level' => 'debug',
         ],
 
         'daily' => [
             'driver' => 'daily',
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path(sprintf('logs/%s.log', config('app.name'))),
             'level' => 'debug',
             'days' => 14,
         ],
@@ -57,7 +57,7 @@ return [
         'slack' => [
             'driver' => 'slack',
             'url' => env('LOG_SLACK_WEBHOOK_URL'),
-            'username' => 'Laravel Log',
+            'username' => config('app.name'),
             'emoji' => ':boom:',
             'level' => 'critical',
         ],
@@ -97,7 +97,7 @@ return [
         ],
 
         'emergency' => [
-            'path' => storage_path('logs/laravel.log'),
+            'path' => storage_path(sprintf('logs/%s.log', config('app.name'))),
         ],
     ],
 
