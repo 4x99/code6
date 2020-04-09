@@ -17,8 +17,12 @@ class CreateCodeFragmentTable extends Migration
         Schema::create('code_fragment', function (Blueprint $table) {
             $table->id();
             $table->timestamp('created_at')->nullable();
-            $table->char('sha', 40)->index()->comment('GitHub Blob Hash');
+            $table->string('repo_owner', 100)->comment('GitHub Repository Owner');
+            $table->string('repo_name', 255)->comment('GitHub Repository Name');
+            $table->char('blob', 40)->comment('GitHub File Blob');
+            $table->string('path', 1000)->comment('GitHub File Path');
             $table->text('content')->comment('Code Fragment With Keyword');
+            $table->index(['repo_owner', 'repo_name', 'blob', 'path']);
         });
     }
 
