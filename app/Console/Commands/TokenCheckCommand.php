@@ -2,7 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Models\ConfigToken;
+use App\Services\GithubService;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
 
 class TokenCheckCommand extends Command
 {
@@ -21,6 +25,13 @@ class TokenCheckCommand extends Command
     protected $description = 'Check GitHub API access token';
 
     /**
+     * 日志实例
+     *
+     * @var LoggerInterface
+     */
+    protected $log;
+
+    /**
      * Create a new command instance.
      *
      * @return void
@@ -28,15 +39,36 @@ class TokenCheckCommand extends Command
     public function __construct()
     {
         parent::__construct();
+        $this->log = Log::channel($this->signature);
+        $this->log->info('Start job');
     }
 
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
-        //
+        $count = ['abnormal' => 0, 'normal' => 0];
+        $tokens = ConfigToken::all(['token'])->pluck('token');
+        $clients = (new GithubService())->clients;
+        $clients = array_column($clients, null, 'token');
+        foreach ($tokens as $token) {
+            $client = $clients[$token] ?? null;
+            $client ? $count['normal']++ : $count['abnormal']++;
+            ConfigToken::where('token', $token)->update([
+                'status' => (int) $client,
+                'api_limit' => (int) $client['limit'],
+                'api_remaining' => (int) $client['remaining'],
+                'api_reset_at' => $client['reset'] ? date('Y-m-d H:i:s', $client['reset']) : null,
+            ]);
+        }
+        $this->log->info('Check result', $count);
+    }
+
+    public function __destruct()
+    {
+        $this->log->info('Close job');
     }
 }
