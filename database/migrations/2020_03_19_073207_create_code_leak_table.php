@@ -17,6 +17,7 @@ class CreateCodeLeakTable extends Migration
         Schema::create('code_leak', function (Blueprint $table) {
             $table->id();
             $table->timestamps();
+            $table->char('uuid', 32)->comment('Unique ID:md5(repo_owner/repo_name/blob/path)');
             $table->tinyInteger('status')->unsigned()->comment('0:Pending 1:False 2:Abnormal 3:Solved');
             $table->string('repo_owner', 100)->comment('GitHub Repository Owner');
             $table->string('repo_name', 255)->comment('GitHub Repository Name');
@@ -26,7 +27,7 @@ class CreateCodeLeakTable extends Migration
             $table->string('keyword', 255)->comment('Matched Keyword');
             $table->string('handle_user', 255);
             $table->string('description', 255);
-            $table->unique(['repo_owner', 'repo_name', 'blob', 'path']);
+            $table->unique('uuid');
         });
     }
 
