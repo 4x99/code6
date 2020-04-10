@@ -50,6 +50,13 @@ return [
             'level' => 'info',
             'days' => 7,
         ],
+
+        'code6:token-check' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/token-check.log'),
+            'level' => 'info',
+            'days' => 7,
+        ],
     ],
 
 ];
