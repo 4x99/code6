@@ -8,5 +8,5 @@ class CodeFragment extends Model
 {
     const UPDATED_AT = null;
     protected $table = 'code_fragment';
-    protected $fillable = ['sha', 'content'];
+    protected $fillable = ['uuid', 'content'];
 }
