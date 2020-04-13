@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class CodeFragementController extends Controller
+class CodeFragmentController extends Controller
 {
     //
 }
