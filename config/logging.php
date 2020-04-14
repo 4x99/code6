@@ -57,6 +57,13 @@ return [
             'level' => 'info',
             'days' => 7,
         ],
+
+        'code6:job-run' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/job-run.log'),
+            'level' => 'info',
+            'days' => 7,
+        ],
     ],
 
 ];
