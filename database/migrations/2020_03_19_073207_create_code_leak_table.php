@@ -21,7 +21,7 @@ class CreateCodeLeakTable extends Migration
             $table->tinyInteger('status')->unsigned()->comment('0:Pending 1:False 2:Abnormal 3:Solved');
             $table->string('repo_owner', 100)->comment('GitHub Repository Owner');
             $table->string('repo_name', 255)->comment('GitHub Repository Name');
-            $table->char('blob', 40)->comment('GitHub File Blob');
+            $table->char('html_url_blob', 40)->comment('GitHub Html Url Blob');
             $table->string('path', 1000)->comment('GitHub File Path');
             $table->string('repo_description', 255)->comment('GitHub Repository Description');
             $table->string('keyword', 255)->comment('Matched Keyword');

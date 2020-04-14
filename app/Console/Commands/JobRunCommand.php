@@ -2,13 +2,14 @@
 
 namespace App\Console\Commands;
 
+use Exception;
+use Github\Client;
 use App\Models\CodeFragment;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
-use App\Models\ConfigWhiteList;
+use App\Models\ConfigWhitelist;
 use App\Models\QueueJob;
-use App\Services\GithubService;
-use Github\Client;
+use App\Services\GitHubService;
 use Github\HttpClient\Message\ResponseMediator;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -38,11 +39,18 @@ class JobRunCommand extends Command
     protected $log;
 
     /**
-     * 白名单
+     * 扫描白名单
      *
      * @var array
      */
-    protected $whiteList;
+    protected $whitelist;
+
+    /**
+     * GitHub Service
+     *
+     * @var Client
+     */
+    protected $service;
 
     /**
      * Create a new command instance.
@@ -52,134 +60,155 @@ class JobRunCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->whiteList = ConfigWhiteList::pluck('value')->all();
         $this->log = Log::channel($this->signature);
         $this->log->info('Start job');
+        $this->whitelist = ConfigWhitelist::all()->keyBy('value');
+        $this->service = new GitHubService();
+        if (count($this->service->clients) === 0) {
+            $this->log->error('No GitHub client available');
+            exit;
+        }
+        $this->log->info('Get GitHub client success', ['count' => count($this->service->clients)]);
     }
 
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
-        $githubService = new GithubService();
-        if (!count($githubService->clients)) {
-            $this->log->error('github clients is empty');
-            return;
-        }
-        while (true) {
-            $queueJob = QueueJob::orderBy('created_at', 'asc')->first();
-            if (!$queueJob) {
-                $this->log->info('queue job is empty');
-                return;
-            }
-            try {
-                if (!$queueJob->delete()) {
-                    $this->log->error('delete job is fail', $queueJob->attributesToArray());
-                    return;
-                }
-            } catch (\Exception $e) {
-                $this->log->error('delete job is execption:'.$e->getMessage());
-                return;
-            }
-            $keyword = $queueJob->keyword;
-            $configJob = ConfigJob::where('keyword', $keyword)->first();
-            $client = $githubService->getClient();
-            $res = $client->api('search')->code($keyword, 'indexed');
-            $page = $this->getPagination($client);
-            $i = 1; //标记遍历页数
-            $this->store($res['items'], $keyword);
-            while (($url = $page['next']) && (++$i <= $configJob->scan_page)) {
-                $client = $githubService->getClient();
-                $res = $this->requestUrl($client, $url);
-                $this->store($res['items'], $keyword);
-                $page = $this->getPagination($client);
-            }
+        while ($job = $this->takeJob()) {
+            $page = 1;
+            $configJob = ConfigJob::where('keyword', $job->keyword)->first();
             $configJob->last_scan_at = date('Y-m-d H:i:s');
+            do {
+                $client = $this->service->getClient();
+                $data = $this->searchCode($client, $job->keyword, $nextPage ?? null);
+                $count = $this->store($data, $job->keyword);
+                $this->log->info('Stored', ['keyword' => $job->keyword, 'page' => $page, 'count' => $count]);
+                $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
+                $nextPage = $lastResponse['next'] ?? false;
+            } while ($nextPage && (++$page <= $configJob->scan_page));
             $configJob->save();
         }
     }
 
     /**
-     * 获取客户端最后一次请求的分页数据
+     * 获取任务
      *
-     * @param  Client  $client
-     * @return array|void
+     * @return bool|object
      */
-    private function getPagination(Client $client)
+    private function takeJob()
     {
-        return ResponseMediator::getPagination($client->getLastResponse());
+        if (!$job = QueueJob::orderBy('created_at')->first()) {
+            $this->log->info('The queue is empty');
+            return false;
+        }
+        $job->delete();
+        return $job;
     }
 
     /**
-     * 通过客户端及请求地址获取数据
+     * 搜索代码
      *
-     * @param  Client  $client
-     * @param $url
+     * @param $client
+     * @param $keyword
+     * @param  null  $url
      * @return array|bool|string
      */
-    private function requestUrl(Client $client, $url)
+    private function searchCode($client, $keyword, $url = null)
     {
-        $result = false;
         try {
-            $result = $client->getHttpClient()->get($url);
-        } catch (\Http\Client\Exception $e) {
+            if ($url) { // 非首页
+                return ResponseMediator::getContent($client->getHttpClient()->get($url));
+            }
+            $keyword = sprintf('"%s"', $keyword); // 精确匹配
+            return $client->api('search')->code($keyword, 'indexed'); // 首页
+        } catch (Exception $e) {
             $this->log->warning($e->getMessage());
+            return false;
         }
-        return $result ? ResponseMediator::getContent($result) : false;
     }
 
     /**
-     * 保存代码泄漏信息
+     * 保存数据
      *
-     * @param $items
+     * @param $data
      * @param $keyword
+     * @return array
      */
-    private function store($items, $keyword)
+    private function store($data, $keyword)
     {
-        if (!$items) {
-            return;
-        }
-        $num = 0;
-        $pattern = '/blob\/(\w+)/'; //匹配 blob
-        foreach ($items as $item) {
-            $repoOwner = $item['repository']['owner']['login'];
-            $repoName = $item['repository']['name'];
-            $repoDesc = $item['repository']['description'] ?: '';
-            $path = $item['path'];
-            if (in_array("$repoOwner/$repoName", $this->whiteList)) { //白名单过滤
+        $count = ['leak' => 0, 'fragment' => 0];
+        foreach ($data['items'] as $item) {
+            $item['keyword'] = $keyword;
+            if (!$uuid = $this->storeLeak($item)) {
                 continue;
             }
-            preg_match($pattern, $item['html_url'], $matches);
-            if (!$blob = $matches[1]) {
-                continue;
-            }
-            $uuid = md5("$repoOwner/$repoName/$blob/$path");
-            $codeLeak = CodeLeak::firstOrCreate(
-                ['uuid' => $uuid],
-                [
-                    'keyword' => $keyword,
-                    'repo_owner' => $repoOwner,
-                    'repo_name' => $repoName,
-                    'repo_description' => $repoDesc,
-                    'blob' => $blob,
-                    'path' => $path,
-                ]
-            );
-            if (!$codeLeak || !$codeLeak->wasRecentlyCreated) { //该泄漏已存在
-                continue;
-            }
-            $num++;
+            $count['leak']++;
+
             foreach ($item['text_matches'] as $match) {
-                CodeFragment::create([
-                    'uuid' => $uuid,
-                    'content' => $match['fragment'],
-                ]);
+                if ($this->storeFragment($uuid, $match)) {
+                    $count['fragment']++;
+                }
             }
         }
-        $this->log->info('add new code leak', ['num' => $num, 'keyword' => $keyword]);
+        return $count;
+    }
+
+    /**
+     * 保存代码泄露数据
+     *
+     * @param $item
+     * @return bool|string
+     */
+    private function storeLeak($item)
+    {
+        $repoOwner = $item['repository']['owner']['login'];
+        $repoName = $item['repository']['name'];
+
+        // 扫描白名单
+        if ($this->whitelist->has("$repoOwner/$repoName")) {
+            return false;
+        }
+
+        // 匹配 BLOB 值
+        preg_match('/\/blob\/(\w{40})\//', $item['html_url'], $matches);
+        if (!$blob = $matches[1]) {
+            return false;
+        }
+
+        // 数据入库
+        $uuid = md5("$repoOwner/$repoName/$blob/{$item['path']}");
+        $leak = CodeLeak::firstOrCreate(
+            ['uuid' => $uuid],
+            [
+                'keyword' => $item['keyword'],
+                'repo_owner' => $repoOwner,
+                'repo_name' => $repoName,
+                'repo_description' => (string) $item['repository']['description'],
+                'html_url_blob' => $blob,
+                'path' => $item['path'],
+            ]
+        );
+        return $leak->wasRecentlyCreated ? $uuid : false;
+    }
+
+    /**
+     * 保存代码片段数据
+     *
+     * @param $uuid
+     * @param $match
+     * @return bool
+     */
+    private function storeFragment($uuid, $match)
+    {
+        $fragment = CodeFragment::create([
+            'uuid' => $uuid,
+            'content' => $match['fragment'],
+        ]);
+        return $fragment->wasRecentlyCreated;
     }
 
     public function __destruct()
