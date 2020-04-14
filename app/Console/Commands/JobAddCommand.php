@@ -32,13 +32,6 @@ class JobAddCommand extends Command
     protected $log;
 
     /**
-     * 启动时间（整点）
-     *
-     * @var int
-     */
-    protected $time;
-
-    /**
      * Create a new command instance.
      *
      * @return void
@@ -46,9 +39,6 @@ class JobAddCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->log = Log::channel($this->signature);
-        $this->log->info('Start job');
-        $this->time = floor(LARAVEL_START - LARAVEL_START % 60);
     }
 
     /**
@@ -58,14 +48,18 @@ class JobAddCommand extends Command
      */
     public function handle()
     {
+        $this->log = Log::channel($this->signature);
+        $this->log->info('Start job');
+
         $configJobs = ConfigJob::all();
+        $time = floor(LARAVEL_START - LARAVEL_START % 60); // 启动时间（整点）
         $this->log->info('Get config success', ['count' => $configJobs->count()]);
         foreach ($configJobs as $configJob) {
             if (!$configJob->scan_interval_min) {
                 continue; // 尚未配置参数
             }
 
-            if (($this->time % ($configJob->scan_interval_min * 60)) !== 0) {
+            if (($time % ($configJob->scan_interval_min * 60)) !== 0) {
                 continue; // 未到启动时间
             }
 
@@ -77,10 +71,7 @@ class JobAddCommand extends Command
 
             $this->log->info('Add job', ['keyword' => $configJob->keyword]);
         }
-    }
 
-    public function __destruct()
-    {
         $this->log->info('Close job');
     }
 }

@@ -39,8 +39,6 @@ class TokenCheckCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->log = Log::channel($this->signature);
-        $this->log->info('Start job');
     }
 
     /**
@@ -50,6 +48,9 @@ class TokenCheckCommand extends Command
      */
     public function handle()
     {
+        $this->log = Log::channel($this->signature);
+        $this->log->info('Start job');
+
         $count = ['abnormal' => 0, 'normal' => 0];
         $tokens = ConfigToken::all(['token'])->pluck('token');
         $clients = (new GithubService())->clients;
@@ -64,11 +65,7 @@ class TokenCheckCommand extends Command
                 'api_reset_at' => $client['reset'] ? date('Y-m-d H:i:s', $client['reset']) : null,
             ]);
         }
-        $this->log->info('Check result', $count);
-    }
 
-    public function __destruct()
-    {
-        $this->log->info('Close job');
+        $this->log->info('Close job', $count);
     }
 }
