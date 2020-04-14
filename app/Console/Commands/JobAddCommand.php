@@ -70,7 +70,7 @@ class JobAddCommand extends Command
             }
 
             $queueJob = QueueJob::firstOrCreate(['keyword' => $configJob->keyword]);
-            if (!$queueJob || !$queueJob->wasRecentlyCreated) {
+            if (!$queueJob->wasRecentlyCreated) {
                 $this->log->Debug('Already exists', ['keyword' => $configJob->keyword]);
                 continue; // 存在相同任务
             }
