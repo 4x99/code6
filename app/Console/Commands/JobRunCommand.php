@@ -60,15 +60,6 @@ class JobRunCommand extends Command
     public function __construct()
     {
         parent::__construct();
-        $this->log = Log::channel($this->signature);
-        $this->log->info('Start job');
-        $this->whitelist = ConfigWhitelist::all()->keyBy('value');
-        $this->service = new GitHubService();
-        if (count($this->service->clients) === 0) {
-            $this->log->error('No GitHub client available');
-            exit;
-        }
-        $this->log->info('Get GitHub client success', ['count' => count($this->service->clients)]);
     }
 
     /**
@@ -78,20 +69,42 @@ class JobRunCommand extends Command
      */
     public function handle()
     {
+        $this->log = Log::channel($this->signature);
+        $this->log->info('Start job');
+
+        $this->createGitHubService();
+        $this->whitelist = ConfigWhitelist::all()->keyBy('value');
+
         while ($job = $this->takeJob()) {
             $page = 1;
-            $configJob = ConfigJob::where('keyword', $job->keyword)->first();
+            $keyword = $job->keyword;
+            $configJob = ConfigJob::where('keyword', $keyword)->first();
             $configJob->last_scan_at = date('Y-m-d H:i:s');
             do {
                 $client = $this->service->getClient();
-                $data = $this->searchCode($client, $job->keyword, $nextPage ?? null);
-                $count = $this->store($data, $job->keyword);
-                $this->log->info('Stored', ['keyword' => $job->keyword, 'page' => $page, 'count' => $count]);
+                $data = $this->searchCode($client, $keyword, $nextPage ?? null);
+                $count = $this->store($data, $keyword);
+                $this->log->info('Stored', ['keyword' => $keyword, 'page' => $page, 'count' => $count]);
                 $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
                 $nextPage = $lastResponse['next'] ?? false;
             } while ($nextPage && (++$page <= $configJob->scan_page));
             $configJob->save();
         }
+
+        $this->log->info('Close job');
+    }
+
+    /**
+     * 初始化 GitHub 服务
+     */
+    private function createGitHubService()
+    {
+        $this->service = new GitHubService();
+        if (count($this->service->clients) === 0) {
+            $this->log->error('No GitHub client available');
+            exit;
+        }
+        $this->log->info('Get GitHub client success', ['count' => count($this->service->clients)]);
     }
 
     /**
@@ -214,10 +227,5 @@ class JobRunCommand extends Command
             'content' => $match['fragment'],
         ]);
         return $fragment->wasRecentlyCreated;
-    }
-
-    public function __destruct()
-    {
-        $this->log->info('Close job');
     }
 }
