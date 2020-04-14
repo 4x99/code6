@@ -141,6 +141,11 @@ class JobRunCommand extends Command
     private function store($data, $keyword)
     {
         $count = ['leak' => 0, 'fragment' => 0];
+
+        if (!isset($data['items'])) {
+            return $count;
+        }
+
         foreach ($data['items'] as $item) {
             $item['keyword'] = $keyword;
             if (!$uuid = $this->storeLeak($item)) {
