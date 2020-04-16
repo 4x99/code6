@@ -11,5 +11,22 @@ const mix = require('laravel-mix');
  |
  */
 
-mix.js('resources/js/app.js', 'public/js')
-    .sass('resources/sass/app.scss', 'public/css');
+mix.js('resources/js/app.js', 'public/js');
+mix.sass('resources/sass/app.scss', 'public/css');
+
+mix.babelConfig({
+    'plugins': [
+        [
+            'import',
+            {
+                'libraryName': 'ant-design-vue',
+                'libraryDirectory': 'es',
+                'style': 'css'
+            }
+        ]
+    ]
+});
+
+if (mix.inProduction()) {
+    mix.version();
+}
