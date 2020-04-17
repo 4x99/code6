@@ -3,11 +3,11 @@ import VueRouter from 'vue-router';
 
 Vue.use(VueRouter);
 
-const routes = []
+const routes = [];
 
 const router = new VueRouter({
     mode: 'history',
-    routes
-})
+    routes,
+});
 
-export default router
+export default router;
