@@ -11,7 +11,7 @@
     export default {
         components: {
             AButton: Button,
-            AConfigProvider: ConfigProvider
+            AConfigProvider: ConfigProvider,
         }
     }
 </script>
