@@ -63,13 +63,14 @@ class JobAddCommand extends Command
                 continue; // 未到启动时间
             }
 
-            $queueJob = QueueJob::firstOrCreate(['keyword' => $configJob->keyword]);
+            $job = ['keyword' => $configJob->keyword];
+            $queueJob = QueueJob::firstOrCreate($job);
             if (!$queueJob->wasRecentlyCreated) {
-                $this->log->Debug('Already exists', ['keyword' => $configJob->keyword]);
+                $this->log->Debug('Job already exists', $job);
                 continue; // 存在相同任务
             }
 
-            $this->log->info('Add job', ['keyword' => $configJob->keyword]);
+            $this->log->info('Add job', $job);
         }
 
         $this->log->info('Close job');
