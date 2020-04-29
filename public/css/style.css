@@ -1,0 +1,4 @@
+*{ font-family:微软雅黑, sans-serif !important;color:#666; }
+html{ overflow-y:hidden; }
+body{ background:#E6E8EA !important;padding:10px; }
+html, body{ box-sizing:border-box;height:100%; }

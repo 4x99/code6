@@ -14,3 +14,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'IndexController@index');
+Route::get('/codeLeak', 'CodeLeakController@index');
+Route::get('/configJob', 'ConfigJobController@index');
+Route::get('/configToken', 'ConfigTokenController@index');
+Route::get('/configWhitelist', 'ConfigWhitelistController@index');
