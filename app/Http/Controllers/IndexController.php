@@ -6,8 +6,11 @@ use Illuminate\Http\Request;
 
 class IndexController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        return view('index');
+        $data = [
+            'title' => '应用概况'
+        ];
+        return view('home/index')->with($data);
     }
 }
