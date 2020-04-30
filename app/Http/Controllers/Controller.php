@@ -13,7 +13,7 @@ class Controller extends BaseController
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
-     * Form validator
+     * validate
      *
      * @param  array  $params
      * @param  array  $rules
