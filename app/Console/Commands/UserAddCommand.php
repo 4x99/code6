@@ -41,7 +41,7 @@ class UserAddCommand extends Command
         $email = $this->argument('email');
         $password = $this->argument('password');
         if (User::whereEmail($email)->exists()) {
-            $this->error('用户已存在！');
+            $this->error('User already exists！');
             return;
         }
         $data = [
@@ -49,7 +49,7 @@ class UserAddCommand extends Command
             'password' => bcrypt($password),
         ];
         if (User::create($data)) {
-            $this->info('用户创建成功！');
+            $this->info('User add success！');
         }
     }
 }
