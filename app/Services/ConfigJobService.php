@@ -35,7 +35,7 @@ class ConfigJobService
      *
      * @param $id
      * @param $params
-     * @return bool|int
+     * @return bool
      */
     public function update($id, $params)
     {
@@ -46,14 +46,11 @@ class ConfigJobService
      * configJob destroy
      *
      * @param $id
-     * @return bool|mixed|null
+     * @return bool
      * @throws \Exception
      */
     public function destroy($id)
     {
-        if (!$configJob = ConfigJob::find($id)) {
-            throw new \Exception('configJob does not exists!');
-        }
-        return (bool) ConfigJob::find($id)->delete();
+        return (bool) ConfigJob::destroy($id);
     }
 }
