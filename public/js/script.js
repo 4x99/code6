@@ -28,3 +28,44 @@ tool.toast = function (text) {
     tool.toastInstance.delay = arguments[2] ? arguments[2] : 5000;
     tool.toastInstance[type](text);
 };
+
+//读取Cookie
+tool.getCookie = function (name) {
+    var defaultValue = arguments[1]; //默认值
+    tool.cookies = tool.cookies || Ext.util.Cookies;
+    var val = tool.cookies.get(name);
+    if (typeof (defaultValue) !== 'undefined' && defaultValue != null) {
+        val = val ? val : defaultValue;
+        tool.cookies.set(name, val, null, location.pathname);
+    }
+    return val;
+};
+
+/**
+ * Ajax请求
+ * @param method
+ * @param url
+ * @param params
+ * @param callback
+ */
+tool.ajax = function (method, url, params, callback) {
+    Ext.Ajax.request({
+        method: method,
+        url: url,
+        params: params,
+        headers: {
+            'X-XSRF-TOKEN': tool.getCookie('XSRF-TOKEN')
+        },
+        success: function (rsp) {
+            try {
+                rsp = Ext.JSON.decode(rsp.responseText);
+            } catch (e) {
+                rsp = rsp.responseText;
+            }
+            callback(rsp);
+        },
+        failure: function (rsp) {
+            tool.toast('请求失败（状态码：' + rsp.status + '）');
+        }
+    });
+};
