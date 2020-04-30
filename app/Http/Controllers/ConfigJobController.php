@@ -54,11 +54,11 @@ class ConfigJobController extends Controller
         ];
         try {
             $this->validate($params, $this->_rules(), $this->_messages());
-            $this->service->store($params);
+            $success = $this->service->store($params);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
         }
-        return ['success' => true];
+        return ['success' => $success];
     }
 
     /**
@@ -79,11 +79,11 @@ class ConfigJobController extends Controller
         ];
         try {
             $this->validate($params, $this->_updateRules($id), $this->_messages());
-            $this->service->update($id, $params);
+            $success = $this->service->update($id, $params);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
         }
-        return ['success' => true];
+        return ['success' => $success];
     }
 
     /**
@@ -99,11 +99,11 @@ class ConfigJobController extends Controller
         ];
         try {
             $this->validate($params, $this->_destroyRules(), $this->_messages());
-            $this->service->destroy($id);
+            $success = $this->service->destroy($id);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
         }
-        return ['success' => true];
+        return ['success' => $success];
     }
 
     /**
