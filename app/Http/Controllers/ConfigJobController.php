@@ -52,11 +52,8 @@ class ConfigJobController extends Controller
             'description' => $request->input('description'),
             'scan_interval_min' => $request->input('scan_interval_min'),
         ];
-        $validator = $this->validator($params, $this->_rules(), $this->_messages());
-        if ($validator->fails()) {
-            return ['success' => false, 'message' => $validator->errors()->first()];
-        }
         try {
+            $this->validate($params, $this->_rules(), $this->_messages());
             $this->service->store($params);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
@@ -80,11 +77,8 @@ class ConfigJobController extends Controller
             'description' => $request->input('description'),
             'scan_interval_min' => $request->input('scan_interval_min'),
         ];
-        $validator = $this->validator($params, $this->_updateRules($id), $this->_updateMessages());
-        if ($validator->fails()) {
-            return ['success' => false, 'message' => $validator->errors()->first()];
-        }
         try {
+            $this->validate($params, $this->_updateRules($id), $this->_messages());
             $this->service->update($id, $params);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
@@ -103,11 +97,8 @@ class ConfigJobController extends Controller
         $params = [
             'id' => $id,
         ];
-        $validator = $this->validator($params, $this->_destroyRules(), $this->_destroyMessages());
-        if ($validator->fails()) {
-            return ['success' => false, 'message' => $validator->errors()->first()];
-        }
         try {
+            $this->validate($params, $this->_destroyRules(), $this->_messages());
             $this->service->destroy($id);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
@@ -131,21 +122,6 @@ class ConfigJobController extends Controller
     }
 
     /**
-     * store validate messages
-     *
-     * @return string[]
-     */
-    private function _messages()
-    {
-        return [
-            'keyword.required' => 'keyword is required',
-            'keyword.unique' => 'keyword already exists',
-            'scan_page.required' => 'scan_page is required',
-            'scan_interval_min.required' => 'scan_interval_min is required',
-        ];
-    }
-
-    /**
      * update validate rules
      *
      * @param $id
@@ -153,29 +129,10 @@ class ConfigJobController extends Controller
      */
     private function _updateRules($id)
     {
-        return [
-            'id' => 'required|integer|exists:config_job,id',
-            'keyword' => 'required|string|max:255|unique:config_job,keyword,'.$id,
-            'scan_page' => 'required|integer',
-            'description' => 'string|max:255',
-            'scan_interval_min' => 'required|integer',
-        ];
-    }
-
-    /**
-     * update validate messages
-     *
-     * @return string[]
-     */
-    private function _updateMessages()
-    {
-        return [
-            'id.exists' => 'configJob does not exists',
-            'keyword.required' => 'keyword is required',
-            'keyword.unique' => 'keyword already exists',
-            'scan_page.required' => 'scan_page is required',
-            'scan_interval_min.required' => 'scan_interval_min is required',
-        ];
+        $rules = $this->_rules();
+        $rules['id'] = 'required|integer|exists:config_job,id';
+        $rules['keyword'] = 'required|string|max:255|unique:config_job,keyword,'.$id;
+        return $rules;
     }
 
     /**
@@ -191,14 +148,18 @@ class ConfigJobController extends Controller
     }
 
     /**
-     * destroy validate messages
+     * validate messages
      *
      * @return string[]
      */
-    private function _destroyMessages()
+    private function _messages()
     {
         return [
-            'id.exists' => 'configJob does not exists',
+            'id.exists' => 'configJob does not exist',
+            'keyword.required' => 'keyword is required',
+            'keyword.unique' => 'keyword already exist',
+            'scan_page.required' => 'scan_page is required',
+            'scan_interval_min.required' => 'scan_interval_min is required',
         ];
     }
 
