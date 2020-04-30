@@ -103,7 +103,7 @@ class ConfigJobController extends Controller
         $params = [
             'id' => $id,
         ];
-        $validator = $this->validator($params, $this->_destroyRules($id), $this->_destroyMessages());
+        $validator = $this->validator($params, $this->_destroyRules(), $this->_destroyMessages());
         if ($validator->fails()) {
             return ['success' => false, 'message' => $validator->errors()->first()];
         }
@@ -181,10 +181,9 @@ class ConfigJobController extends Controller
     /**
      * destroy validate rules
      *
-     * @param $id
      * @return string[]
      */
-    private function _destroyRules($id)
+    private function _destroyRules()
     {
         return [
             'id' => 'required|integer|exists:config_job,id',
