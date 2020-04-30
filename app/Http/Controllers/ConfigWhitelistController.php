@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ConfigWhitelist;
 use Illuminate\Http\Request;
 
 class ConfigWhitelistController extends Controller
@@ -11,82 +12,56 @@ class ConfigWhitelistController extends Controller
         $data = [
             'title' => '白名单配置'
         ];
-        return view('whiteList/index')->with($data);
+        return view('configWhitelist/index')->with($data);
     }
 
     /**
-     * Display a listing of the resource.
+     * 列表数据
      *
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $input = $request->input();
+        $pageSize = $input['limit'] ?? 10;
+        $pageNum = $input['page'] ?? 1;
+        return ConfigWhitelist::orderBy('id', 'desc')
+            ->paginate($pageSize, '*', 'page', $pageNum);
     }
 
     /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * 新增白名单
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'value' => 'required|string|max:255',
+        ]);
+        $input = $request->all();
+        $configWhitelist = ConfigWhitelist::firstOrCreate($input);
+        return [
+            'success' => $configWhitelist->wasRecentlyCreated,
+            'data' => $configWhitelist
+        ];
     }
 
     /**
-     * Display the specified resource.
+     * 删除白名单
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function destroy($id)
     {
-        //
+        try {
+            $res = ConfigWhitelist::find($id)->delete();
+        } catch (\Exception $e) {
+            $res = false;
+        }
+        return ['success' => $res];
     }
 }
