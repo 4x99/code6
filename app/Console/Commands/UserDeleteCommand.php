@@ -40,11 +40,11 @@ class UserDeleteCommand extends Command
     {
         $email = $this->argument('email');
         if (!$user = User::whereEmail($email)->first()) {
-            $this->error('用户不存在！');
+            $this->error('User does not exists！');
             return;
         }
         if ($user->delete()) {
-            $this->info('用户删除成功！');
+            $this->info('User delete success！');
         }
     }
 }
