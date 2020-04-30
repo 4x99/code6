@@ -20,7 +20,7 @@ class UserAddCommand extends Command
      *
      * @var string
      */
-    protected $description = 'user add';
+    protected $description = 'User add';
 
     /**
      * Create a new command instance.
@@ -35,22 +35,17 @@ class UserAddCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
         $email = $this->argument('email');
         $password = $this->argument('password');
-        if (User::whereEmail($email)->exists()) {
-            $this->error('User already exists！');
-            return;
-        }
-        $data = [
-            'email' => $email,
-            'password' => Hash::make($password),
-        ];
-        if (User::create($data)) {
-            $this->info('User add success！');
+        $user = User::firstOrCreate(['email' => $email], ['password' => Hash::make($password)]);
+        if ($user->wasRecentlyCreated) {
+            $this->info('User add success!');
+        } else {
+            $this->error('User add fail, may already exist!');
         }
     }
 }
