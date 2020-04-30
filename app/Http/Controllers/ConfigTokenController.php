@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Resources\ConfigTokenResource;
+use App\Models\ConfigToken;
 use Illuminate\Http\Request;
 
 class ConfigTokenController extends Controller
@@ -15,56 +17,40 @@ class ConfigTokenController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * list data
      *
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        $input = $request->input();
+        $pageSize = $input['pageSize'] ?? 10;
+        $pageNum = $input['pageNum'] ?? 1;
+        $data = ConfigToken::orderBy('id', 'desc')
+            ->paginate($pageSize, '*', 'page', $pageNum);
+        return ConfigTokenResource::collection($data);
     }
 
     /**
-     * Show the form for creating a new resource.
+     * data store
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return array
      */
     public function store(Request $request)
     {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
+        $request->validate([
+            'token' => 'required|string|max:40',
+            'api_limit' => 'required|int',
+            'description' => 'string|max:255',
+        ]);
+        $input = $request->all();
+        $configToken = ConfigToken::firstOrCreate($input);
+        return [
+            'success' => $configToken->wasRecentlyCreated,
+            'data' => $configToken
+        ];
     }
 
     /**
@@ -76,17 +62,22 @@ class ConfigTokenController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // TODO
     }
 
     /**
-     * Remove the specified resource from storage.
+     * delete data
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param $id
+     * @return array
      */
     public function destroy($id)
     {
-        //
+        try {
+            $res = ConfigToken::find($id)->delete();
+        } catch (\Exception $e) {
+            $res = false;
+        }
+        return ['success' => $res];
     }
 }
