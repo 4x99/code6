@@ -12,8 +12,19 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    public function validator(array $params, array $rules, array $messages = [])
+    /**
+     * Form validator
+     *
+     * @param  array  $params
+     * @param  array  $rules
+     * @param  array  $messages
+     * @throws \Exception
+     */
+    public function validate(array $params, array $rules, array $messages = [])
     {
-        return Validator::make($params, $rules, $messages);
+        $validator = Validator::make($params, $rules, $messages);
+        if ($validator->fails()) {
+            throw new \Exception($validator->errors()->first());
+        }
     }
 }
