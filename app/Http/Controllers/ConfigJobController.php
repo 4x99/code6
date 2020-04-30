@@ -100,6 +100,13 @@ class ConfigJobController extends Controller
      */
     public function destroy($id)
     {
+        $params = [
+            'id' => $id,
+        ];
+        $validator = $this->validator($params, $this->_destroyRules($id), $this->_destroyMessages());
+        if ($validator->fails()) {
+            return ['success' => false, 'message' => $validator->errors()->first()];
+        }
         try {
             $this->service->destroy($id);
         } catch (\Exception $exception) {
@@ -168,6 +175,31 @@ class ConfigJobController extends Controller
             'keyword.unique' => 'keyword already exists',
             'scan_page.required' => 'scan_page is required',
             'scan_interval_min.required' => 'scan_interval_min is required',
+        ];
+    }
+
+    /**
+     * destroy validate rules
+     *
+     * @param $id
+     * @return string[]
+     */
+    private function _destroyRules($id)
+    {
+        return [
+            'id' => 'required|integer|exists:config_job,id',
+        ];
+    }
+
+    /**
+     * destroy validate messages
+     *
+     * @return string[]
+     */
+    private function _destroyMessages()
+    {
+        return [
+            'id.exists' => 'configJob does not exists',
         ];
     }
 
