@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Hash;
 
 class UserAddCommand extends Command
 {
@@ -46,7 +47,7 @@ class UserAddCommand extends Command
         }
         $data = [
             'email' => $email,
-            'password' => bcrypt($password),
+            'password' => Hash::make($password),
         ];
         if (User::create($data)) {
             $this->info('User add success！');
