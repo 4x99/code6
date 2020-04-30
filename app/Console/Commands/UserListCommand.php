@@ -19,7 +19,7 @@ class UserListCommand extends Command
      *
      * @var string
      */
-    protected $description = 'user list';
+    protected $description = 'User list';
 
     /**
      * Create a new command instance.
@@ -34,15 +34,15 @@ class UserListCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
-        $users = User::all();
-        $str = ' id | email | created_at | updated_at '.PHP_EOL;
-        foreach ($users as $user) {
-            $str .= " {$user->id} | {$user->email} | {$user->created_at} | {$user->updated_at} ".PHP_EOL;
+        $users = User::all('email')->pluck('email')->toArray();
+        if (empty($users)) {
+            $this->error('User list is empty!');
+        } else {
+            $this->info(implode(PHP_EOL, $users));
         }
-        $this->info($str);
     }
 }

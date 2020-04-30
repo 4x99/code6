@@ -19,7 +19,7 @@ class UserDeleteCommand extends Command
      *
      * @var string
      */
-    protected $description = 'user delete';
+    protected $description = 'User delete';
 
     /**
      * Create a new command instance.
@@ -34,17 +34,15 @@ class UserDeleteCommand extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
     public function handle()
     {
         $email = $this->argument('email');
-        if (!$user = User::whereEmail($email)->first()) {
-            $this->error('User does not exists！');
-            return;
-        }
-        if ($user->delete()) {
-            $this->info('User delete success！');
+        if (User::where('email', '=', $email)->delete()) {
+            $this->info('User delete success!');
+        } else {
+            $this->error('User delete fail, may not exist!');
         }
     }
 }
