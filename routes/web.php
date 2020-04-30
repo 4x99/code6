@@ -14,16 +14,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', 'IndexController@view');
-Route::resource('/rsc/index', 'IndexController');
+Route::resource('/api/index', 'IndexController');
 
 Route::get('/codeLeak', 'CodeLeakController@view');
-Route::resource('/rsc/codeLeak', 'CodeLeakController');
+Route::resource('/api/codeLeak', 'CodeLeakController');
 
 Route::get('/configJob', 'ConfigJobController@view');
-Route::resource('/rsc/configJob', 'ConfigJobController');
+Route::resource('/api/configJob', 'ConfigJobController');
 
 Route::get('/configToken', 'ConfigTokenController@view');
-Route::resource('/rsc/configToken', 'ConfigTokenController');
+Route::resource('/api/configToken', 'ConfigTokenController');
 
 Route::get('/configWhitelist', 'ConfigWhitelistController@view');
-Route::resource('/rsc/configWhitelist', 'ConfigWhitelistController');
+Route::resource('/api/configWhitelist', 'ConfigWhitelistController');
