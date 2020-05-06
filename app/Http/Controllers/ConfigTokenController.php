@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class ConfigTokenController extends Controller
 {
+    /**
+     * view
+     *
+     * @param  Request  $request
+     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
+     */
     public function view(Request $request)
     {
         $data = [
@@ -26,10 +32,11 @@ class ConfigTokenController extends Controller
     {
         $input = $request->input();
         $pageSize = $input['pageSize'] ?? 10;
-        $pageNum = $input['pageNum'] ?? 1;
+        $page = $input['page'] ?? 1;
         $data = ConfigToken::orderBy('id', 'desc')
-            ->paginate($pageSize, '*', 'page', $pageNum);
+            ->paginate($pageSize, '*', 'page', $page);
         return ConfigTokenResource::collection($data);
+        return $data;
     }
 
     /**
@@ -37,13 +44,15 @@ class ConfigTokenController extends Controller
      *
      * @param  Request  $request
      * @return array
-     * @throws \Exception
      */
     public function store(Request $request)
     {
         $input = $request->all();
         try {
             $this->validate($input, $this->_rules(), $this->_messages());
+            if (ConfigToken::where('token', '=', $input['token'])->exists()) {
+                return ['success' => false, 'message' => 'Token existing'];
+            }
             $configToken = ConfigToken::firstOrCreate($input);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
@@ -60,7 +69,6 @@ class ConfigTokenController extends Controller
      * @param  Request  $request
      * @param $id
      * @return array
-     * @throws \Exception
      */
     public function update(Request $request, $id)
     {
@@ -94,6 +102,11 @@ class ConfigTokenController extends Controller
         return ['success' => $res];
     }
 
+    /**
+     * validate rules
+     *
+     * @return array
+     */
     private function _rules()
     {
         return [
@@ -103,6 +116,11 @@ class ConfigTokenController extends Controller
         ];
     }
 
+    /**
+     * validate messages
+     *
+     * @return array
+     */
     private function _messages()
     {
         return [
