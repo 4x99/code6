@@ -37,19 +37,20 @@ class ConfigTokenController extends Controller
      *
      * @param  Request  $request
      * @return array
+     * @throws \Exception
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'token' => 'required|string|max:40',
-            'api_limit' => 'required|int',
-            'description' => 'string|max:255',
-        ]);
         $input = $request->all();
-        $configToken = ConfigToken::firstOrCreate($input);
+        try {
+            $this->validate($input, $this->_rules(), $this->_messages());
+            $configToken = ConfigToken::firstOrCreate($input);
+        } catch (\Exception $exception) {
+            return ['success' => false, 'message' => $exception->getMessage()];
+        }
         return [
             'success' => $configToken->wasRecentlyCreated,
-            'data' => $configToken
+            'data' => $configToken,
         ];
     }
 
@@ -59,20 +60,21 @@ class ConfigTokenController extends Controller
      * @param  Request  $request
      * @param $id
      * @return array
+     * @throws \Exception
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
-            'token' => 'required|string|max:40',
-            'api_limit' => 'required|int',
-            'description' => 'string|max:255',
-        ]);
         $input = [
             'token' => $request->input('token'),
             'api_limit' => $request->input('api_limit'),
             'description' => $request->input('description'),
         ];
-        $success = ConfigToken::find($id)->update($input);
+        try {
+            $this->validate($input, $this->_rules(), $this->_messages());
+            $success = ConfigToken::find($id)->update($input);
+        } catch (\Exception $exception) {
+            return ['success' => false, 'message' => $exception->getMessage()];
+        }
         return ['success' => $success];
     }
 
@@ -90,5 +92,22 @@ class ConfigTokenController extends Controller
             $res = false;
         }
         return ['success' => $res];
+    }
+
+    private function _rules()
+    {
+        return [
+            'token' => 'required|string|max:40',
+            'api_limit' => 'required|int',
+            'description' => 'string|max:255',
+        ];
+    }
+
+    private function _messages()
+    {
+        return [
+            'token.required' => 'A token is required',
+            'api_limit.required' => 'A api_limit is required',
+        ];
     }
 }

@@ -20,12 +20,14 @@
             });
 
             var grid = Ext.create('plugin.grid', {
-                title: '令牌管理',
+                title: null,
+                iconCls: null,
+                tools: null,
                 store: store,
                 tbar: [
-                    '->',
                     {
-                        text: '新增',
+                        text: '新 增',
+                        iconCls: 'icon-add',
                         margin: '0 20 0 0',
                         handler: winAdd,
                     },
@@ -96,7 +98,7 @@
                     {
                         text: '操 作',
                         sortable: false,
-                        width: 120,
+                        width: 150,
                         align: 'center',
                         xtype: 'widgetcolumn',
                         widget: {
@@ -104,14 +106,15 @@
                             baseCls: 'border:0',
                             items: [
                                 {
-                                    text: '编辑',
+                                    text: '编 辑',
                                     margin: '0 5',
                                     handler: function () {
                                         // TODO
                                     },
                                 },
                                 {
-                                    text: '删除',
+                                    text: '删 除',
+                                    iconCls: 'icon-cross',
                                     margin: '0 5',
                                     handler: function (obj) {
                                         Ext.MessageBox.show({
@@ -123,10 +126,10 @@
                                                     var record = obj.up().getWidgetRecord();
                                                     tool.ajax('DELETE', '/api/configToken/' + record.id, {}, function (data) {
                                                         if (data.success) {
-                                                            tool.toast('删除成功！', 'success');
+                                                            tool.toast('删除成功', 'success');
                                                             grid.store.remove(record);
                                                         } else {
-                                                            tool.error('删除失败！', 'warning');
+                                                            tool.toast(data.message, 'warning');
                                                         }
                                                     });
                                                 }
@@ -155,10 +158,10 @@
                                 };
                             tool.ajax('PUT', '/api/configToken/' + record.id, params, function (data) {
                                     if (data.success) {
-                                        tool.toast('提交成功！', 'success');
+                                        tool.toast('更新成功', 'success');
                                         e.record.commit();
                                     } else {
-                                        tool.error('提交失败！', 'warning');
+                                        tool.toast(data.message, 'warning');
                                     }
                                 }
                             );
@@ -224,11 +227,11 @@
                                         tool.ajax('POST', '/api/configToken', params, function (data) {
                                                 if (data.success) {
                                                     win.close();
-                                                    tool.toast('提交成功！', 'success');
+                                                    tool.toast('新增成功', 'success');
                                                     var index = grid.store.indexOfId(data.data.id);
                                                     grid.store.insert(Math.max(0, index), data.data);
                                                 } else {
-                                                    tool.error('提交失败！', 'warning');
+                                                    tool.toast(data.message, 'warning');
                                                 }
                                             }
                                         );
