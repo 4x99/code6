@@ -4,7 +4,7 @@
         Ext.onReady(function () {
             var store = Ext.create('Ext.data.Store', {
                 autoLoad: true,
-                pageSize: 10,
+                pageSize: 100,
                 proxy: {
                     type: 'ajax',
                     url: '/api/configWhitelist',
@@ -22,9 +22,10 @@
             });
 
             var grid = Ext.create('plugin.grid', {
-                title: '白名单列表',
+                title: null,
+                iconCls: null,
+                tools: null,
                 store: store,
-                iconCls: 'icon-grid',
                 viewConfig: {
                     stripeRows: false
                 },

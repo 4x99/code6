@@ -24,7 +24,7 @@ class ConfigWhitelistController extends Controller
     public function index(Request $request)
     {
         $input = $request->input();
-        $pageSize = $input['limit'] ?? 10;
+        $pageSize = $input['limit'] ?? 100;
         $pageNum = $input['page'] ?? 1;
         return ConfigWhitelist::orderBy('id', 'desc')
             ->paginate($pageSize, '*', 'page', $pageNum);
