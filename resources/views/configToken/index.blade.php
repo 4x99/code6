@@ -9,14 +9,15 @@
 
             var store = Ext.create('Ext.data.Store', {
                 model: 'configToken',
+                pageSize: 10,
                 proxy: {
                     type: 'ajax',
                     url: '/api/configToken',
                     reader: {
                         rootProperty: 'data',
-                        totalProperty: 'total',
+                        totalProperty: 'meta.total',
                     }
-                }
+                },
             });
 
             var grid = Ext.create('plugin.grid', {
