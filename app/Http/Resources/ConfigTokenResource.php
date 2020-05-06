@@ -21,7 +21,7 @@ class ConfigTokenResource extends JsonResource
             'status' => $this->status,
             'api_limit' => $this->api_limit,
             'api_remaining' => $this->api_remaining,
-            'api_reset_at' => $this->api_reset_at,
+            'api_reset_at' => $this->api_reset_at ?? '-',
             'description' => $this->description,
         ];
     }

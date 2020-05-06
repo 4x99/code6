@@ -4,7 +4,7 @@
         Ext.onReady(function () {
             Ext.define('configToken', {
                 extend: 'Ext.data.Model',
-                fields: ['token'],
+                fields: ['token', 'api_limit', 'description'],
             });
 
             var store = Ext.create('Ext.data.Store', {
@@ -22,16 +22,26 @@
             var grid = Ext.create('plugin.grid', {
                 title: '令牌管理',
                 store: store,
-                tbar: [{
-                    text: '新增',
-                    handler: winAdd,
-                }],
+                tbar: [
+                    '->',
+                    {
+                        text: '新增',
+                        handler: winAdd,
+                    },
+                ],
                 columns: [
                     {
                         text: '密钥',
                         dataIndex: 'token',
                         align: 'center',
                         flex: 1,
+                        editor: {
+                            completeOnEnter: false,
+                            field: {
+                                xtype: 'textfield',
+                                allowBlank: false,
+                            },
+                        },
                     },
                     {
                         text: '创建时间',
@@ -46,7 +56,7 @@
                         flex: 1,
                         align: 'center',
                         renderer: function (val) {
-                            // TODO
+                            return val === 0 ? '异常' : '正常';
                         },
                     },
                     {
@@ -54,6 +64,13 @@
                         dataIndex: 'api_limit',
                         align: 'center',
                         flex: 1,
+                        editor: {
+                            completeOnEnter: false,
+                            field: {
+                                xtype: 'textfield',
+                                allowBlank: false,
+                            },
+                        },
                     }, {
                         text: '接口剩余次数',
                         dataIndex: 'api_remaining',
@@ -70,6 +87,13 @@
                         dataIndex: 'description',
                         align: 'center',
                         flex: 1,
+                        editor: {
+                            completeOnEnter: false,
+                            field: {
+                                xtype: 'textfield',
+                                allowBlank: false,
+                            },
+                        },
                     },
                     {
                         text: '操 作',
@@ -84,7 +108,8 @@
                                 {
                                     text: '编辑',
                                     margin: '0 5',
-                                    handler: function (obj) {
+                                    handler: function () {
+                                        // TODO
                                     },
                                 },
                                 {
@@ -114,7 +139,34 @@
                             ]
                         }
                     },
-                ]
+                ],
+                selModel: 'cellmodel',
+                plugins: {
+                    ptype: 'rowediting',
+                    clicksToEdit: 1,
+                    errorSummary: false,
+                    saveBtnText: '保存',
+                    cancelBtnText: '取消',
+                    listeners: {
+                        edit: function (editor, e) {
+                            var record = e.record.data,
+                                params = {
+                                    'token': record.token,
+                                    'api_limit': record.api_limit,
+                                    'description': record.description,
+                                };
+                            tool.ajax('PUT', '/api/configToken/' + record.id, params, function (data) {
+                                    if (data.success) {
+                                        tool.toast('提交成功！', 'success');
+                                        e.record.commit();
+                                    } else {
+                                        tool.error('提交失败！', 'warning');
+                                    }
+                                }
+                            );
+                        },
+                    },
+                },
             });
             Ext.create('Ext.container.Container', {
                 renderTo: Ext.getBody(),
