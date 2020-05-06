@@ -4,6 +4,7 @@
         Ext.onReady(function () {
             var store = Ext.create('Ext.data.Store', {
                 autoLoad: true,
+                autoSync: true,
                 pageSize: 10,
                 proxy: {
                     type: 'ajax',
@@ -11,12 +12,6 @@
                     reader: {
                         rootProperty: 'data',
                         totalProperty: 'meta.total'
-                    }
-                },
-                listeners: {
-                    filterchange: function () {
-                        this.totalCount = this.getCount();
-                        this.down('pagingtoolbar').onLoad();
                     }
                 }
             });
@@ -32,6 +27,7 @@
                     '->',
                     {
                         text: '新增',
+                        margin: '0 30 0 0',
                         iconCls: 'icon-add',
                         handler: winAdd
                     }
@@ -46,21 +42,37 @@
                         text: '关键词',
                         dataIndex: 'keyword',
                         flex: 1,
+                        editor: {
+                            xtype: 'textfield',
+                            allowBlank: false,
+                        }
                     },
                     {
                         text: '扫描页码',
                         dataIndex: 'scan_page',
                         flex: 1,
+                        editor: {
+                            xtype: 'textfield',
+                            allowBlank: false,
+                        }
                     },
                     {
                         text: '扫描间隔',
                         dataIndex: 'scan_interval_min',
                         flex: 1,
+                        editor: {
+                            xtype: 'textfield',
+                            allowBlank: false,
+                        }
                     },
                     {
                         text: '描述',
                         dataIndex: 'description',
                         flex: 1,
+                        editor: {
+                            xtype: 'textfield',
+                            allowBlank: false,
+                        }
                     },
                     {
                         text: '最后扫描时间',
@@ -102,7 +114,7 @@
                                                     var record = obj.up().getWidgetRecord();
                                                     tool.ajax('DELETE', '/api/configJob/' + record.id, {}, function (data) {
                                                         if (data.success) {
-                                                            tool.toast('提交成功！', 'success');
+                                                            tool.toast('删除成功！', 'success');
                                                             grid.store.remove(record);
                                                         } else {
                                                             tool.toast(data.message ?? '', 'error');
@@ -116,7 +128,33 @@
                             ]
                         }
                     }
-                ]
+                ],
+                plugins: [
+                    Ext.create('Ext.grid.plugin.RowEditing', {
+                        pluginId: 'plnRowEditing',
+                        errorSummary: false, //右侧提示
+                        saveBtnText: '保存',
+                        cancelBtnText: '取消',
+                        listeners: {
+                            edit: function (editor, e) {
+                                var params = {
+                                    'keyword': e.newValues.keyword,
+                                    'scan_page': e.newValues.scan_page,
+                                    'scan_interval_min': e.newValues.scan_interval_min,
+                                    'description': e.newValues.description,
+                                };
+                                tool.ajax('PUT', '/api/configJob/' + e.record.id, params, function (data) {
+                                    if (data.success) {
+                                        tool.toast('修改成功！', 'success');
+                                        grid.store.reload();
+                                    } else {
+                                        tool.toast(data.message ?? '', 'error');
+                                    }
+                                });
+                            }
+                        }
+                    })
+                ],
             });
 
             Ext.create('Ext.container.Container', {
