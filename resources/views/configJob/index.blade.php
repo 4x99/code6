@@ -17,9 +17,7 @@
             });
 
             var grid = Ext.create('plugin.grid', {
-                title: '任务配置列表',
                 store: store,
-                iconCls: 'icon-grid',
                 viewConfig: {
                     stripeRows: false
                 },
@@ -42,6 +40,7 @@
                         text: '关键词',
                         dataIndex: 'keyword',
                         flex: 1,
+                        completeOnEnter: false,
                         editor: {
                             xtype: 'textfield',
                             allowBlank: false,
@@ -51,6 +50,7 @@
                         text: '扫描页码',
                         dataIndex: 'scan_page',
                         flex: 1,
+                        completeOnEnter: false,
                         editor: {
                             xtype: 'textfield',
                             allowBlank: false,
@@ -60,6 +60,7 @@
                         text: '扫描间隔',
                         dataIndex: 'scan_interval_min',
                         flex: 1,
+                        completeOnEnter: false,
                         editor: {
                             xtype: 'textfield',
                             allowBlank: false,
@@ -69,6 +70,7 @@
                         text: '描述',
                         dataIndex: 'description',
                         flex: 1,
+                        completeOnEnter: false,
                         editor: {
                             xtype: 'textfield',
                             allowBlank: false,
@@ -137,13 +139,14 @@
                         cancelBtnText: '取消',
                         listeners: {
                             edit: function (editor, e) {
+                                var record = e.newValues;
                                 var params = {
-                                    'keyword': e.newValues.keyword,
-                                    'scan_page': e.newValues.scan_page,
-                                    'scan_interval_min': e.newValues.scan_interval_min,
-                                    'description': e.newValues.description,
+                                    'keyword': record.keyword,
+                                    'scan_page': record.scan_page,
+                                    'scan_interval_min': record.scan_interval_min,
+                                    'description': record.description,
                                 };
-                                tool.ajax('PUT', '/api/configJob/' + e.record.id, params, function (data) {
+                                tool.ajax('PUT', '/api/configJob/' + record.id, params, function (data) {
                                     if (data.success) {
                                         tool.toast('修改成功！', 'success');
                                         grid.store.reload();
