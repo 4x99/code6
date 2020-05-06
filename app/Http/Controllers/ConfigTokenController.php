@@ -67,7 +67,11 @@ class ConfigTokenController extends Controller
             'api_limit' => 'required|int',
             'description' => 'string|max:255',
         ]);
-        $input = $request->all();
+        $input = [
+            'token' => $request->input('token'),
+            'api_limit' => $request->input('api_limit'),
+            'description' => $request->input('description'),
+        ];
         $success = ConfigToken::find($id)->update($input);
         return ['success' => $success];
     }

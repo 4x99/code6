@@ -26,6 +26,7 @@
                     '->',
                     {
                         text: '新增',
+                        margin: '0 20 0 0',
                         handler: winAdd,
                     },
                 ],
@@ -36,7 +37,6 @@
                         align: 'center',
                         flex: 1,
                         editor: {
-                            completeOnEnter: false,
                             field: {
                                 xtype: 'textfield',
                                 allowBlank: false,
@@ -65,7 +65,6 @@
                         align: 'center',
                         flex: 1,
                         editor: {
-                            completeOnEnter: false,
                             field: {
                                 xtype: 'textfield',
                                 allowBlank: false,
@@ -88,7 +87,6 @@
                         align: 'center',
                         flex: 1,
                         editor: {
-                            completeOnEnter: false,
                             field: {
                                 xtype: 'textfield',
                                 allowBlank: false,
@@ -217,11 +215,12 @@
                                     text: '提交',
                                     formBind: true,
                                     handler: function () {
-                                        var values = this.up('form').getValues();
-                                        var params = {};
-                                        params['token'] = values['token'];
-                                        params['api_limit'] = values['api_limit'];
-                                        params['description'] = values['description'];
+                                        var values = this.up('form').getValues(),
+                                            params = {
+                                                token: values['token'],
+                                                api_limit: values['api_limit'],
+                                                description: values['description'],
+                                            };
                                         tool.ajax('POST', '/api/configToken', params, function (data) {
                                                 if (data.success) {
                                                     win.close();
