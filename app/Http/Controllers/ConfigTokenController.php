@@ -54,15 +54,22 @@ class ConfigTokenController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * update data
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @param $id
+     * @return array
      */
     public function update(Request $request, $id)
     {
-        // TODO
+        $request->validate([
+            'token' => 'required|string|max:40',
+            'api_limit' => 'required|int',
+            'description' => 'string|max:255',
+        ]);
+        $input = $request->all();
+        $success = ConfigToken::find($id)->update($input);
+        return ['success' => $success];
     }
 
     /**
