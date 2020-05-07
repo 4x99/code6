@@ -99,20 +99,13 @@
                     {
                         text: '操 作',
                         sortable: false,
-                        width: 150,
+                        width: 92,
                         align: 'center',
                         xtype: 'widgetcolumn',
                         widget: {
                             xtype: 'buttongroup',
                             baseCls: 'border:0',
                             items: [
-                                {
-                                    text: '编 辑',
-                                    margin: '0 5',
-                                    handler: function () {
-                                        // TODO
-                                    },
-                                },
                                 {
                                     text: '删 除',
                                     iconCls: 'icon-cross',
