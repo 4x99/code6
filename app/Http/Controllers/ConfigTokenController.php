@@ -11,10 +11,9 @@ class ConfigTokenController extends Controller
     /**
      * view
      *
-     * @param  Request  $request
      * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
      */
-    public function view(Request $request)
+    public function view()
     {
         $data = [
             'title' => '令牌配置'
@@ -36,7 +35,6 @@ class ConfigTokenController extends Controller
         $data = ConfigToken::orderBy('id', 'desc')
             ->paginate($pageSize, '*', 'page', $page);
         return ConfigTokenResource::collection($data);
-        return $data;
     }
 
     /**
@@ -74,7 +72,7 @@ class ConfigTokenController extends Controller
     {
         $input = [
             'token' => $request->input('token'),
-            'api_limit' => $request->input('api_limit'),
+            'api_limit' => (int) $request->input('api_limit'),
             'description' => $request->input('description'),
         ];
         try {
@@ -126,6 +124,7 @@ class ConfigTokenController extends Controller
         return [
             'token.required' => 'A token is required',
             'api_limit.required' => 'A api_limit is required',
+            'api_limit.type' => 'api_limit type error',
         ];
     }
 }
