@@ -1,4 +1,15 @@
-*{ font-family:微软雅黑, sans-serif !important;color:#666; }
-html{ overflow-y:hidden; }
-body{ background:#E6E8EA !important;padding:10px; }
-html, body{ box-sizing:border-box;height:100%; }
+*{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Hiragino Sans GB','Microsoft YaHei','Helvetica Neue',Helvetica,Arial,sans-serif,'Apple Color Emoji','Segoe UI Emoji','Segoe UI Symbol'!important;color:#666;}
+html{overflow-y:hidden;}
+html,body{box-sizing:border-box;height:100%;}
+iframe{border:none;}
+/* ExtJS */
+.x-focus{box-shadow:none!important;}
+.x-btn-inner-default-small,.x-btn-inner-default-toolbar-small{letter-spacing:3px;}
+.x-title-text,.x-window-text{letter-spacing:1px;}
+/* ICON */
+.icon-cross{background:url(../image/icon/cross.png) no-repeat;}
+.icon-page{background:url(../image/icon/page.png) no-repeat;}
+.icon-key{background:url(../image/icon/key.png) no-repeat;}
+.icon-page-wrench{background:url(../image/icon/page-wrench.png) no-repeat;}
+.icon-tick{background:url(../image/icon/tick.png) no-repeat;}
+.icon-warning{background:url(../image/icon/warning.png) no-repeat;}

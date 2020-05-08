@@ -4,6 +4,17 @@ Ext.Loader.setConfig({
     paths: {'plugin': '/js/extjs/plugin'}
 });
 
+// 资源版本号
+Ext.Boot.Entry.prototype.getLoadUrl = function () {
+    var url = Ext.Boot.canonicalUrl(this.url);
+    var meta = Ext.select('meta[name=version]').first();
+    var version = meta ? meta.getAttribute('content') : new Date().getTime();
+    if (!this.loadUrl) {
+        this.loadUrl = (url + (url.indexOf('?') === -1 ? '?' : '&') + 'v=' + version);
+    }
+    return this.loadUrl;
+};
+
 // 自适应宽度
 Ext.EventManager.onWindowResize(function () {
     Ext.ComponentManager.each(function (id, cmp) {
