@@ -43,7 +43,7 @@ Ext.define('plugin.toast', {
     },
     // 普通消息
     info: function (text) {
-        this.show(text, 'icon-page-star', '-1px');
+        this.show(text, 'icon-page');
     },
     // 成功消息
     success: function (text) {
