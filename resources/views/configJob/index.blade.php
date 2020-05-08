@@ -36,7 +36,7 @@
                                             tool.toast('删除成功！', 'success');
                                             grid.store.reload();
                                         } else {
-                                            tool.toast(data.message ?? '', 'error');
+                                            tool.toast(data.message, 'error');
                                         }
                                     });
                                 }
@@ -102,7 +102,7 @@
                                                         tool.toast('新增成功！', 'success');
                                                         grid.store.reload();
                                                     } else {
-                                                        tool.toast(data.message ?? '', 'error');
+                                                        tool.toast(data.message, 'error');
                                                     }
                                                 }
                                             );
@@ -134,7 +134,7 @@
                                 tool.toast('修改成功！', 'success');
                                 grid.store.reload();
                             } else {
-                                tool.toast(data.message ?? '', 'error');
+                                tool.toast(data.message, 'error');
                             }
                         });
                     }
