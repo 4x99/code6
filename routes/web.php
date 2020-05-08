@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', 'IndexController@view');
 Route::resource('/api/index', 'IndexController');
 
+Route::get('/home', 'HomeController@view');
+
 Route::get('/codeLeak', 'CodeLeakController@view');
 Route::resource('/api/codeLeak', 'CodeLeakController');
 
