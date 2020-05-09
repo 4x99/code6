@@ -13,6 +13,7 @@
         #loading .rect5{animation-delay:-.8s;}
         @keyframes stretchdelay{0%,40%,100%{transform:scaleY(0.4);}20%{transform:scaleY(1.0);}}
     </style>
+
     <div id="loading">
         <div class="rect1"></div>
         <div class="rect2"></div>
@@ -20,6 +21,7 @@
         <div class="rect4"></div>
         <div class="rect5"></div>
     </div>
+
     <script>
         Ext.onReady(function () {
             Ext.create('Ext.container.Container', {
@@ -32,6 +34,7 @@
                         height: 64,
                         xtype: 'toolbar',
                         border: '0 0 1 0',
+                        style: 'background:#FAFAFA',
                         items: [
                             {
                                 xtype: 'image',
@@ -104,7 +107,7 @@
                                             },
                                             {
                                                 text: '退出登录',
-                                                iconCls: 'icon-cross',
+                                                iconCls: 'icon-go',
                                                 padding: '3 3 3 8',
                                                 handler: function () {
                                                     Ext.Msg.show({

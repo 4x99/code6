@@ -2,32 +2,28 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ConfigWhitelist;
 use Illuminate\Http\Request;
+use App\Models\ConfigWhitelist;
 
 class ConfigWhitelistController extends Controller
 {
     public function view(Request $request)
     {
-        $data = [
-            'title' => '白名单配置'
-        ];
-        return view('configWhitelist/index')->with($data);
+        $data = ['title' => '白名单配置'];
+        return view('configWhitelist.index')->with($data);
     }
 
     /**
-     * 列表数据
+     * 白名单列表
      *
      * @param  Request  $request
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
     public function index(Request $request)
     {
-        $input = $request->input();
-        $pageSize = $input['limit'] ?? 100;
-        $pageNum = $input['page'] ?? 1;
-        return ConfigWhitelist::orderBy('id', 'desc')
-            ->paginate($pageSize, '*', 'page', $pageNum);
+        $page = $request->input('page', 1);
+        $perPage = $request->input('limit', 100);
+        return ConfigWhitelist::orderBy('id', 'desc')->paginate($perPage, '*', 'page', $page);
     }
 
     /**
@@ -38,15 +34,17 @@ class ConfigWhitelistController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'value' => 'required|string|max:255',
-        ]);
-        $input = $request->all();
-        $configWhitelist = ConfigWhitelist::firstOrCreate($input);
-        return [
-            'success' => $configWhitelist->wasRecentlyCreated,
-            'data' => $configWhitelist
-        ];
+        try {
+            $request->validate(['value' => ['required', 'string', 'max:255']]);
+            $data = $request->all(['value']);
+            $configWhitelist = ConfigWhitelist::firstOrCreate($data);
+            if (!$configWhitelist->wasRecentlyCreated) {
+                throw new \Exception('操作失败，可能已存在此仓库！');
+            }
+            return ['success' => true, 'data' => $configWhitelist];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
     }
 
     /**
@@ -58,10 +56,10 @@ class ConfigWhitelistController extends Controller
     public function destroy($id)
     {
         try {
-            $res = ConfigWhitelist::find($id)->delete();
+            $success = (bool) ConfigWhitelist::destroy($id);
+            return ['success' => $success, 'message' => $success ? '删除成功！' : '删除失败！'];
         } catch (\Exception $e) {
-            $res = false;
+            return ['success' => false, 'message' => $e->getMessage()];
         }
-        return ['success' => $res];
     }
 }

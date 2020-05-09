@@ -2,95 +2,101 @@
 @section('content')
     <script>
         Ext.onReady(function () {
-            var store = Ext.create('Ext.data.Store', {
-                autoLoad: true,
+            Ext.create('Ext.data.Store', {
+                storeId: 'store',
                 pageSize: 100,
+                autoLoad: true,
                 proxy: {
                     type: 'ajax',
                     url: '/api/configWhitelist',
                     reader: {
                         rootProperty: 'data',
-                        totalProperty: 'total'
-                    }
-                },
-                listeners: {
-                    filterchange: function () {
-                        this.totalCount = this.getCount();
-                        this.down('pagingtoolbar').onLoad();
+                        totalProperty: 'total',
                     }
                 }
             });
 
+            // 白名单列表
             var grid = Ext.create('plugin.grid', {
-                title: null,
-                iconCls: null,
-                tools: null,
-                store: store,
-                viewConfig: {
-                    stripeRows: false
+                store: Ext.data.StoreManager.lookup('store'),
+                tbar: {
+                    margin: '5 12 15 18',
+                    items: [
+                        {
+                            xtype: 'tbtext',
+                            html: '提示：扫描任务将自动忽略白名单内的仓库',
+                        },
+                        '->',
+                        {
+                            text: '新增白名单',
+                            iconCls: 'icon-add',
+                            padding: '3 3 3 8',
+                            handler: winAdd,
+                        }
+                    ]
                 },
-                tbar: [
-                    '->',
-                    {
-                        text: '新增',
-                        iconCls: 'icon-add',
-                        handler: winAdd
-                    }
-                ],
                 columns: [
                     {
                         text: 'ID',
                         dataIndex: 'id',
-                        width: 100,
+                        width: 80,
+                        align: 'center',
                     },
                     {
-                        text: '拥有者',
+                        text: '用户名（仓库拥有者）',
                         dataIndex: 'value',
                         flex: 1,
-                        renderer: function (val) {
-                            return val.split('/')[0];
+                        align: 'center',
+                        renderer: function (value) {
+                            return value.split('/')[0];
                         }
                     },
                     {
                         text: '仓库名',
                         dataIndex: 'value',
                         flex: 1,
-                        renderer: function (val) {
-                            return val.split('/')[1];
+                        align: 'center',
+                        renderer: function (value) {
+                            return value.split('/')[1];
                         }
                     },
                     {
                         text: '操作',
                         sortable: false,
-                        width: 80,
+                        width: 150,
                         align: 'center',
                         xtype: 'widgetcolumn',
                         widget: {
                             xtype: 'buttongroup',
                             baseCls: 'border:0',
+                            layout: {
+                                type: 'hbox',
+                                pack: 'center',
+                            },
                             items: [
                                 {
                                     text: '删除',
-                                    iconCls: 'icon-cross',
+                                    iconCls: 'icon-bullet-red',
                                     handler: function (obj) {
                                         Ext.Msg.show({
                                             title: '警告',
                                             iconCls: 'icon-warning',
-                                            message: '确定删除该项？',
+                                            message: '确定删除此项？',
                                             buttons: Ext.Msg.YESNO,
-                                            icon: Ext.Msg.QUESTION,
                                             fn: function (btn) {
-                                                if (btn === 'yes') {
-                                                    var record = obj.up().getWidgetRecord();
-                                                    tool.ajax('DELETE', '/api/configWhitelist/' + record.id, {}, function (data) {
-                                                        if (data.success) {
-                                                            tool.toast('提交成功！', 'success');
-                                                            grid.store.remove(record);
-                                                        } else {
-                                                            tool.error('提交失败！', 'warning');
-                                                        }
-                                                    });
+                                                if (btn !== 'yes') {
+                                                    return;
                                                 }
+                                                var record = obj.up().getWidgetRecord();
+                                                var url = '/api/configWhitelist/' + record.id;
+                                                tool.ajax('DELETE', url, {}, function (rsp) {
+                                                    if (rsp.success) {
+                                                        tool.toast(rsp.message, 'success');
+                                                        grid.store.remove(record);
+                                                    } else {
+                                                        tool.toast(rsp.message, 'error');
+                                                    }
+                                                });
                                             }
                                         });
                                     }
@@ -98,7 +104,7 @@
                             ]
                         }
                     }
-                ]
+                ],
             });
 
             Ext.create('Ext.container.Container', {
@@ -108,18 +114,18 @@
                 items: [grid]
             });
 
+            // 新增白名单窗口
             function winAdd() {
                 var win = Ext.create('Ext.window.Window', {
                     title: '新增白名单',
-                    width: 300,
-                    modal: true,
+                    iconCls: 'icon-add',
+                    width: 350,
                     layout: 'fit',
                     items: [
                         {
                             xtype: 'form',
                             layout: 'form',
-                            bodyPadding: 10,
-                            border: false,
+                            bodyPadding: 15,
                             defaults: {
                                 xtype: 'textfield',
                                 allowBlank: false,
@@ -127,7 +133,7 @@
                             items: [
                                 {
                                     name: 'repo_owner',
-                                    fieldLabel: '拥有者',
+                                    fieldLabel: '用户名',
                                 },
                                 {
                                     name: 'repo_name',
@@ -148,17 +154,16 @@
                                         var values = this.up('form').getValues();
                                         var params = {};
                                         params['value'] = values['repo_owner'] + '/' + values['repo_name'];
-                                        tool.ajax('POST', '/api/configWhitelist', params, function (data) {
-                                                if (data.success) {
-                                                    win.close();
-                                                    tool.toast('提交成功！', 'success');
-                                                    var index = grid.store.indexOfId(data.data.id);
-                                                    grid.store.insert(Math.max(0, index), data.data);
-                                                } else {
-                                                    tool.error('提交失败！', 'warning');
-                                                }
+                                        tool.ajax('POST', '/api/configWhitelist', params, function (rsp) {
+                                            if (rsp.success) {
+                                                win.close();
+                                                tool.toast('操作成功！', 'success');
+                                                var index = grid.store.indexOfId(rsp.data.id);
+                                                grid.store.insert(Math.max(0, index), rsp.data);
+                                            } else {
+                                                tool.toast(rsp.message, 'error');
                                             }
-                                        );
+                                        });
                                     }
                                 }
                             ]
