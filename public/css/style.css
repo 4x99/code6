@@ -4,12 +4,22 @@ html,body{box-sizing:border-box;height:100%;}
 iframe{border:none;}
 /* ExtJS */
 .x-focus{box-shadow:none!important;}
+.x-grid-cell{vertical-align:middle;}
+.x-column-header-text-inner{margin-left:3px;letter-spacing:3px;}
+.x-grid-cell-inner:before{border:none!important;}
+.x-column-header{background:#FAFAFA;}
 .x-btn-inner-default-small,.x-btn-inner-default-toolbar-small{letter-spacing:3px;}
-.x-title-text,.x-window-text{letter-spacing:1px;}
+.x-title-text,.x-window-text{letter-spacing:3px;}
+.x-toolbar-text-default{letter-spacing:3px;color:#666;}
+.x-form-item-label-text{letter-spacing:3px;}
 /* ICON */
+.icon-add{background:url(../image/icon/add.png) no-repeat;}
+.icon-bullet-green{background:url(../image/icon/bullet-green.png) no-repeat;}
+.icon-bullet-red{background:url(../image/icon/bullet-red.png) no-repeat;}
 .icon-cross{background:url(../image/icon/cross.png) no-repeat;}
-.icon-page{background:url(../image/icon/page.png) no-repeat;}
+.icon-go{background:url(../image/icon/go.png) no-repeat;}
 .icon-key{background:url(../image/icon/key.png) no-repeat;}
+.icon-page{background:url(../image/icon/page.png) no-repeat;}
 .icon-page-wrench{background:url(../image/icon/page-wrench.png) no-repeat;}
 .icon-tick{background:url(../image/icon/tick.png) no-repeat;}
 .icon-warning{background:url(../image/icon/warning.png) no-repeat;}
