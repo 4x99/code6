@@ -9,9 +9,7 @@ class CodeFragmentController extends Controller
 {
     public function view()
     {
-        $data = [
-            'title' => '代码片段'
-        ];
+        $data = ['title' => '代码片段'];
         return view('codeFragment/index')->with($data);
     }
 
@@ -30,6 +28,6 @@ class CodeFragmentController extends Controller
         if ($request->input('uuid')) {
             $data = $query->first();
         }
-        return response()->json($data);
+        return $data;
     }
 }
