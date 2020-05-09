@@ -2,8 +2,6 @@ Ext.define('plugin.grid', {
     extend: 'Ext.grid.Panel',
     renderTo: Ext.getBody(),
     layout: 'fit',
-    title: '数据列表',
-    iconCls: 'icon-grid',
     collapsible: false,
     columnLines: true,
     reserveScrollbar: true,
