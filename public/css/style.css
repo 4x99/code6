@@ -6,6 +6,7 @@ iframe{border:none;}
 .x-focus{box-shadow:none!important;}
 .x-btn-inner-default-small,.x-btn-inner-default-toolbar-small{letter-spacing:3px;}
 .x-title-text,.x-window-text{letter-spacing:1px;}
+.x-column-header{background:#F8F8F8;}
 /* ICON */
 .icon-cross{background:url(../image/icon/cross.png) no-repeat;}
 .icon-page{background:url(../image/icon/page.png) no-repeat;}
@@ -13,3 +14,7 @@ iframe{border:none;}
 .icon-page-wrench{background:url(../image/icon/page-wrench.png) no-repeat;}
 .icon-tick{background:url(../image/icon/tick.png) no-repeat;}
 .icon-warning{background:url(../image/icon/warning.png) no-repeat;}
+.icon-zoom{background:url(../image/icon/zoom.png) no-repeat;}
+.icon-page-star{background:url(../image/icon/page-star.png) no-repeat;}
+.icon-page-lightning{background:url(../image/icon/page-lightning.png) no-repeat;}
+
