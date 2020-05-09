@@ -1,11 +1,7 @@
 @extends('base')
 @section('content')
     <style>
-        a{ text-decoration:none; }
-        a:hover, .hl{ color:#415EFE; }
         a, p, code, .x-grid-cell-inner, .hl{ font-family:Consolas, sans-serif !important;font-size:12px;white-space:pre-wrap;word-break:break-all; }
-        .x-grid-dirty-cell{ background:none; }
-        .x-window-text p{ margin:5px; }
     </style>
     <script>
         Ext.onReady(function () {
@@ -197,13 +193,11 @@
                         text: '处理人',
                         dataIndex: 'handle_user',
                         width: 100,
-                        align: 'center',
                     },
                     {
                         text: '说 明',
                         dataIndex: 'description',
                         width: 340,
-                        align: 'center',
                     },
                     {
                         text: '操 作',

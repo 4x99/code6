@@ -9,14 +9,12 @@ class CodeLeakController extends Controller
 {
     public function view()
     {
-        $data = [
-            'title' => '扫描结果'
-        ];
+        $data = ['title' => '扫描结果'];
         return view('codeLeak/index')->with($data);
     }
 
     /**
-     * index data
+     * 扫描结果列表
      *
      * @param  Request  $request
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
@@ -39,20 +37,20 @@ class CodeLeakController extends Controller
             return $query->where('status', $status);
         });
         $query->when($request->input('sdate'), function ($query, $sdate) {
-            return $query->where('created_at', '>', date('Y-m-d 00:00:00', strtotime($sdate)));
+            return $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($sdate)));
         });
         $query->when($request->input('edate'), function ($query, $edate) {
-            return $query->where('created_at', '<', date('Y-m-d 23:59:59', strtotime($edate)));
+            return $query->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime($edate)));
         });
         return $query->orderBy('created_at', 'desc')->paginate($pageSize);
     }
 
     /**
-     * Update the specified resource in storage.
+     * 更新数据
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @param $id
+     * @return array
      */
     public function update(Request $request, $id)
     {
@@ -66,6 +64,11 @@ class CodeLeakController extends Controller
         return ['success' => $success];
     }
 
+    /**
+     * 规则定义
+     *
+     * @return array
+     */
     private function _rules()
     {
         return [
@@ -74,6 +77,11 @@ class CodeLeakController extends Controller
         ];
     }
 
+    /**
+     * 错误信息返回
+     *
+     * @return array
+     */
     private function _messages()
     {
         return [
