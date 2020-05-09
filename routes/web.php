@@ -29,3 +29,5 @@ Route::resource('/api/configToken', 'ConfigTokenController');
 
 Route::get('/configWhitelist', 'ConfigWhitelistController@view');
 Route::resource('/api/configWhitelist', 'ConfigWhitelistController');
+
+Route::resource('/api/codeFragment', 'CodeFragmentController');

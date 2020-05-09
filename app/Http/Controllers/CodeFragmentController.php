@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CodeFragment;
 use Illuminate\Http\Request;
 
 class CodeFragmentController extends Controller
 {
-    public function view(Request $request)
+    public function view()
     {
         $data = [
             'title' => '代码片段'
@@ -15,78 +16,20 @@ class CodeFragmentController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * index data
      *
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
+        $query = CodeFragment::query();
+        $query->when($request->input('uuid'), function ($query, $keyword) {
+            return $query->where('uuid', $keyword);
+        });
+        if ($request->input('uuid')) {
+            $data = $query->first();
+        }
+        return response()->json($data);
     }
 }
