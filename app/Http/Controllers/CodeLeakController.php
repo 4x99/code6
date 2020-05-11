@@ -33,8 +33,11 @@ class CodeLeakController extends Controller
         $query->when($request->input('repo_owner'), function ($query, $repoOwner) {
             return $query->where('repo_owner', 'like', "%$repoOwner%");
         });
-        $query->when($request->input('status'), function ($query, $status) {
-            return $query->where('status', $status);
+        $query->when(!is_null($request->input('status')), function ($query) use ($request) {
+            return $query->where('status', $request->input('status'));
+        });
+        $query->when($request->input('path'), function ($query, $path) {
+            return $query->where('path', 'like', "%$path%");
         });
         $query->when($request->input('sdate'), function ($query, $sdate) {
             return $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($sdate)));
