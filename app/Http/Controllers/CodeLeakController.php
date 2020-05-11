@@ -33,7 +33,7 @@ class CodeLeakController extends Controller
         $query->when($request->input('repo_owner'), function ($query, $repoOwner) {
             return $query->where('repo_owner', 'like', "%$repoOwner%");
         });
-        $query->when(!is_null($request->input('status')), function ($query) use ($request) {
+        $query->when($request->filled('status'), function ($query) use ($request) {
             return $query->where('status', $request->input('status'));
         });
         $query->when($request->input('path'), function ($query, $path) {

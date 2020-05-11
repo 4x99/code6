@@ -146,37 +146,31 @@
                         align: 'center',
                     },
                     {
-                        text: '状 态',
-                        dataIndex: 'status',
-                        width: 80,
-                        align: 'center',
-                        renderer: function (val) {
-                            var record = storeFind(storeStatus, 'value', val);
-                            var tplStatus = new Ext.XTemplate('<div>{text}</div>');
-                            return tplStatus.apply({text: record.data.text, color: record.data.color});
-                            //TODO 按钮样式
-                        },
-                    }, {
-                        text: '文件哈希',
-                        dataIndex: 'uuid',
-                        width: 170,
-                        align: 'center',
-                    },
-                    {
-                        text: '仓库拥有者',
-                        dataIndex: 'repo_owner',
-                        width: 150,
-                        align: 'center',
-                    },
-                    {
-                        text: '仓库名',
-                        dataIndex: 'repo_name',
-                        width: 150,
-                        align: 'center',
-                    }, {
-                        text: '文件地址',
-                        dataIndex: 'path',
-                        width: 150,
+                        text: '仓库信息',
+                        columns: [
+                            {
+                                text: '仓库拥有者',
+                                dataIndex: 'repo_owner',
+                                width: 150,
+                                align: 'center',
+                            },
+                            {
+                                text: '仓库名',
+                                dataIndex: 'repo_name',
+                                width: 150,
+                                align: 'center',
+                            }, {
+                                text: '文件地址',
+                                dataIndex: 'path',
+                                width: 150,
+                            },
+                            {
+                                text: '文件哈希',
+                                dataIndex: 'uuid',
+                                width: 170,
+                                align: 'center',
+                            },
+                        ],
                     },
                     {
                         text: '仓库描述',
@@ -187,6 +181,18 @@
                         dataIndex: 'keyword',
                         width: 100,
                         align: 'center',
+                    },
+                    {
+                        text: '状 态',
+                        dataIndex: 'status',
+                        width: 80,
+                        align: 'center',
+                        renderer: function (val) {
+                            var record = storeFind(storeStatus, 'value', val);
+                            var tplStatus = new Ext.XTemplate('<div>{text}</div>');
+                            return tplStatus.apply({text: record.data.text, color: record.data.color});
+                            //TODO 按钮样式
+                        },
                     },
                     {
                         text: '处理人',
@@ -295,7 +301,7 @@
                 };
                 tool.ajax('put', '/api/codeLeak/' + record.data.id, params, function (rsp) {
                     if (rsp.success) {
-                        store.reload();
+                        grid.store.reload();
                     } else {
                         tool.toast('设置失败', 'error');
                     }
