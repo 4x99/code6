@@ -3,19 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Http\Resources\ConfigJobResource;
-use App\Services\ConfigJobService;
+use App\Models\ConfigJob;
 use Illuminate\Http\Request;
 
 class ConfigJobController extends Controller
 {
-    private $service;
 
-    public function __construct(ConfigJobService $configJobService)
-    {
-        $this->service = $configJobService;
-    }
-
-    public function view(Request $request)
+    public function view()
     {
         $data = [
             'title' => '任务配置'
@@ -34,7 +28,8 @@ class ConfigJobController extends Controller
         $params = [
             'pageSize' => $request->input('pageSize', 10),
         ];
-        $data = $this->service->index($params);
+        $data = $configJobs = ConfigJob::orderByDesc('id')
+            ->paginate($params['pageSize']);;
         return ConfigJobResource::collection($data);
     }
 
@@ -54,7 +49,7 @@ class ConfigJobController extends Controller
         ];
         try {
             $this->validate($params, $this->_rules(), $this->_messages());
-            $success = $this->service->store($params);
+            $success = (bool) ConfigJob::create($params);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
         }
@@ -79,7 +74,7 @@ class ConfigJobController extends Controller
         ];
         try {
             $this->validate($params, $this->_updateRules($id), $this->_messages());
-            $success = $this->service->update($id, $params);
+            $success = (bool) ConfigJob::find($id)->update($params);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
         }
@@ -99,7 +94,7 @@ class ConfigJobController extends Controller
         ];
         try {
             $this->validate($params, $this->_destroyRules(), $this->_messages());
-            $success = $this->service->destroy($id);
+            $success = (bool) ConfigJob::destroy($id);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
         }
