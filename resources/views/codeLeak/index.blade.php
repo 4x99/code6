@@ -5,10 +5,10 @@
     </style>
     <script>
         Ext.onReady(function () {
-            var store = Ext.create('Ext.data.Store', {
+            Ext.create('Ext.data.Store', {
+                storeId: 'store',
+                pageSize: 10,
                 autoLoad: true,
-                autoSync: true,
-                pageSize: 20,
                 proxy: {
                     type: 'ajax',
                     url: '/api/codeLeak',
@@ -21,19 +21,18 @@
 
             var storeStatus = Ext.create('Ext.data.Store', {
                 data: [
-                    {text: '未知', value: 0},
-                    {text: '正常', value: 1},
+                    {text: '未审', value: 0},
+                    {text: '误报', value: 1},
                     {text: '异常', value: 2},
                     {text: '解决', value: 3},
-                ]
+                ],
             });
 
             var grid = Ext.create('plugin.grid', {
-                region: 'center',
-                store: store,
+                store: Ext.data.StoreManager.lookup('store'),
                 bufferedRenderer: false,
                 selType: 'checkboxmodel',
-                autoLoad: false,
+                region: 'center',
                 tbar: [
                     {
                         xtype: 'form',
@@ -130,7 +129,7 @@
                             change: function (combo, records) {
                                 setStatus(records);
                             },
-                        }
+                        },
                     },
                 ],
                 columns: [
@@ -156,7 +155,7 @@
                             var tplStatus = new Ext.XTemplate('<div>{text}</div>');
                             return tplStatus.apply({text: record.data.text, color: record.data.color});
                             //TODO 按钮样式
-                        }
+                        },
                     }, {
                         text: '文件哈希',
                         dataIndex: 'uuid',
@@ -261,7 +260,7 @@
                                                     var record = obj.up('buttongroup').getWidgetRecord();
                                                     winOpen('https://github.com/' + record.data.repo_owner, 1300, 800);
                                                 }
-                                            }
+                                            },
                                         ],
                                     }
                                 }

@@ -21,8 +21,8 @@ class CodeLeakController extends Controller
      */
     public function index(Request $request)
     {
-        $input = $request->input();
-        $pageSize = $input['limit'] ?? 100;
+        $page = $request->input('page', 1);
+        $perPage = $request->input('limit', 10);
         $query = CodeLeak::query();
         $query->when($request->input('keyword'), function ($query, $keyword) {
             return $query->where('keyword', $keyword);
@@ -42,7 +42,7 @@ class CodeLeakController extends Controller
         $query->when($request->input('edate'), function ($query, $edate) {
             return $query->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime($edate)));
         });
-        return $query->orderBy('created_at', 'desc')->paginate($pageSize);
+        return $query->orderBy('created_at', 'desc')->paginate($perPage, '*', 'page', $page);
     }
 
     /**
