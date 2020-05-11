@@ -22,10 +22,10 @@ class CodeFragmentController extends Controller
     public function index(Request $request)
     {
         $query = CodeFragment::query();
-        $query->when($request->input('uuid'), function ($query, $keyword) {
+        $query->when($request->has('uuid'), function ($query, $keyword) {
             return $query->where('uuid', $keyword);
         });
-        if ($request->input('uuid')) {
+        if ($request->has('uuid')) {
             $data = $query->first();
         }
         return $data;
