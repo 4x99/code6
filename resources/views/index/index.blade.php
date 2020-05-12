@@ -7,19 +7,19 @@
         .nav .active,.nav > li > a:hover{color:#1890FF;opacity:1;}
         #loading{position:absolute;top:50%;left:50%;margin-left:-30px;width:60px;height:60px;text-align:center;font-size:10px;z-index:1;}
         #loading > div{height:100%;width:8px;display:inline-block;animation:stretchdelay 1.2s infinite ease-in-out;background:#1890FF;}
-        #loading .rect2{animation-delay:-1.1s;}
-        #loading .rect3{animation-delay:-1s;}
-        #loading .rect4{animation-delay:-.9s;}
-        #loading .rect5{animation-delay:-.8s;}
+        #loading :nth-child(2){animation-delay:-1.1s;}
+        #loading :nth-child(3){animation-delay:-1s;}
+        #loading :nth-child(4){animation-delay:-.9s;}
+        #loading :nth-child(5){animation-delay:-.8s;}
         @keyframes stretchdelay{0%,40%,100%{transform:scaleY(0.4);}20%{transform:scaleY(1.0);}}
     </style>
 
     <div id="loading">
-        <div class="rect1"></div>
-        <div class="rect2"></div>
-        <div class="rect3"></div>
-        <div class="rect4"></div>
-        <div class="rect5"></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
     </div>
 
     <script>

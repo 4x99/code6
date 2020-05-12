@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ConfigJobResource;
 use App\Models\ConfigJob;
 use Illuminate\Http\Request;
 
@@ -11,151 +10,81 @@ class ConfigJobController extends Controller
 
     public function view()
     {
-        $data = [
-            'title' => '任务配置'
-        ];
-        return view('configJob/index')->with($data);
+        $data = ['title' => '任务配置'];
+        return view('configJob.index')->with($data);
     }
 
     /**
-     * configJob list
+     * 任务列表
      *
      * @param  Request  $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return \Illuminate\Support\Collection
      */
     public function index(Request $request)
     {
-        $params = [
-            'pageSize' => $request->input('pageSize', 10),
-        ];
-        $data = $configJobs = ConfigJob::orderByDesc('id')
-            ->paginate($params['pageSize']);;
-        return ConfigJobResource::collection($data);
+        return ConfigJob::orderByDesc('id')->get();
     }
 
     /**
-     * configJob store
+     * 保存令牌
      *
      * @param  Request  $request
-     * @return array|bool[]
+     * @return array
      */
     public function store(Request $request)
     {
-        $params = [
-            'keyword' => $request->input('keyword'),
-            'scan_page' => $request->input('scan_page'),
-            'description' => $request->input('description'),
-            'scan_interval_min' => $request->input('scan_interval_min'),
-        ];
         try {
-            $this->validate($params, $this->_rules(), $this->_messages());
-            $success = (bool) ConfigJob::create($params);
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+            $request->validate(['keyword' => ['required', 'string', 'max:255']]);
+            $data = ConfigJob::firstOrCreate(
+                ['keyword' => $request->input('keyword')],
+                [
+                    'scan_page' => $request->input('scan_page', 100),
+                    'scan_interval_min' => $request->input('scan_interval_min', 60),
+                    'description' => $request->input('description') ?? ''
+                ]
+            );
+            if (!$data->wasRecentlyCreated) {
+                throw new \Exception('操作失败，可能已存在此任务！');
+            }
+            return ['success' => true, 'data' => ConfigJob::where('id', $data->id)->get()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
-        return ['success' => $success];
     }
 
     /**
-     * configJob update
+     * 更新任务
      *
      * @param  Request  $request
      * @param $id
-     * @return array|bool[]
+     * @return array
      */
     public function update(Request $request, $id)
     {
-        $params = [
-            'id' => $id,
-            'keyword' => $request->input('keyword'),
-            'scan_page' => $request->input('scan_page'),
-            'description' => $request->input('description'),
-            'scan_interval_min' => $request->input('scan_interval_min'),
-        ];
         try {
-            $this->validate($params, $this->_updateRules($id), $this->_messages());
-            $success = (bool) ConfigJob::find($id)->update($params);
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+            $request->validate(['keyword' => ['required', 'string', 'max:255']]);
+            $success = ConfigJob::find($id)->update($request->all([
+                'keyword', 'scan_page', 'scan_interval_min', 'description'
+            ]));
+            return ['success' => $success, 'data' => ConfigJob::where('id', $id)->get()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
-        return ['success' => $success];
     }
 
     /**
-     * configJob destroy
+     * 删除任务
      *
-     * @param $id
-     * @return array|bool[]
+     * @param  int  $id
+     * @return array
      */
     public function destroy($id)
     {
-        $params = [
-            'id' => $id,
-        ];
         try {
-            $this->validate($params, $this->_destroyRules(), $this->_messages());
             $success = (bool) ConfigJob::destroy($id);
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+            return ['success' => $success, 'message' => $success ? '删除成功！' : '删除失败！'];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
-        return ['success' => $success];
     }
-
-    /**
-     * store validate rules
-     *
-     * @return string[]
-     */
-    private function _rules()
-    {
-        return [
-            'keyword' => 'required|string|max:255|unique:config_job,keyword',
-            'scan_page' => 'required|integer',
-            'description' => 'string|max:255',
-            'scan_interval_min' => 'required|integer',
-        ];
-    }
-
-    /**
-     * update validate rules
-     *
-     * @param $id
-     * @return string[]
-     */
-    private function _updateRules($id)
-    {
-        $rules = $this->_rules();
-        $rules['id'] = 'required|integer|exists:config_job,id';
-        $rules['keyword'] = 'required|string|max:255|unique:config_job,keyword,'.$id;
-        return $rules;
-    }
-
-    /**
-     * destroy validate rules
-     *
-     * @return string[]
-     */
-    private function _destroyRules()
-    {
-        return [
-            'id' => 'required|integer|exists:config_job,id',
-        ];
-    }
-
-    /**
-     * validate messages
-     *
-     * @return string[]
-     */
-    private function _messages()
-    {
-        return [
-            'id.exists' => 'configJob does not exist',
-            'keyword.required' => 'keyword is required',
-            'keyword.unique' => 'keyword already exist',
-            'scan_page.required' => 'scan_page is required',
-            'scan_interval_min.required' => 'scan_interval_min is required',
-        ];
-    }
-
 }
