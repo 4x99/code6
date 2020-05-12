@@ -39,7 +39,7 @@
                     {
                         text: 'ID',
                         dataIndex: 'id',
-                        width: 80,
+                        width: 75,
                         align: 'center',
                     },
                     {
@@ -158,8 +158,7 @@
                                             if (rsp.success) {
                                                 win.close();
                                                 tool.toast('操作成功！', 'success');
-                                                var index = grid.store.indexOfId(rsp.data.id);
-                                                grid.store.insert(Math.max(0, index), rsp.data);
+                                                grid.store.insert(0, rsp.data);
                                             } else {
                                                 tool.toast(rsp.message, 'error');
                                             }
