@@ -23,7 +23,7 @@ class ConfigWhitelistController extends Controller
     {
         $page = $request->input('page', 1);
         $perPage = $request->input('limit', 100);
-        return ConfigWhitelist::orderBy('id', 'desc')->paginate($perPage, '*', 'page', $page);
+        return ConfigWhitelist::orderByDesc('id')->paginate($perPage, '*', 'page', $page);
     }
 
     /**
