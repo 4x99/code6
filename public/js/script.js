@@ -64,7 +64,7 @@ tool.ajax = function (method, url, params, callback) {
             callback(rsp);
         },
         failure: function (rsp) {
-            tool.toast('Request failed (code：' + rsp.status + ')');
+            tool.toast('Request failed ( code: ' + rsp.status + ' )');
         }
     });
 };
