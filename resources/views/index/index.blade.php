@@ -118,7 +118,14 @@
                                                         modal: false,
                                                         fn: function (btn) {
                                                             if (btn === 'yes') {
-                                                                window.location = ''; // TODO
+                                                                tool.ajax('POST', '/api/logout', {}, function (rsp) {
+                                                                    if (rsp.success) {
+                                                                        tool.toast('操作成功！', 'success');
+                                                                        window.location = '/login';
+                                                                    } else {
+                                                                        tool.toast(rsp.message, 'error');
+                                                                    }
+                                                                });
                                                             }
                                                         }
                                                     });
@@ -153,7 +160,7 @@
 
             // 修改密码
             Ext.resetPassword = function () {
-                Ext.create('Ext.window.Window', {
+                var win = Ext.create('Ext.window.Window', {
                     title: '修改密码',
                     iconCls: 'icon-key',
                     width: 350,
@@ -171,15 +178,15 @@
                             },
                             items: [
                                 {
-                                    name: 'passworod_current',
+                                    name: 'password_current',
                                     fieldLabel: '当前密码',
                                 },
                                 {
-                                    name: 'passworod_new',
+                                    name: 'password_new',
                                     fieldLabel: '输入新密码',
                                 },
                                 {
-                                    name: 'password_confirm',
+                                    name: 'password_new_confirmation',
                                     fieldLabel: '再次输入新密码',
                                 }
                             ],
@@ -195,11 +202,18 @@
                                     formBind: true,
                                     handler: function () {
                                         var params = this.up('form').getForm().getValues();
-                                        if (params.passworod_new !== params.password_confirm) {
+                                        if (params.password_new !== params.password_new_confirmation) {
                                             tool.toast('两次输入的密码不一致！');
                                             return false;
                                         }
-                                        // TODO
+                                        tool.ajax('PUT', '/api/user', params, function (rsp) {
+                                            if (rsp.success) {
+                                                win.close();
+                                                tool.toast('操作成功！', 'success');
+                                            } else {
+                                                tool.toast(rsp.message, 'error');
+                                            }
+                                        });
                                     }
                                 }
                             ]

@@ -13,19 +13,28 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', 'IndexController@view');
-Route::resource('/api/index', 'IndexController');
+Route::get('/login', 'LoginController@view');
+Route::post('/api/login', 'LoginController@login');
 
-Route::get('/home', 'HomeController@view');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/', 'IndexController@view');
+    Route::resource('/api/index', 'IndexController');
 
-Route::get('/codeLeak', 'CodeLeakController@view');
-Route::resource('/api/codeLeak', 'CodeLeakController');
+    Route::get('/home', 'HomeController@view');
 
-Route::get('/configJob', 'ConfigJobController@view');
-Route::resource('/api/configJob', 'ConfigJobController');
+    Route::get('/codeLeak', 'CodeLeakController@view');
+    Route::resource('/api/codeLeak', 'CodeLeakController');
 
-Route::get('/configToken', 'ConfigTokenController@view');
-Route::resource('/api/configToken', 'ConfigTokenController');
+    Route::get('/configJob', 'ConfigJobController@view');
+    Route::resource('/api/configJob', 'ConfigJobController');
 
-Route::get('/configWhitelist', 'ConfigWhitelistController@view');
-Route::resource('/api/configWhitelist', 'ConfigWhitelistController');
+    Route::get('/configToken', 'ConfigTokenController@view');
+    Route::resource('/api/configToken', 'ConfigTokenController');
+
+    Route::get('/configWhitelist', 'ConfigWhitelistController@view');
+    Route::resource('/api/configWhitelist', 'ConfigWhitelistController');
+
+    Route::put('/api/user', 'UserController@update');
+
+    Route::post('/api/logout', 'LoginController@logout');
+});
