@@ -39,7 +39,7 @@ class UserDeleteCommand extends Command
     public function handle()
     {
         $email = $this->argument('email');
-        if (User::where('email', '=', $email)->delete()) {
+        if (User::where('email', $email)->delete()) {
             $this->info('User delete success!');
         } else {
             $this->error('User delete fail, may not exist!');
