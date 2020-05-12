@@ -2,91 +2,82 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ConfigToken;
 use Illuminate\Http\Request;
 
 class ConfigTokenController extends Controller
 {
-    public function view(Request $request)
+    public function view()
     {
-        $data = [
-            'title' => '令牌配置'
-        ];
-        return view('configToken/index')->with($data);
+        $data = ['title' => '令牌配置'];
+        return view('configToken.index')->with($data);
     }
 
     /**
-     * Display a listing of the resource.
+     * 令牌列表
      *
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        return ConfigToken::orderBy('id', 'desc')->get();
     }
 
     /**
-     * Show the form for creating a new resource.
+     * 保存令牌
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @return array
      */
     public function store(Request $request)
     {
-        //
+        try {
+            $request->validate(['token' => ['required', 'string', 'max:255']]);
+            $data = ConfigToken::firstOrCreate(
+                ['token' => $request->input('token')],
+                ['description' => $request->input('description') ?? '']
+            );
+            if (!$data->wasRecentlyCreated) {
+                throw new \Exception('操作失败，可能已存在此令牌！');
+            }
+            return ['success' => true, 'data' => ConfigToken::where('id', $data->id)->get()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
     }
 
     /**
-     * Display the specified resource.
+     * 更新令牌
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @param  Request  $request
+     * @param $id
+     * @return array
      */
     public function update(Request $request, $id)
     {
-        //
+        try {
+            $request->validate(['token' => ['required', 'string', 'max:255']]);
+            $success = ConfigToken::find($id)->update($request->all(['token', 'description']));
+            return ['success' => $success, 'data' => ConfigToken::where('id', $id)->get()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
     }
 
     /**
-     * Remove the specified resource from storage.
+     * 删除令牌
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return array
      */
     public function destroy($id)
     {
-        //
+        try {
+            $success = (bool) ConfigToken::destroy($id);
+            return ['success' => $success, 'message' => $success ? '删除成功！' : '删除失败！'];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
     }
 }
