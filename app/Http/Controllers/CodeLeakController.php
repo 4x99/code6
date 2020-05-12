@@ -57,38 +57,16 @@ class CodeLeakController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = $request->all();
         try {
-            $this->validate($input, $this->_rules(), $this->_messages());
-            $success = CodeLeak::find($id)->update($input);
+            $request->validate([
+                'status' => 'int',
+                'description' => 'string|max:255',
+            ]);
+            $params = $request->all();
+            $success = CodeLeak::find($id)->update($params);
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
         }
         return ['success' => $success];
-    }
-
-    /**
-     * 规则定义
-     *
-     * @return array
-     */
-    private function _rules()
-    {
-        return [
-            'status' => 'int',
-            'description' => 'string|max:255',
-        ];
-    }
-
-    /**
-     * 错误信息返回
-     *
-     * @return array
-     */
-    private function _messages()
-    {
-        return [
-            'status.type' => 'status type error',
-        ];
     }
 }

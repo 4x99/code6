@@ -22,8 +22,8 @@ class CodeFragmentController extends Controller
     public function index(Request $request)
     {
         $query = CodeFragment::query();
-        $query->when($request->has('uuid'), function ($query, $keyword) {
-            return $query->where('uuid', $keyword);
+        $query->when($request->has('uuid'), function ($query) use ($request) {
+            return $query->where('uuid', $request->input('uuid'));
         });
         if ($request->has('uuid')) {
             $data = $query->first();
