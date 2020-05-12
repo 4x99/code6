@@ -36,12 +36,11 @@ class ConfigWhitelistController extends Controller
     {
         try {
             $request->validate(['value' => ['required', 'string', 'max:255']]);
-            $data = $request->all(['value']);
-            $configWhitelist = ConfigWhitelist::firstOrCreate($data);
-            if (!$configWhitelist->wasRecentlyCreated) {
+            $data = ConfigWhitelist::firstOrCreate($request->all(['value']));
+            if (!$data->wasRecentlyCreated) {
                 throw new \Exception('操作失败，可能已存在此仓库！');
             }
-            return ['success' => true, 'data' => $configWhitelist];
+            return ['success' => true, 'data' => $data];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
