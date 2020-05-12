@@ -17,11 +17,11 @@ class ConfigTokenController extends Controller
      * 令牌列表
      *
      * @param  Request  $request
-     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     * @return \Illuminate\Support\Collection
      */
     public function index(Request $request)
     {
-        return ConfigToken::orderBy('id', 'desc')->get();
+        return ConfigToken::orderByDesc('id')->get();
     }
 
     /**
