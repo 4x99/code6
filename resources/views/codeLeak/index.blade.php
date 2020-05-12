@@ -16,7 +16,7 @@
                         rootProperty: 'data',
                         totalProperty: 'total',
                     },
-                }
+                },
             });
 
             var storeStatus = Ext.create('Ext.data.Store', {
@@ -149,7 +149,7 @@
                         text: '仓库信息',
                         columns: [
                             {
-                                text: '仓库拥有者',
+                                text: '拥有者',
                                 dataIndex: 'repo_owner',
                                 width: 150,
                                 align: 'center',
@@ -159,7 +159,18 @@
                                 dataIndex: 'repo_name',
                                 width: 150,
                                 align: 'center',
-                            }, {
+                            },
+                            {
+                                text: '描 述',
+                                dataIndex: 'repo_description',
+                                width: 200,
+                            },
+                        ],
+                    },
+                    {
+                        text: '文件信息',
+                        columns: [
+                            {
                                 text: '文件地址',
                                 dataIndex: 'path',
                                 width: 150,
@@ -173,10 +184,6 @@
                         ],
                     },
                     {
-                        text: '仓库描述',
-                        dataIndex: 'repo_description',
-                        width: 200,
-                    }, {
                         text: '匹配关键词',
                         dataIndex: 'keyword',
                         width: 100,
@@ -257,7 +264,7 @@
                                                     var record = obj.up('buttongroup').getWidgetRecord();
                                                     console.log(record);
                                                     winOpen('https://github.com/' + record.data.repo_owner + '/' + record.data.repo_name, 1300, 800);
-                                                }
+                                                },
                                             },
                                             {
                                                 text: '用户主页',
@@ -265,7 +272,7 @@
                                                 handler: function (obj) {
                                                     var record = obj.up('buttongroup').getWidgetRecord();
                                                     winOpen('https://github.com/' + record.data.repo_owner, 1300, 800);
-                                                }
+                                                },
                                             },
                                         ],
                                     }
