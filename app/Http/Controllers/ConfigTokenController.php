@@ -2,67 +2,53 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Resources\ConfigTokenResource;
 use App\Models\ConfigToken;
 use Illuminate\Http\Request;
 
 class ConfigTokenController extends Controller
 {
-    /**
-     * view
-     *
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
     public function view()
     {
-        $data = [
-            'title' => '令牌配置'
-        ];
-        return view('configToken/index')->with($data);
+        $data = ['title' => '令牌配置'];
+        return view('configToken.index')->with($data);
     }
 
     /**
-     * list data
+     * 令牌列表
      *
      * @param  Request  $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
     public function index(Request $request)
     {
-        $input = $request->input();
-        $pageSize = $input['pageSize'] ?? 10;
-        $page = $input['page'] ?? 1;
-        $data = ConfigToken::orderBy('id', 'desc')
-            ->paginate($pageSize, '*', 'page', $page);
-        return ConfigTokenResource::collection($data);
+        return ConfigToken::orderBy('id', 'desc')->get();
     }
 
     /**
-     * data store
+     * 保存令牌
      *
      * @param  Request  $request
      * @return array
      */
     public function store(Request $request)
     {
-        $input = $request->all();
         try {
-            $this->validate($input, $this->_rules(), $this->_messages());
-            if (ConfigToken::where('token', '=', $input['token'])->exists()) {
-                return ['success' => false, 'message' => 'Token existing'];
+            $request->validate(['token' => ['required', 'string', 'max:255']]);
+            $data = ConfigToken::firstOrCreate(
+                ['token' => $request->input('token')],
+                ['description' => $request->input('description') ?? '']
+            );
+            if (!$data->wasRecentlyCreated) {
+                throw new \Exception('操作失败，可能已存在此令牌！');
             }
-            $configToken = ConfigToken::firstOrCreate($input);
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+            return ['success' => true, 'data' => ConfigToken::where('id', $data->id)->get()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
-        return [
-            'success' => $configToken->wasRecentlyCreated,
-            'data' => $configToken,
-        ];
     }
 
     /**
-     * update data
+     * 更新令牌
      *
      * @param  Request  $request
      * @param $id
@@ -70,61 +56,28 @@ class ConfigTokenController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $input = [
-            'token' => $request->input('token'),
-            'api_limit' => (int) $request->input('api_limit'),
-            'description' => $request->input('description'),
-        ];
         try {
-            $this->validate($input, $this->_rules(), $this->_messages());
-            $success = ConfigToken::find($id)->update($input);
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+            $request->validate(['token' => ['required', 'string', 'max:255']]);
+            $success = ConfigToken::find($id)->update($request->all(['token', 'description']));
+            return ['success' => $success, 'data' => ConfigToken::where('id', $id)->get()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
-        return ['success' => $success];
     }
 
     /**
-     * delete data
+     * 删除令牌
      *
-     * @param $id
+     * @param  int  $id
      * @return array
      */
     public function destroy($id)
     {
         try {
-            $res = ConfigToken::find($id)->delete();
+            $success = (bool) ConfigToken::destroy($id);
+            return ['success' => $success, 'message' => $success ? '删除成功！' : '删除失败！'];
         } catch (\Exception $e) {
-            $res = false;
+            return ['success' => false, 'message' => $e->getMessage()];
         }
-        return ['success' => $res];
-    }
-
-    /**
-     * validate rules
-     *
-     * @return array
-     */
-    private function _rules()
-    {
-        return [
-            'token' => 'required|string|max:40',
-            'api_limit' => 'required|int',
-            'description' => 'string|max:255',
-        ];
-    }
-
-    /**
-     * validate messages
-     *
-     * @return array
-     */
-    private function _messages()
-    {
-        return [
-            'token.required' => 'A token is required',
-            'api_limit.required' => 'A api_limit is required',
-            'api_limit.type' => 'api_limit type error',
-        ];
     }
 }
