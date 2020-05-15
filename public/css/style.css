@@ -11,7 +11,8 @@ a{text-decoration:none;}
 .x-grid-cell-inner{font-size:12px;}
 .x-column-header{background:#FAFAFA;}
 .x-btn-inner-default-small,.x-btn-inner-default-toolbar-small{letter-spacing:3px;}
-.x-title-text,.x-window-text{letter-spacing:1px;}
+.x-title-text{letter-spacing:3px;}
+.x-window-text{letter-spacing:1px;}
 .x-toolbar-text-default{letter-spacing:3px;color:#666;}
 .x-btn-default-toolbar-small{padding:3px 3px 3px 8px;}
 .x-form-item-label-text{letter-spacing:3px;}

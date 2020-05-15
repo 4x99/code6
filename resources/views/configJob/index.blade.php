@@ -9,7 +9,7 @@
                 proxy: {
                     type: 'ajax',
                     url: '/api/configJob',
-                },
+                }
             });
 
             var grid = Ext.create('plugin.grid', {
@@ -21,10 +21,9 @@
                         {
                             text: '新增任务',
                             iconCls: 'icon-add',
-                            padding: '3 3 3 8',
                             handler: function () {
-                                winAdd([]);
-                            },
+                                winForm([]);
+                            }
                         }
                     ]
                 },
@@ -58,17 +57,23 @@
                         dataIndex: 'last_scan_at',
                         width: 180,
                         align: 'center',
+                        renderer: function (value) {
+                            return value ? value : '-';
+                        }
                     },
                     {
                         text: '说明',
                         dataIndex: 'description',
                         flex: 1,
                         align: 'center',
+                        renderer: function (value) {
+                            return value ? value : '-';
+                        }
                     },
                     {
                         text: '操作',
                         sortable: false,
-                        width: 200,
+                        width: 250,
                         align: 'center',
                         xtype: 'widgetcolumn',
                         widget: {
@@ -85,7 +90,7 @@
                                     margin: '0 20 0 0',
                                     handler: function (obj) {
                                         var record = obj.up().getWidgetRecord();
-                                        winAdd(record.data)
+                                        winForm(record.data)
                                     }
                                 },
                                 {
@@ -121,14 +126,7 @@
                 ]
             });
 
-            Ext.create('Ext.container.Container', {
-                renderTo: Ext.getBody(),
-                height: '100%',
-                layout: 'fit',
-                items: [grid],
-            });
-
-            function winAdd(data) {
+            function winForm(data) {
                 var win = Ext.create('Ext.window.Window', {
                     title: '任务信息',
                     width: 500,
@@ -167,7 +165,7 @@
                                     fieldLabel: '说　　明',
                                     allowBlank: true,
                                     value: data.description,
-                                },
+                                }
                             ],
                             buttons: [
                                 {
@@ -200,6 +198,13 @@
                     ]
                 }).show();
             }
+
+            Ext.create('Ext.container.Container', {
+                renderTo: Ext.getBody(),
+                height: '100%',
+                layout: 'fit',
+                items: [grid],
+            });
         });
     </script>
 @endsection
