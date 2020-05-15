@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\CodeLeak;
+use App\Models\CodeFragment;
 use Illuminate\Http\Request;
 
 class CodeLeakController extends Controller
@@ -10,7 +11,7 @@ class CodeLeakController extends Controller
     public function view()
     {
         $data = ['title' => '扫描结果'];
-        return view('codeLeak/index')->with($data);
+        return view('codeLeak.index')->with($data);
     }
 
     /**
@@ -21,35 +22,33 @@ class CodeLeakController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page', 1);
-        $perPage = $request->input('limit', 10);
         $query = CodeLeak::query();
-        $query->when($request->input('keyword'), function ($query, $keyword) {
-            return $query->where('keyword', $keyword);
+
+        $query->when($request->input('sdate'), function ($query, $value) {
+            return $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($value)));
         });
-        $query->when($request->input('repo_name'), function ($query, $repoName) {
-            return $query->where('repo_name', 'like', "%$repoName%");
+
+        $query->when($request->input('edate'), function ($query, $value) {
+            return $query->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime($value)));
         });
-        $query->when($request->input('repo_owner'), function ($query, $repoOwner) {
-            return $query->where('repo_owner', 'like', "%$repoOwner%");
-        });
+
         $query->when($request->filled('status'), function ($query) use ($request) {
             return $query->where('status', $request->input('status'));
         });
-        $query->when($request->input('path'), function ($query, $path) {
-            return $query->where('path', 'like', "%$path%");
-        });
-        $query->when($request->input('sdate'), function ($query, $sdate) {
-            return $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($sdate)));
-        });
-        $query->when($request->input('edate'), function ($query, $edate) {
-            return $query->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime($edate)));
-        });
-        return $query->orderBy('created_at', 'desc')->paginate($perPage, '*', 'page', $page);
+
+        foreach (['repo_owner', 'repo_name', 'keyword', 'path'] as $field) {
+            $query->when($request->input($field), function ($query, $value) use ($field) {
+                return $query->where($field, 'like', "%$value%");
+            });
+        }
+
+        $page = $request->input('page', 1);
+        $perPage = $request->input('limit', 100);
+        return $query->orderByDesc('id')->paginate($perPage, '*', 'page', $page);
     }
 
     /**
-     * 更新数据
+     * 更新扫描结果
      *
      * @param  Request  $request
      * @param $id
@@ -58,15 +57,70 @@ class CodeLeakController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            $request->validate([
-                'status' => 'int',
-                'description' => 'string|max:255',
-            ]);
-            $params = $request->all();
-            $success = CodeLeak::find($id)->update($params);
+            $request->validate(['status' => 'integer']);
+            $success = CodeLeak::find($id)->update($request->all(['status', 'description']));
+            // TODO 更新 handler_user
+            return ['success' => $success, 'data' => CodeLeak::where('id', $id)->get()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * 删除扫描记录
+     *
+     * @param  Request  $request
+     * @param $id
+     * @return array
+     */
+    public function destroy(Request $request, $id)
+    {
+        try {
+            if ($success = (bool) CodeLeak::destroy($id)) {
+                $uuid = $request->input('uuid');
+                CodeFragment::where('uuid', $uuid)->delete(); // 删除代码片段
+            }
+            return ['success' => $success, 'message' => $success ? '删除成功！' : '删除失败！'];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
+     * 批量更新扫描结果
+     *
+     * @param  Request  $request
+     * @return array
+     */
+    public function batchUpdate(Request $request)
+    {
+        try {
+            $status = $request->input('status');
+            // TODO 更新 handler_user
+            $uuid = json_decode( $request->input('uuid'), true);
+            $success = CodeLeak::whereIn('uuid', $uuid)->update(['status' => $status]);
+            return ['success' => $success];
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
         }
-        return ['success' => $success];
+    }
+
+    /**
+     * 批量删除扫描结果
+     *
+     * @param  Request  $request
+     * @return array
+     */
+    public function batchDestroy(Request $request)
+    {
+        try {
+            $uuid = json_decode( $request->input('uuid'), true);
+            if ($success = CodeLeak::whereIn('uuid', $uuid)->delete()) {
+                $success = CodeFragment::whereIn('uuid', $uuid)->delete();
+            }
+            return ['success' => $success];
+        } catch (\Exception $exception) {
+            return ['success' => false, 'message' => $exception->getMessage()];
+        }
     }
 }
