@@ -16,7 +16,7 @@ Ext.define('plugin.grid', {
         {
             xtype: 'pagingtoolbar',
             dock: 'bottom',
-            displayInfo: true
+            displayInfo: true,
         }
     ]
 });

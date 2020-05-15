@@ -76,3 +76,18 @@ tool.ajax = function (method, url, params, callback) {
         }
     });
 };
+
+/**
+ * 打开新窗口（居中）
+ *
+ * @param url
+ * @param width
+ * @param height
+ */
+tool.winOpen = function (url, width, height) {
+    width = width ? width : 1200;
+    height = height ? height : 800;
+    var left = (screen.width - width) / 2;
+    var top = (screen.height - height) / 2;
+    window.open(url, '', 'width=' + width + ', height=' + height + ', left=' + left + ', top=' + top);
+}

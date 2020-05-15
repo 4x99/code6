@@ -2,10 +2,18 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class CodeLeak extends Model
+class CodeLeak extends ModelBase
 {
     protected $table = 'code_leak';
-    protected $fillable = ['uuid', 'html_url_blob', 'keyword', 'path', 'repo_owner', 'repo_name', 'repo_description'];
+    protected $fillable = [
+        'uuid',
+        'status',
+        'repo_owner',
+        'repo_name',
+        'html_url_blob',
+        'path',
+        'repo_description',
+        'keyword',
+        'description',
+    ];
 }

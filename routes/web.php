@@ -23,6 +23,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/home', 'HomeController@view');
 
     Route::get('/codeLeak', 'CodeLeakController@view');
+    Route::put('/api/codeLeak/batchUpdate', 'CodeLeakController@batchUpdate');
+    Route::delete('/api/codeLeak/batchDestroy', 'CodeLeakController@batchDestroy');
     Route::resource('/api/codeLeak', 'CodeLeakController');
 
     Route::get('/configJob', 'ConfigJobController@view');
