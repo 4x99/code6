@@ -117,8 +117,8 @@
             // 新增白名单窗口
             function winAdd() {
                 var win = Ext.create('Ext.window.Window', {
-                    title: '新增白名单',
-                    iconCls: 'icon-add',
+                    title: '白名单信息',
+                    iconCls: 'icon-page-wrench',
                     width: 350,
                     layout: 'fit',
                     items: [

@@ -109,8 +109,7 @@
                                         '<div class="progress-outer">',
                                         '<div class="progress-inner" style="width:{percent}%">',
                                         '<span class="progress-label">{used} / {limit}</span>',
-                                        '</div>',
-                                        '</div>',
+                                        '</div></div>',
                                     ).apply(item);
                                 }
                             },
@@ -193,9 +192,9 @@
 
             function winAdd(data) {
                 var win = Ext.create('Ext.window.Window', {
-                    title: '新增令牌',
+                    title: '令牌信息',
                     width: 500,
-                    iconCls: 'icon-add',
+                    iconCls: 'icon-page-wrench',
                     layout: 'fit',
                     items: [
                         {
