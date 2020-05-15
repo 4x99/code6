@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class CodeFragment extends Model
+class CodeFragment extends ModelBase
 {
     const UPDATED_AT = null;
     protected $table = 'code_fragment';
