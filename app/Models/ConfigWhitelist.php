@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class ConfigWhitelist extends Model
+class ConfigWhitelist extends ModelBase
 {
     const CREATED_AT = null;
     const UPDATED_AT = null;
