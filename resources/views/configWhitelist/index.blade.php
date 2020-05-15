@@ -63,7 +63,7 @@
                     {
                         text: '操作',
                         sortable: false,
-                        width: 150,
+                        width: 250,
                         align: 'center',
                         xtype: 'widgetcolumn',
                         widget: {
@@ -74,6 +74,16 @@
                                 pack: 'center',
                             },
                             items: [
+                                {
+                                    text: '访问',
+                                    iconCls: 'icon-bullet-green',
+                                    margin: '0 20 0 0',
+                                    handler: function (obj) {
+                                        var record = obj.up().getWidgetRecord();
+                                        var url = 'https://www.github.com/';
+                                        tool.winOpen(url + record.get('value'));
+                                    }
+                                },
                                 {
                                     text: '删除',
                                     iconCls: 'icon-bullet-red',
