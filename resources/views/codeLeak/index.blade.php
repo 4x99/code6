@@ -1,10 +1,27 @@
 @extends('base')
 @section('content')
     <style>
-        .x-grid-cell-inner a:hover{color:#f44336;}
-        .x-grid-cell-inner{white-space:pre-wrap;word-break:break-all;line-height:20px;}
-        .code-fragment{margin:0;}
-        .code-fragment code{display:block;margin-bottom:15px;padding:15px;font-family:-apple-system,BlinkMacSystemFont,Consolas,'Microsoft YaHei',sans-serif!important;background:#F5F5F5;}
+        .x-grid-cell-inner a:hover {
+            color: #f44336;
+        }
+
+        .x-grid-cell-inner {
+            white-space: pre-wrap;
+            word-break: break-all;
+            line-height: 20px;
+        }
+
+        .code-fragment {
+            margin: 0;
+        }
+
+        .code-fragment code {
+            display: block;
+            margin-bottom: 15px;
+            padding: 15px;
+            font-family: -apple-system, BlinkMacSystemFont, Consolas, 'Microsoft YaHei', sans-serif !important;
+            background: #F5F5F5;
+        }
     </style>
     <script>
         Ext.onReady(function () {
@@ -19,7 +36,7 @@
                         rootProperty: 'data',
                         totalProperty: 'total',
                     }
-                },
+                }
             });
 
             var GitHub = 'https://www.github.com/';
@@ -31,7 +48,7 @@
                 {text: '解决', value: 3, color: 'green'},
             ];
 
-            var tplStatus = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>')
+            var tplStatus = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>');
 
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
@@ -161,8 +178,8 @@
                                             batchOp('DELETE', 'batchDestroy', {});
                                         }
                                     }
-                                ],
-                            },
+                                ]
+                            }
                         }
                     ]
                 },
@@ -197,7 +214,7 @@
                         dataIndex: 'repo_owner',
                         width: 150,
                         align: 'center',
-                        renderer: function (value, metaData, record) {
+                        renderer: function (value, cellmeta, record) {
                             var url = GitHub + record.get('repo_owner');
                             return '<a href="javascript:tool.winOpen(\'' + url + '\')">' + value + '</a>';
                         }
@@ -207,7 +224,7 @@
                         dataIndex: 'repo_name',
                         width: 150,
                         align: 'center',
-                        renderer: function (value, metaData, record) {
+                        renderer: function (value, cellmeta, record) {
                             var url = GitHub + record.get('repo_owner') + '/' + record.get('repo_name');
                             return '<a href="javascript:tool.winOpen(\'' + url + '\')">' + value + '</a>';
                         }
@@ -217,7 +234,7 @@
                         dataIndex: 'path',
                         flex: 1,
                         align: 'center',
-                        renderer: function (value, metaData, record) {
+                        renderer: function (value, cellmeta, record) {
                             var url = GitHub + record.get('repo_owner') + '/' + record.get('repo_name');
                             url += '/blob/' + record.get('html_url_blob') + '/' + record.get('path');
                             return '<a href="javascript:tool.winOpen(\'' + url + '\')">' + value + '</a>';
@@ -290,7 +307,7 @@
                                             })
                                             winFragment.setHtml('<pre class="code-fragment">' + content + '</pre>');
                                         });
-                                    },
+                                    }
                                 },
                                 {
                                     text: '更多',
@@ -357,7 +374,7 @@
                                                             }
                                                         ]
                                                     }).show();
-                                                },
+                                                }
                                             },
                                             {
                                                 text: '删除记录',
@@ -384,7 +401,7 @@
                                                             });
                                                         }
                                                     });
-                                                },
+                                                }
                                             },
                                             {
                                                 text: '加入白名单',
@@ -422,7 +439,7 @@
             });
 
             // 批量操作
-            var batchOp = function (method, route, params) {
+            function batchOp(method, route, params) {
                 var records = grid.getSelectionModel().getSelection();
                 if (!records.length) {
                     tool.toast('请先勾选记录！');

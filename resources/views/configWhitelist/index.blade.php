@@ -4,7 +4,7 @@
         Ext.onReady(function () {
             Ext.create('Ext.data.Store', {
                 storeId: 'store',
-                pageSize: 100,
+                pageSize: 50,
                 autoLoad: true,
                 proxy: {
                     type: 'ajax',
@@ -30,8 +30,7 @@
                         {
                             text: '新增白名单',
                             iconCls: 'icon-add',
-                            padding: '3 3 3 8',
-                            handler: winAdd,
+                            handler: winForm,
                         }
                     ]
                 },
@@ -117,15 +116,7 @@
                 ],
             });
 
-            Ext.create('Ext.container.Container', {
-                renderTo: Ext.getBody(),
-                height: '100%',
-                layout: 'fit',
-                items: [grid]
-            });
-
-            // 新增白名单窗口
-            function winAdd() {
+            function winForm() {
                 var win = Ext.create('Ext.window.Window', {
                     title: '白名单信息',
                     iconCls: 'icon-page-wrench',
@@ -180,6 +171,13 @@
                     ]
                 }).show();
             }
+
+            Ext.create('Ext.container.Container', {
+                renderTo: Ext.getBody(),
+                height: '100%',
+                layout: 'fit',
+                items: [grid],
+            });
         });
     </script>
 @endsection
