@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class QueueJob extends Model
+class QueueJob extends ModelBase
 {
     const UPDATED_AT = null;
     protected $table = 'queue_job';

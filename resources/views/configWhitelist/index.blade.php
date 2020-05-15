@@ -4,7 +4,7 @@
         Ext.onReady(function () {
             Ext.create('Ext.data.Store', {
                 storeId: 'store',
-                pageSize: 100,
+                pageSize: 50,
                 autoLoad: true,
                 proxy: {
                     type: 'ajax',
@@ -30,8 +30,7 @@
                         {
                             text: '新增白名单',
                             iconCls: 'icon-add',
-                            padding: '3 3 3 8',
-                            handler: winAdd,
+                            handler: winForm,
                         }
                     ]
                 },
@@ -63,7 +62,7 @@
                     {
                         text: '操作',
                         sortable: false,
-                        width: 150,
+                        width: 250,
                         align: 'center',
                         xtype: 'widgetcolumn',
                         widget: {
@@ -74,6 +73,16 @@
                                 pack: 'center',
                             },
                             items: [
+                                {
+                                    text: '访问',
+                                    iconCls: 'icon-bullet-green',
+                                    margin: '0 20 0 0',
+                                    handler: function (obj) {
+                                        var record = obj.up().getWidgetRecord();
+                                        var url = 'https://www.github.com/';
+                                        tool.winOpen(url + record.get('value'));
+                                    }
+                                },
                                 {
                                     text: '删除',
                                     iconCls: 'icon-bullet-red',
@@ -107,15 +116,7 @@
                 ],
             });
 
-            Ext.create('Ext.container.Container', {
-                renderTo: Ext.getBody(),
-                height: '100%',
-                layout: 'fit',
-                items: [grid]
-            });
-
-            // 新增白名单窗口
-            function winAdd() {
+            function winForm() {
                 var win = Ext.create('Ext.window.Window', {
                     title: '白名单信息',
                     iconCls: 'icon-page-wrench',
@@ -170,6 +171,13 @@
                     ]
                 }).show();
             }
+
+            Ext.create('Ext.container.Container', {
+                renderTo: Ext.getBody(),
+                height: '100%',
+                layout: 'fit',
+                items: [grid],
+            });
         });
     </script>
 @endsection
