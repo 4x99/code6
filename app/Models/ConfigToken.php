@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class ConfigToken extends Model
+class ConfigToken extends ModelBase
 {
     protected $table = 'config_token';
     protected $fillable = ['token', 'description'];
