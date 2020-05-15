@@ -7,27 +7,19 @@ use Illuminate\Http\Request;
 
 class CodeFragmentController extends Controller
 {
-    public function view()
-    {
-        $data = ['title' => '代码片段'];
-        return view('codeFragment/index')->with($data);
-    }
-
     /**
-     * index data
-     *
      * @param  Request  $request
-     * @return \Illuminate\Http\JsonResponse
+     * @return array
      */
     public function index(Request $request)
     {
-        $query = CodeFragment::query();
-        $query->when($request->has('uuid'), function ($query) use ($request) {
-            return $query->where('uuid', $request->input('uuid'));
-        });
-        if ($request->has('uuid')) {
-            $data = $query->first();
+        try {
+            $request->validate(['uuid' => ['required', 'string', 'max:255']]);
+            $uuid = $request->input('uuid');
+            $data = CodeFragment::where('uuid', $uuid)->orderByDesc('id')->get();
+            return ['success' => true, 'data' => $data];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
-        return $data;
     }
 }
