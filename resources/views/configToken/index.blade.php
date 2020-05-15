@@ -18,7 +18,7 @@
                 proxy: {
                     type: 'ajax',
                     url: '/api/configToken',
-                },
+                }
             });
 
             var tip = '';
@@ -40,7 +40,6 @@
                         {
                             text: '帮助信息',
                             iconCls: 'icon-page-star',
-                            padding: '3 3 3 8',
                             handler: function () {
                                 Ext.Msg.show({
                                     title: '帮助信息',
@@ -55,10 +54,9 @@
                         {
                             text: '新增令牌',
                             iconCls: 'icon-add',
-                            padding: '3 3 3 8',
                             handler: function () {
-                                winAdd([]);
-                            },
+                                winForm([]);
+                            }
                         }
                     ]
                 },
@@ -79,7 +77,7 @@
                         text: '状态',
                         tooltip: '每分钟更新',
                         dataIndex: 'status',
-                        width: 180,
+                        width: 150,
                         align: 'center',
                         xtype: 'booleancolumn',
                         trueText: '<div class="tag tag-green">正 常</div>',
@@ -100,7 +98,7 @@
                                 text: '接口用量',
                                 tooltip: '剩余次数 / 限制次数',
                                 width: 180,
-                                renderer: function (value, metaData, record) {
+                                renderer: function (value, cellmeta, record) {
                                     var item = [], data = record.data;
                                     item.limit = data.api_limit;
                                     item.used = Math.max(0, item.limit - data.api_remaining);
@@ -118,6 +116,9 @@
                                 dataIndex: 'api_reset_at',
                                 align: 'center',
                                 width: 180,
+                                renderer: function (value) {
+                                    return value ? value : '-';
+                                }
                             }
                         ]
                     },
@@ -126,11 +127,14 @@
                         dataIndex: 'description',
                         align: 'center',
                         flex: 1,
+                        renderer: function (value) {
+                            return value ? value : '-';
+                        }
                     },
                     {
                         text: '操作',
                         sortable: false,
-                        width: 200,
+                        width: 250,
                         align: 'center',
                         xtype: 'widgetcolumn',
                         widget: {
@@ -147,7 +151,7 @@
                                     margin: '0 20 0 0',
                                     handler: function (obj) {
                                         var record = obj.up().getWidgetRecord();
-                                        winAdd(record.data)
+                                        winForm(record.data)
                                     }
                                 },
                                 {
@@ -183,14 +187,7 @@
                 ]
             });
 
-            Ext.create('Ext.container.Container', {
-                renderTo: Ext.getBody(),
-                height: '100%',
-                layout: 'fit',
-                items: [grid],
-            });
-
-            function winAdd(data) {
+            function winForm(data) {
                 var win = Ext.create('Ext.window.Window', {
                     title: '令牌信息',
                     width: 500,
@@ -247,6 +244,13 @@
                     ]
                 }).show();
             }
+
+            Ext.create('Ext.container.Container', {
+                renderTo: Ext.getBody(),
+                height: '100%',
+                layout: 'fit',
+                items: [grid],
+            });
         });
     </script>
 @endsection

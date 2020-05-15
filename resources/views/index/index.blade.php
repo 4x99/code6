@@ -90,7 +90,6 @@
                                 text: '个人中心',
                                 iconCls: 'icon-page-wrench',
                                 margin: '0 20 0 0',
-                                padding: '3 3 3 8',
                                 menu: {
                                     xtype: 'menu',
                                     items: {
@@ -100,7 +99,6 @@
                                             {
                                                 text: '修改密码',
                                                 iconCls: 'icon-key',
-                                                padding: '3 3 3 8',
                                                 handler: function () {
                                                     Ext.resetPassword();
                                                 }
@@ -108,7 +106,6 @@
                                             {
                                                 text: '退出登录',
                                                 iconCls: 'icon-go',
-                                                padding: '3 3 3 8',
                                                 handler: function () {
                                                     Ext.Msg.show({
                                                         title: '提示',
