@@ -21,7 +21,7 @@ Ext.define('plugin.toast', {
         }
     },
     show: function (text, iconCls) {
-        var msg = Ext.DomHelper.append(this.div, '<div>' + text + '</div>', true);
+        var msg = Ext.DomHelper.append(this.div, '<div class="toast-msg">' + text + '</div>', true);
         msg.applyStyles({
             marginTop: '5px',
             padding: '10px 20px',
