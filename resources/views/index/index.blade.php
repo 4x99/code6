@@ -1,17 +1,74 @@
 @extends('base')
 @section('content')
     <style>
-        body{padding:0;}
-        .nav > li{display:inline-block;margin-right:50px;font-size:14px;letter-spacing:3px;list-style:none;}
-        .nav > li > a{transition:all .3s ease;color:#333;text-decoration:none;opacity:0.7;}
-        .nav .active,.nav > li > a:hover{color:#1890FF;opacity:1;}
-        #loading{position:absolute;top:50%;left:50%;margin-left:-30px;width:60px;height:60px;text-align:center;font-size:10px;z-index:1;}
-        #loading > div{height:100%;width:8px;display:inline-block;animation:stretchdelay 1.2s infinite ease-in-out;background:#1890FF;}
-        #loading :nth-child(2){animation-delay:-1.1s;}
-        #loading :nth-child(3){animation-delay:-1s;}
-        #loading :nth-child(4){animation-delay:-.9s;}
-        #loading :nth-child(5){animation-delay:-.8s;}
-        @keyframes stretchdelay{0%,40%,100%{transform:scaleY(0.4);}20%{transform:scaleY(1.0);}}
+        body {
+            padding: 0;
+        }
+
+        .nav > li {
+            display: inline-block;
+            margin-right: 50px;
+            font-size: 14px;
+            letter-spacing: 3px;
+            list-style: none;
+        }
+
+        .nav > li > a {
+            transition: all .3s ease;
+            color: #333;
+            text-decoration: none;
+            opacity: 0.7;
+        }
+
+        .nav .active, .nav > li > a:hover {
+            color: #1890FF;
+            opacity: 1;
+        }
+
+        #loading {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            margin-left: -30px;
+            width: 60px;
+            height: 60px;
+            text-align: center;
+            font-size: 10px;
+            z-index: 1;
+        }
+
+        #loading > div {
+            height: 100%;
+            width: 8px;
+            display: inline-block;
+            animation: stretchdelay 1.2s infinite ease-in-out;
+            background: #1890FF;
+        }
+
+        #loading :nth-child(2) {
+            animation-delay: -1.1s;
+        }
+
+        #loading :nth-child(3) {
+            animation-delay: -1s;
+        }
+
+        #loading :nth-child(4) {
+            animation-delay: -.9s;
+        }
+
+        #loading :nth-child(5) {
+            animation-delay: -.8s;
+        }
+
+        @keyframes stretchdelay {
+            0%, 40%, 100% {
+                transform: scaleY(0.4);
+            }
+            20% {
+                transform: scaleY(1.0);
+            }
+        }
     </style>
 
     <div id="loading">
@@ -114,9 +171,17 @@
                                                         buttons: Ext.Msg.YESNO,
                                                         modal: false,
                                                         fn: function (btn) {
-                                                            if (btn === 'yes') {
-                                                                window.location = ''; // TODO
+                                                            if (btn !== 'yes') {
+                                                                return
                                                             }
+
+                                                            tool.ajax('POST', '/api/logout', {}, function (rsp) {
+                                                                if (rsp.success) {
+                                                                    window.location = '/login';
+                                                                } else {
+                                                                    tool.toast(rsp.message, 'error');
+                                                                }
+                                                            });
                                                         }
                                                     });
                                                 }
@@ -150,7 +215,7 @@
 
             // 修改密码
             Ext.resetPassword = function () {
-                Ext.create('Ext.window.Window', {
+                var win = Ext.create('Ext.window.Window', {
                     title: '修改密码',
                     iconCls: 'icon-key',
                     width: 350,
@@ -168,15 +233,15 @@
                             },
                             items: [
                                 {
-                                    name: 'passworod_current',
+                                    name: 'password_current',
                                     fieldLabel: '当前密码',
                                 },
                                 {
-                                    name: 'passworod_new',
+                                    name: 'password_new',
                                     fieldLabel: '输入新密码',
                                 },
                                 {
-                                    name: 'password_confirm',
+                                    name: 'password_new_confirmation',
                                     fieldLabel: '再次输入新密码',
                                 }
                             ],
@@ -192,11 +257,18 @@
                                     formBind: true,
                                     handler: function () {
                                         var params = this.up('form').getForm().getValues();
-                                        if (params.passworod_new !== params.password_confirm) {
+                                        if (params.password_new !== params.password_new_confirmation) {
                                             tool.toast('两次输入的密码不一致！');
                                             return false;
                                         }
-                                        // TODO
+                                        tool.ajax('PUT', '/api/user', params, function (rsp) {
+                                            if (rsp.success) {
+                                                win.close();
+                                                tool.toast('操作成功！', 'success');
+                                            } else {
+                                                tool.toast(rsp.message, 'error');
+                                            }
+                                        });
                                     }
                                 }
                             ]

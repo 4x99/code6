@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\CodeLeak;
 use App\Models\CodeFragment;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class CodeLeakController extends Controller
 {
@@ -58,8 +59,9 @@ class CodeLeakController extends Controller
     {
         try {
             $request->validate(['status' => 'integer']);
-            $success = CodeLeak::find($id)->update($request->all(['status', 'description']));
-            // TODO 更新 handler_user
+            $data = $request->all(['status', 'description']);
+            $data['handle_user'] = Auth::user()->email;
+            $success = CodeLeak::find($id)->update($data);
             return ['success' => $success, 'data' => CodeLeak::where('id', $id)->get()];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
@@ -96,9 +98,9 @@ class CodeLeakController extends Controller
     {
         try {
             $status = $request->input('status');
-            // TODO 更新 handler_user
-            $uuid = json_decode( $request->input('uuid'), true);
-            $success = CodeLeak::whereIn('uuid', $uuid)->update(['status' => $status]);
+            $uuid = json_decode($request->input('uuid'), true);
+            $data = ['status' => $status, 'handle_user' => Auth::user()->email];
+            $success = CodeLeak::whereIn('uuid', $uuid)->update($data);
             return ['success' => $success];
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
@@ -114,7 +116,7 @@ class CodeLeakController extends Controller
     public function batchDestroy(Request $request)
     {
         try {
-            $uuid = json_decode( $request->input('uuid'), true);
+            $uuid = json_decode($request->input('uuid'), true);
             if ($success = CodeLeak::whereIn('uuid', $uuid)->delete()) {
                 $success = CodeFragment::whereIn('uuid', $uuid)->delete();
             }
