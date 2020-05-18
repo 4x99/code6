@@ -20,6 +20,10 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/', 'IndexController@view');
     Route::resource('/api/index', 'IndexController');
 
+    Route::put('/api/user', 'UserController@update');
+
+    Route::post('/api/logout', 'LoginController@logout');
+
     Route::get('/home', 'HomeController@view');
 
     Route::get('/codeLeak', 'CodeLeakController@view');
@@ -36,7 +40,5 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/configWhitelist', 'ConfigWhitelistController@view');
     Route::resource('/api/configWhitelist', 'ConfigWhitelistController');
 
-    Route::put('/api/user', 'UserController@update');
-
-    Route::post('/api/logout', 'LoginController@logout');
+    Route::resource('/api/codeFragment', 'CodeFragmentController');
 });

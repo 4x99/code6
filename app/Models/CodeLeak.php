@@ -15,5 +15,6 @@ class CodeLeak extends ModelBase
         'repo_description',
         'keyword',
         'description',
+        'handle_user',
     ];
 }

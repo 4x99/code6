@@ -1,10 +1,22 @@
 @extends('base')
 @section('content')
     <style>
-        .tip-title,.x-window-text a{color:#0070D5;}
-        .progress-outer{background:#F5F5F5;}
-        .progress-inner{background:#FFE082;line-height:20px;}
-        .progress-label{padding-left:8px;}
+        .tip-title, .x-window-text a {
+            color: #0070D5;
+        }
+
+        .progress-outer {
+            background: #F5F5F5;
+        }
+
+        .progress-inner {
+            background: #FFE082;
+            line-height: 20px;
+        }
+
+        .progress-label {
+            padding-left: 8px;
+        }
     </style>
 
     <script>

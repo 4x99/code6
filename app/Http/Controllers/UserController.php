@@ -8,12 +8,11 @@ use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-
     /**
      * 修改密码
      *
      * @param  Request  $request
-     * @return array|bool[]
+     * @return array
      */
     public function update(Request $request)
     {
@@ -32,5 +31,4 @@ class UserController extends Controller
             return ['success' => false, 'message' => $exception->getMessage()];
         }
     }
-
 }

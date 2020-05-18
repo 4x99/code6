@@ -64,15 +64,7 @@ tool.ajax = function (method, url, params, callback) {
             callback(rsp);
         },
         failure: function (rsp) {
-            if (rsp.status == 401) {
-                if (self != top) {
-                    top.location.href = '/';
-                } else {
-                    window.location = '/';
-                }
-            } else {
-                tool.toast('Request failed ( code: ' + rsp.status + ' )');
-            }
+            tool.toast('Request failed ( code: ' + rsp.status + ' )');
         }
     });
 };
