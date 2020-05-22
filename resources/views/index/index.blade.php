@@ -239,10 +239,14 @@
                                 {
                                     name: 'password_new',
                                     fieldLabel: '输入新密码',
+                                    minLength: 6,
+                                    maxLength: 16,
                                 },
                                 {
                                     name: 'password_new_confirmation',
                                     fieldLabel: '再次输入新密码',
+                                    minLength: 6,
+                                    maxLength: 16,
                                 }
                             ],
                             buttons: [

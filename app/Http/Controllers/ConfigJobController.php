@@ -26,7 +26,7 @@ class ConfigJobController extends Controller
     }
 
     /**
-     * 保存令牌
+     * 保存任务
      *
      * @param  Request  $request
      * @return array
@@ -63,9 +63,8 @@ class ConfigJobController extends Controller
     {
         try {
             $request->validate(['keyword' => ['required', 'string', 'max:255']]);
-            $success = ConfigJob::find($id)->update($request->all([
-                'keyword', 'scan_page', 'scan_interval_min', 'description'
-            ]));
+            $fields = ['keyword', 'scan_page', 'scan_interval_min', 'description'];
+            $success = ConfigJob::find($id)->update($request->all($fields));
             return ['success' => $success, 'data' => ConfigJob::where('id', $id)->get()];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];

@@ -446,6 +446,7 @@
                             if (rsp.success) {
                                 tool.toast('操作成功！', 'success');
                                 grid.store.reload();
+                                grid.getSelectionModel().clearSelections();
                             } else {
                                 tool.toast(rsp.message, 'error');
                             }
