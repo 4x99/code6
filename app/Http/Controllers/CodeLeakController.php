@@ -26,11 +26,11 @@ class CodeLeakController extends Controller
         $query = CodeLeak::query();
 
         $query->when($request->input('sdate'), function ($query, $value) {
-            return $query->where('created_at', '>=', $value);
+            return $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($value)));
         });
 
         $query->when($request->input('edate'), function ($query, $value) {
-            return $query->where('created_at', '<=', $value);
+            return $query->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime($value)));
         });
 
         $query->when($request->filled('status'), function ($query) use ($request) {
