@@ -21,7 +21,7 @@ class HomeController extends Controller
             'title' => '应用概况',
             'user' => explode('@', Auth::user()->email, 2)[0],
         ];
-        return view('home.index')->with($data);
+        return view('home.index', $data);
     }
 
     /**

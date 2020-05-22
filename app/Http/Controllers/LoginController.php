@@ -11,7 +11,7 @@ class LoginController extends Controller
     public function view()
     {
         $data = ['title' => '码小六'];
-        return view('login.index')->with($data);
+        return view('login.index', $data);
     }
 
     /**

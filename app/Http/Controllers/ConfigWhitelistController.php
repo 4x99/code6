@@ -10,7 +10,7 @@ class ConfigWhitelistController extends Controller
     public function view(Request $request)
     {
         $data = ['title' => '白名单配置'];
-        return view('configWhitelist.index')->with($data);
+        return view('configWhitelist.index', $data);
     }
 
     /**
@@ -21,9 +21,8 @@ class ConfigWhitelistController extends Controller
      */
     public function index(Request $request)
     {
-        $page = $request->input('page', 1);
         $perPage = $request->input('limit', 100);
-        return ConfigWhitelist::orderByDesc('id')->paginate($perPage, '*', 'page', $page);
+        return ConfigWhitelist::orderByDesc('id')->paginate($perPage);
     }
 
     /**

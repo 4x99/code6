@@ -12,7 +12,7 @@ class CodeLeakController extends Controller
     public function view()
     {
         $data = ['title' => '扫描结果'];
-        return view('codeLeak.index')->with($data);
+        return view('codeLeak.index', $data);
     }
 
     /**
@@ -26,11 +26,11 @@ class CodeLeakController extends Controller
         $query = CodeLeak::query();
 
         $query->when($request->input('sdate'), function ($query, $value) {
-            return $query->where('created_at', '>=', date('Y-m-d 00:00:00', strtotime($value)));
+            return $query->where('created_at', '>=', $value);
         });
 
         $query->when($request->input('edate'), function ($query, $value) {
-            return $query->where('created_at', '<=', date('Y-m-d 23:59:59', strtotime($value)));
+            return $query->where('created_at', '<=', $value);
         });
 
         $query->when($request->filled('status'), function ($query) use ($request) {
@@ -43,9 +43,8 @@ class CodeLeakController extends Controller
             });
         }
 
-        $page = $request->input('page', 1);
         $perPage = $request->input('limit', 100);
-        return $query->orderByDesc('id')->paginate($perPage, '*', 'page', $page);
+        return $query->orderByDesc('id')->paginate($perPage);
     }
 
     /**
@@ -61,8 +60,9 @@ class CodeLeakController extends Controller
             $request->validate(['status' => 'integer']);
             $data = $request->all(['status', 'description']);
             $data['handle_user'] = Auth::user()->email;
-            $success = CodeLeak::find($id)->update($data);
-            return ['success' => $success, 'data' => CodeLeak::where('id', $id)->get()];
+            $codeLeak = CodeLeak::find($id);
+            $success = $codeLeak->update($data);
+            return ['success' => $success, 'data' => $codeLeak];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }

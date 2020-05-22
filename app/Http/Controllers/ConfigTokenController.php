@@ -10,7 +10,7 @@ class ConfigTokenController extends Controller
     public function view()
     {
         $data = ['title' => '令牌配置'];
-        return view('configToken.index')->with($data);
+        return view('configToken.index', $data);
     }
 
     /**
@@ -41,7 +41,7 @@ class ConfigTokenController extends Controller
             if (!$data->wasRecentlyCreated) {
                 throw new \Exception('操作失败，可能已存在此令牌！');
             }
-            return ['success' => true, 'data' => ConfigToken::where('id', $data->id)->get()];
+            return ['success' => true, 'data' => ConfigToken::find($data->id)];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
@@ -58,8 +58,9 @@ class ConfigTokenController extends Controller
     {
         try {
             $request->validate(['token' => ['required', 'string', 'max:255']]);
-            $success = ConfigToken::find($id)->update($request->all(['token', 'description']));
-            return ['success' => $success, 'data' => ConfigToken::where('id', $id)->get()];
+            $configToken = ConfigToken::find($id);
+            $success = $configToken->update($request->all(['token', 'description']));
+            return ['success' => $success, 'data' => $configToken];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
