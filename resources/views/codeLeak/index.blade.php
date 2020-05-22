@@ -2,7 +2,7 @@
 @section('content')
     <style>
         .x-grid-cell-inner a:hover {
-            color: #f44336;
+            color: #F44336;
         }
 
         .x-grid-cell-inner {
@@ -39,7 +39,7 @@
                 }
             });
 
-            var GitHub = 'https://www.github.com/';
+            var GitHub = 'https://github.com/';
 
             var status = [
                 {text: '未审', value: 0, color: 'gray'},
@@ -139,6 +139,7 @@
                         '->',
                         {
                             text: '批量操作',
+                            margin: '0 13 0 0',
                             iconCls: 'icon-page-edit',
                             menu: {
                                 items: [

@@ -66,6 +66,7 @@
                         {
                             text: '新增令牌',
                             iconCls: 'icon-add',
+                            margin: '0 13 0 0',
                             handler: function () {
                                 winForm([]);
                             }
@@ -92,8 +93,8 @@
                         width: 150,
                         align: 'center',
                         xtype: 'booleancolumn',
-                        trueText: '<div class="tag tag-green">正 常</div>',
-                        falseText: '<div class="tag tag-red">异 常</div>',
+                        trueText: '<div class="tag tag-green">正常</div>',
+                        falseText: '<div class="tag tag-red">异常</div>',
                     },
                     {
                         text: '创建时间',
