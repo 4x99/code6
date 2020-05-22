@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
     {
         if (config('app.env') !== 'local') {
             error_reporting(0);
-            define('VERSION', filemtime(base_path('public')));  // 仅编辑文件需 touch 目录
+            define('VERSION', trim(file_get_contents(base_path('version'))));
         } else {
             define('VERSION', time());
         }

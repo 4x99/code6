@@ -30,6 +30,7 @@
                         {
                             text: '新增白名单',
                             iconCls: 'icon-add',
+                            margin: '0 13 0 0',
                             handler: winForm,
                         }
                     ]
@@ -79,7 +80,7 @@
                                     margin: '0 20 0 0',
                                     handler: function (obj) {
                                         var record = obj.up().getWidgetRecord();
-                                        var url = 'https://www.github.com/';
+                                        var url = 'https://github.com/';
                                         tool.winOpen(url + record.get('value'));
                                     }
                                 },

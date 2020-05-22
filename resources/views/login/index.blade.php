@@ -50,14 +50,14 @@
         }
 
         .btn {
-            padding: 12px 10px 12px 25px;
+            padding: 12px 10px 12px 20px;
             border: 0;
             text-shadow: 0 -1px 0 rgba(0, 0, 0, .12);
             box-shadow: 0 2px 0 rgba(0, 0, 0, .045);
             cursor: pointer;
             transition: all .3s;
             font-size: 14px;
-            letter-spacing: 15px;
+            letter-spacing: 10px;
             color: #FFF;
             background: #1890FF;
         }
