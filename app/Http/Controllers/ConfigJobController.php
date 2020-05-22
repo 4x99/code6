@@ -63,10 +63,9 @@ class ConfigJobController extends Controller
     {
         try {
             $request->validate(['keyword' => ['required', 'string', 'max:255']]);
+            $fields = ['keyword', 'scan_page', 'scan_interval_min', 'description'];
             $configJob = ConfigJob::find($id);
-            $success = $configJob->update($request->all([
-                'keyword', 'scan_page', 'scan_interval_min', 'description'
-            ]));
+            $success = $configJob->update($request->all($fields));
             return ['success' => $success, 'data' => $configJob];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
