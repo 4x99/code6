@@ -11,7 +11,7 @@ class ConfigJobController extends Controller
     public function view()
     {
         $data = ['title' => '任务配置'];
-        return view('configJob.index')->with($data);
+        return view('configJob.index', $data);
     }
 
     /**
@@ -26,7 +26,7 @@ class ConfigJobController extends Controller
     }
 
     /**
-     * 保存任务
+     * 保存令牌
      *
      * @param  Request  $request
      * @return array
@@ -46,7 +46,7 @@ class ConfigJobController extends Controller
             if (!$data->wasRecentlyCreated) {
                 throw new \Exception('操作失败，可能已存在此任务！');
             }
-            return ['success' => true, 'data' => ConfigJob::where('id', $data->id)->get()];
+            return ['success' => true, 'data' => $data];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
@@ -64,8 +64,9 @@ class ConfigJobController extends Controller
         try {
             $request->validate(['keyword' => ['required', 'string', 'max:255']]);
             $fields = ['keyword', 'scan_page', 'scan_interval_min', 'description'];
-            $success = ConfigJob::find($id)->update($request->all($fields));
-            return ['success' => $success, 'data' => ConfigJob::where('id', $id)->get()];
+            $configJob = ConfigJob::find($id);
+            $success = $configJob->update($request->all($fields));
+            return ['success' => $success, 'data' => $configJob];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
