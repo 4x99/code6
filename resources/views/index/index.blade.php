@@ -136,17 +136,17 @@
                                 },
                                 tpl: [
                                     '<ul class="nav">',
-                                    '<tpl for=".">',
-                                    '<li><a href="{url}" onclick="Ext.clickMenu({#})"',
-                                    ' target="frame"<tpl if="active"> class="active"</tpl>>{text}</a></li>',
-                                    '</tpl>',
+                                    '    <tpl for=".">',
+                                    '    <li><a href="{url}" onclick="Ext.clickMenu({#})"',
+                                    '     target="frame"<tpl if="active"> class="active"</tpl>>{text}</a></li>',
+                                    '    </tpl>',
                                     '</ul>',
                                 ]
                             },
                             {
                                 text: '个人中心',
                                 iconCls: 'icon-page-wrench',
-                                margin: '0 20 0 0',
+                                margin: '0 25 0 0',
                                 menu: {
                                     xtype: 'menu',
                                     items: {
