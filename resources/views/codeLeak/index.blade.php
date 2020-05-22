@@ -1,28 +1,7 @@
 @extends('base')
 @section('content')
-    <style>
-        .x-grid-cell-inner a:hover {
-            color: #F44336;
-        }
+    <link rel="stylesheet" href="{{ URL::asset('css/codeLeak.css?v=') . VERSION }}">
 
-        .x-grid-cell-inner {
-            white-space: pre-wrap;
-            word-break: break-all;
-            line-height: 20px;
-        }
-
-        .code-fragment {
-            margin: 0;
-        }
-
-        .code-fragment code {
-            display: block;
-            margin-bottom: 15px;
-            padding: 15px;
-            font-family: -apple-system, BlinkMacSystemFont, Consolas, 'Microsoft YaHei', sans-serif !important;
-            background: #F5F5F5;
-        }
-    </style>
     <script>
         Ext.onReady(function () {
             Ext.create('Ext.data.Store', {
