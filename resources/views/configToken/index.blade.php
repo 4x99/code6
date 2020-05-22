@@ -1,23 +1,6 @@
 @extends('base')
 @section('content')
-    <style>
-        .tip-title, .x-window-text a {
-            color: #0070D5;
-        }
-
-        .progress-outer {
-            background: #F5F5F5;
-        }
-
-        .progress-inner {
-            background: #FFE082;
-            line-height: 20px;
-        }
-
-        .progress-label {
-            padding-left: 8px;
-        }
-    </style>
+    <link rel="stylesheet" href="{{ URL::asset('css/configToken.css?v=') . VERSION }}">
 
     <script>
         Ext.onReady(function () {
@@ -58,7 +41,7 @@
                                     iconCls: 'icon-page-star',
                                     modal: false,
                                     maxWidth: 800,
-                                    message: tip
+                                    message: tip,
                                 });
                             }
                         },
@@ -117,10 +100,11 @@
                                     item.used = Math.max(0, item.limit - data.api_remaining);
                                     item.percent = parseFloat(item.used / item.limit * 100);
                                     return new Ext.XTemplate(
-                                        '<div class="progress-outer">',
-                                        '<div class="progress-inner" style="width:{percent}%">',
-                                        '<span class="progress-label">{used} / {limit}</span>',
-                                        '</div></div>',
+                                        '<div class="progress">',
+                                        '    <div style="width:{percent}%">',
+                                        '        <span>{used} / {limit}</span>',
+                                        '    </div>',
+                                        '</div>',
                                     ).apply(item);
                                 }
                             },
