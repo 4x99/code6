@@ -21,6 +21,7 @@
                         {
                             text: '新增任务',
                             iconCls: 'icon-add',
+                            margin: '0 13 0 0',
                             handler: function () {
                                 winForm([]);
                             }

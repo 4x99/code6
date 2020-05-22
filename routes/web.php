@@ -25,6 +25,14 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/api/logout', 'LoginController@logout');
 
     Route::get('/home', 'HomeController@view');
+    Route::get('/api/home/metric', 'HomeController@metric');
+    Route::get('/api/home/load', 'HomeController@load');
+    Route::get('/api/home/disk', 'HomeController@disk');
+    Route::get('/api/home/memory', 'HomeController@memory');
+    Route::get('/api/home/github', 'HomeController@github');
+    Route::get('/api/home/tokenQuota', 'HomeController@tokenQuota');
+    Route::get('/api/home/jobCount', 'HomeController@jobCount');
+    Route::get('/api/home/tokenCount', 'HomeController@tokenCount');
 
     Route::get('/codeLeak', 'CodeLeakController@view');
     Route::put('/api/codeLeak/batchUpdate', 'CodeLeakController@batchUpdate');
