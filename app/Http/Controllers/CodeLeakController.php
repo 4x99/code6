@@ -12,7 +12,7 @@ class CodeLeakController extends Controller
     public function view()
     {
         $data = ['title' => '扫描结果'];
-        return view('codeLeak.index')->with($data);
+        return view('codeLeak.index', $data);
     }
 
     /**
@@ -43,9 +43,8 @@ class CodeLeakController extends Controller
             });
         }
 
-        $page = $request->input('page', 1);
         $perPage = $request->input('limit', 100);
-        return $query->orderByDesc('id')->paginate($perPage, '*', 'page', $page);
+        return $query->orderByDesc('id')->paginate($perPage);
     }
 
     /**
@@ -61,8 +60,9 @@ class CodeLeakController extends Controller
             $request->validate(['status' => 'integer']);
             $data = $request->all(['status', 'description']);
             $data['handle_user'] = Auth::user()->email;
-            $success = CodeLeak::find($id)->update($data);
-            return ['success' => $success, 'data' => CodeLeak::where('id', $id)->get()];
+            $codeLeak = CodeLeak::find($id);
+            $success = $codeLeak->update($data);
+            return ['success' => $success, 'data' => $codeLeak];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
