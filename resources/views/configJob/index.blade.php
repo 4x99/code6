@@ -153,12 +153,14 @@
                                     xtype: 'numberfield',
                                     name: 'scan_page',
                                     fieldLabel: '扫描页数',
+                                    minValue: 1,
                                     value: data.scan_page ? data.scan_page : 10,
                                 },
                                 {
                                     xtype: 'numberfield',
                                     name: 'scan_interval_min',
                                     fieldLabel: '扫描间隔（分钟）',
+                                    minValue: 1,
                                     value: data.scan_interval_min ? data.scan_interval_min : 60,
                                 },
                                 {

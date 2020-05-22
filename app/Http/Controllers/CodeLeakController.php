@@ -69,7 +69,7 @@ class CodeLeakController extends Controller
     }
 
     /**
-     * 删除扫描记录
+     * 删除扫描结果
      *
      * @param  Request  $request
      * @param $id

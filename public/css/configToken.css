@@ -2,6 +2,10 @@
     color: #0070D5;
 }
 
+.x-window-text a:hover {
+    color: #F44336;
+}
+
 .progress {
     background: #F5F5F5;
 }
