@@ -1,0 +1,21 @@
+.x-grid-cell-inner a:hover {
+    color: #F44336;
+}
+
+.x-grid-cell-inner {
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 20px;
+}
+
+.code-fragment {
+    margin: 0;
+}
+
+.code-fragment code {
+    display: block;
+    margin-bottom: 15px;
+    padding: 15px;
+    font-family: -apple-system, BlinkMacSystemFont, Consolas, 'Microsoft YaHei', sans-serif !important;
+    background: #F5F5F5;
+}

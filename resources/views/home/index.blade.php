@@ -1,52 +1,6 @@
 @extends('base')
 @section('content')
-    <style>
-        .x-panel-body {
-            background: #FAFAFA;
-        }
-
-        .title {
-            font-size: 14px;
-            letter-spacing: 3px;
-        }
-
-        .content {
-            font-size: 12px;
-            letter-spacing: 2px;
-            white-space: nowrap;
-            color: #999;
-        }
-
-        .center {
-            text-align: center;
-        }
-
-        .metric {
-            padding: 5px 0;
-            text-align: center;
-            height: 100px;
-        }
-
-        .metric > p {
-            margin: 0.8em 0;
-        }
-
-        .metric-value {
-            font-size: 24px;
-        }
-
-        .progress {
-            width: 100%;
-            height: 8px;
-            background: #F1F1F1;
-        }
-
-        .progress > div {
-            height: 100%;
-            background: #1890FF;
-        }
-    </style>
-
+    <link rel="stylesheet" href="{{ URL::asset('css/home.css?v=') . VERSION }}">
     <script type="text/javascript" src="{{ URL::asset('js/g2.min.js') }}"></script>
 
     <script>
@@ -216,7 +170,7 @@
                                 html: new Ext.XTemplate(
                                     '<p class="center"><a target="_blank" href="{repo}"><img src="{src}" /></a></p>',
                                 ).apply({
-                                    repo: 'https://github.com/4t9n/code6',
+                                    repo: 'https://github.com/4x99/code6',
                                     src: '{{ URL::asset("image/logo-home.png") }}',
                                 })
                             },
