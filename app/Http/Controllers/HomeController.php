@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use GuzzleHttp\Client;
 use App\Models\QueueJob;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
@@ -13,8 +12,6 @@ use App\Utils\SystemUtil;
 
 class HomeController extends Controller
 {
-    const GITHUB_API_URL = 'https://api.github.com';
-
     public function view(Request $request)
     {
         $data = [
@@ -81,25 +78,6 @@ class HomeController extends Controller
             'percent' => $used / $memory['MemTotal'] * 100,
         ];
         return ['success' => true, 'data' => $data];
-    }
-
-    /**
-     * GitHub 检测
-     *
-     * @return array
-     */
-    public function github()
-    {
-        try {
-            $time = microtime(true);
-            $client = new Client(['timeout' => 15]);
-            $rsp = $client->get(self::GITHUB_API_URL);
-            $data = ['time' => round((microtime(true) - $time) * 1000)];
-            return ['success' => $rsp->getStatusCode() === 200, 'data' => $data];
-        } catch (\Exception $e) {
-            $data = ['time' => round((microtime(true) - $time) * 1000)];
-            return ['success' => false, 'message' => $e->getMessage(), 'data' => $data];
-        }
     }
 
     /**
