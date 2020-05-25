@@ -3,7 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\ConfigToken;
-use App\Services\GithubService;
+use App\Services\GitHubService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 use Psr\Log\LoggerInterface;
@@ -53,7 +53,7 @@ class TokenCheckCommand extends Command
 
         $count = ['abnormal' => 0, 'normal' => 0];
         $tokens = ConfigToken::all(['token'])->pluck('token');
-        $clients = (new GithubService())->clients;
+        $clients = (new GitHubService())->clients;
         $clients = array_column($clients, null, 'token');
         foreach ($tokens as $token) {
             $client = $clients[$token] ?? null;

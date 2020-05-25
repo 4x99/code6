@@ -31,7 +31,7 @@ class SystemUtil
     {
         $free = disk_free_space($directory);
         $total = disk_total_space($directory);
-        return ['free' => $free, 'total' => $total, 'usage' => $total - $free];
+        return ['free' => $free, 'total' => $total, 'used' => $total - $free];
     }
 
     /**
