@@ -11,7 +11,6 @@
                 '    <p class="content">{name}</p>',
                 '</div>',
             );
-
             Ext.create('Ext.container.Container', {
                 id: 'container',
                 renderTo: Ext.getBody(),
@@ -26,12 +25,12 @@
                         },
                         load: ['未知', '未知', '未知'],
                         disk: {
-                            usage: '未知',
+                            used: '未知',
                             total: '未知',
                             percent: 0,
                         },
                         memory: {
-                            usage: '未知',
+                            used: '未知',
                             total: '未知',
                             percent: 0,
                         }
@@ -130,13 +129,13 @@
                                             html: new Ext.XTemplate(
                                                 '<p class="title">主机监控</p>',
                                                 '<p class="content">系统负载：{load1} / {load5} / {load15}</p>',
-                                                '<p class="content">内存信息：{memoryUsage} / {memoryTotal}</p>',
+                                                '<p class="content">内存信息：{memoryUsed} / {memoryTotal}</p>',
                                                 '<p>',
                                                 '    <div class="progress">',
                                                 '        <div style="width:{memoryPercent}%"></div>',
                                                 '    </div>',
                                                 '</p>',
-                                                '<p class="content">磁盘空间：{diskUsage} / {diskTotal}</p>',
+                                                '<p class="content">磁盘空间：{diskUsed} / {diskTotal}</p>',
                                                 '<p>',
                                                 '    <div class="progress">',
                                                 '        <div style="width:{diskPercent}%"></div>',
@@ -146,10 +145,10 @@
                                                 load1: '{load.0}',
                                                 load5: '{load.1}',
                                                 load15: '{load.2}',
-                                                memoryUsage: '{memory.usage}',
+                                                memoryUsed: '{memory.used}',
                                                 memoryTotal: '{memory.total}',
                                                 memoryPercent: '{memory.percent}',
-                                                diskUsage: '{disk.usage}',
+                                                diskUsed: '{disk.used}',
                                                 diskTotal: '{disk.total}',
                                                 diskPercent: '{disk.percent}',
                                             })
@@ -182,9 +181,7 @@
                     }
                 ]
             });
-
             var viewModel = Ext.getCmp('container').getViewModel();
-
             var taskRunner = new Ext.util.TaskRunner();
 
             function newTask(interval, run) {
@@ -201,7 +198,6 @@
             newTask(1000, function () {
                 viewModel.setData({clock: Ext.Date.format(new Date(), 'Y-m-d H:i:s')});
             });
-
             // 数据指标
             tool.ajax('GET', '/api/home/metric', {}, function (rsp) {
                 if (rsp.success !== true) {
@@ -220,7 +216,6 @@
                     })
                 });
             });
-
             // GitHub
             tool.ajax('GET', '/api/home/github', {}, function (rsp) {
                 viewModel.setData({
@@ -230,10 +225,9 @@
                     }
                 });
             });
-
             // 负载 + 内存 + 磁盘信息
             Ext.each(['load', 'memory', 'disk'], function (key) {
-                newTask(10000, function () {
+                newTask(60000, function () {
                     tool.ajax('GET', '/api/home/' + key, {}, function (rsp) {
                         if (rsp.success) {
                             var data = {};
@@ -243,26 +237,21 @@
                     });
                 });
             })
-
             // GitHub 接口请求环形图
             const chart = new G2.Chart({
                 container: 'tokenQuota',
                 autoFit: true,
                 height: 200,
             });
-
             chart.legend(false);
-
             chart.coordinate('theta', {
                 radius: 1,
                 innerRadius: 0.9,
             });
-
             chart.tooltip({
                 showTitle: false,
                 showMarkers: false,
             });
-
             chart.annotation().text({
                 position: ['50%', '50%'],
                 offsetY: -15,
@@ -272,7 +261,6 @@
                     textAlign: 'center',
                 }
             });
-
             chart.annotation().text({
                 position: ['50%', '50%'],
                 offsetY: 15,
@@ -282,7 +270,6 @@
                     textAlign: 'center',
                 }
             });
-
             var chartConfig = chart.interval().adjust('stack').position('percent').color('name', ['#1890FF', '#F0F0F0']);
             chartConfig.tooltip('name*value', (name, value) => {
                 return {
@@ -290,14 +277,11 @@
                     value: value,
                 };
             });
-
             chart.source([
                 {name: '可用', value: 0, percent: 0},
                 {name: '已用', value: 0, percent: 0},
             ]);
-
             chart.render();
-
             // GitHub 接口请求统计
             newTask(60000, function () {
                 tool.ajax('GET', '/api/home/tokenQuota', {}, function (rsp) {
@@ -306,14 +290,12 @@
                     }
                 });
             });
-
             // 检查任务
             tool.ajax('GET', '/api/home/jobCount', {}, function (rsp) {
                 if (!rsp.data) {
                     tool.toast('尚未配置扫描任务<br/>请前往 [ 任务配置 ] 模块配置！', 'warning', 15000);
                 }
             });
-
             // 检查令牌
             tool.ajax('GET', '/api/home/tokenCount', {}, function (rsp) {
                 if (!rsp.data) {
