@@ -59,9 +59,9 @@ class HomeController extends Controller
     {
         $disk = SystemUtil::disk();
         $data = [
-            'usage' => SystemUtil::conv($disk['usage']),
+            'used' => SystemUtil::conv($disk['used']),
             'total' => SystemUtil::conv($disk['total']),
-            'percent' => $disk['usage'] / $disk['total'] * 100,
+            'percent' => $disk['used'] / $disk['total'] * 100,
         ];
         return ['success' => true, 'data' => $data];
     }
@@ -74,11 +74,11 @@ class HomeController extends Controller
     public function memory()
     {
         $memory = SystemUtil::memory();
-        $usage = $memory['MemTotal'] - $memory['MemFree'] - $memory['Cached'] - $memory['Buffers'];
+        $used = $memory['MemTotal'] - $memory['MemFree'] - $memory['Cached'] - $memory['Buffers'];
         $data = [
-            'usage' => SystemUtil::conv($usage),
+            'used' => SystemUtil::conv($used),
             'total' => SystemUtil::conv($memory['MemTotal']),
-            'percent' => $usage / $memory['MemTotal'] * 100,
+            'percent' => $used / $memory['MemTotal'] * 100,
         ];
         return ['success' => true, 'data' => $data];
     }
@@ -112,17 +112,17 @@ class HomeController extends Controller
         try {
             $total = ConfigToken::where('status', 1)->sum('api_limit');
             $remaining = ConfigToken::where('status', 1)->sum('api_remaining');
-            $usage = $total - $remaining;
+            $used = $total - $remaining;
             $data = [
                 [
                     'name' => '可用',
                     'value' => $remaining,
-                    'percent' => $remaining / $total
+                    'percent' => $total ? $remaining / $total : 0,
                 ],
                 [
                     'name' => '已用',
-                    'value' => $usage,
-                    'percent' => $usage / $total
+                    'value' => $used,
+                    'percent' => $total ? $used / $total : 100,
                 ],
             ];
             return ['success' => true, 'data' => $data];
