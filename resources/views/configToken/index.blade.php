@@ -5,7 +5,6 @@
     <script>
         Ext.onReady(function () {
             Ext.QuickTips.init(true, {dismissDelay: 0});
-
             Ext.create('Ext.data.Store', {
                 storeId: 'store',
                 pageSize: 99999, // 不分页
@@ -15,7 +14,6 @@
                     url: '/api/configToken',
                 }
             });
-
             var tip = '';
             tip += '<p class="tip-title">1. 令牌是什么？<span></p>';
             tip += '<p>用来请求 GitHub API 的 Token（即 GitHub personal access token）</p><br/>';
@@ -26,7 +24,6 @@
             tip += '<p>监控需要大量请求 GitHub API，而 GitHub 限制了 API 的请求速率';
             tip += '（<a target="_blank" href="https://developer.github.com/v3/#rate-limiting">GitHub API v3 - Rate limiting</a>）</p>';
             tip += '<p>因此需要多个 GitHub 账号创建令牌用于轮询请求（建议至少配置 5 个令牌）</p>';
-
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
                 tbar: {
@@ -92,7 +89,7 @@
                         columns: [
                             {
                                 text: '接口用量',
-                                tooltip: '剩余次数 / 限制次数',
+                                tooltip: '已用次数 / 限制次数',
                                 width: 180,
                                 renderer: function (value, cellmeta, record) {
                                     var item = [], data = record.data;
@@ -183,7 +180,6 @@
                     }
                 ]
             });
-
             function winForm(data) {
                 var win = Ext.create('Ext.window.Window', {
                     title: '令牌信息',
@@ -241,7 +237,6 @@
                     ]
                 }).show();
             }
-
             Ext.create('Ext.container.Container', {
                 renderTo: Ext.getBody(),
                 height: '100%',
