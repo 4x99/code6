@@ -19,10 +19,6 @@
                 viewModel: {
                     data: {
                         clock: '',
-                        github: {
-                            status: '未知',
-                            time: '未知',
-                        },
                         load: ['未知', '未知', '未知'],
                         disk: {
                             used: '未知',
@@ -91,17 +87,14 @@
                             },
                             {
                                 bodyPadding: '14 0',
-                                bind: {
-                                    html: new Ext.XTemplate(
-                                        '<div class="center">',
-                                        '    <p class="title">GitHub API</p>',
-                                        '    <p class="content">状态：{status}　耗时：{time}</p>',
-                                        '</div>',
-                                    ).apply({
-                                        status: '{github.status}',
-                                        time: '{github.time}',
-                                    })
-                                }
+                                html: new Ext.XTemplate(
+                                    '<div class="center">',
+                                    '    <p class="title">版本信息</p>',
+                                    '    <p class="content">{version}（GPL v3）</p>',
+                                    '</div>',
+                                ).apply({
+                                    version: '{{ VERSION }}',
+                                })
                             }
                         ],
                     },
@@ -157,7 +150,13 @@
                                     {
                                         margin: '25 0 0 0',
                                         height: 100,
-                                        html: '<p class="title">版本信息</p><p class="content">版本：{{ VERSION }}（GPL v3）</p>',
+                                        html: new Ext.XTemplate(
+                                            '    <p class="title">运行环境</p>',
+                                            '    <p class="content">PHP {phpVersion} + Laravel {laravelVersion}</p>',
+                                        ).apply({
+                                            phpVersion: '{{ PHP_VERSION }}',
+                                            laravelVersion: '{{ app()::VERSION }}',
+                                        })
                                     }
                                 ]
                             },
@@ -181,6 +180,7 @@
                     }
                 ]
             });
+
             var viewModel = Ext.getCmp('container').getViewModel();
             var taskRunner = new Ext.util.TaskRunner();
 
@@ -198,6 +198,7 @@
             newTask(1000, function () {
                 viewModel.setData({clock: Ext.Date.format(new Date(), 'Y-m-d H:i:s')});
             });
+
             // 数据指标
             tool.ajax('GET', '/api/home/metric', {}, function (rsp) {
                 if (rsp.success !== true) {
@@ -216,15 +217,7 @@
                     })
                 });
             });
-            // GitHub
-            tool.ajax('GET', '/api/home/github', {}, function (rsp) {
-                viewModel.setData({
-                    github: {
-                        status: rsp.success ? '正常' : '异常',
-                        time: rsp.data.time + ' ms',
-                    }
-                });
-            });
+
             // 负载 + 内存 + 磁盘信息
             Ext.each(['load', 'memory', 'disk'], function (key) {
                 newTask(60000, function () {
@@ -237,11 +230,12 @@
                     });
                 });
             })
+
             // GitHub 接口请求环形图
             const chart = new G2.Chart({
                 container: 'tokenQuota',
-                autoFit: true,
                 height: 200,
+                autoFit: true,
             });
             chart.legend(false);
             chart.coordinate('theta', {
@@ -282,6 +276,7 @@
                 {name: '已用', value: 0, percent: 0},
             ]);
             chart.render();
+
             // GitHub 接口请求统计
             newTask(60000, function () {
                 tool.ajax('GET', '/api/home/tokenQuota', {}, function (rsp) {
@@ -290,16 +285,18 @@
                     }
                 });
             });
+
             // 检查任务
             tool.ajax('GET', '/api/home/jobCount', {}, function (rsp) {
                 if (!rsp.data) {
                     tool.toast('尚未配置扫描任务<br/>请前往 [ 任务配置 ] 模块配置！', 'warning', 15000);
                 }
             });
+
             // 检查令牌
             tool.ajax('GET', '/api/home/tokenCount', {}, function (rsp) {
                 if (!rsp.data) {
-                    tool.toast('尚未配置 GitHub Token<br/>请前往 [ 令牌配置 ] 模块配置！', 'warning', 15000);
+                    tool.toast('尚未配置 GitHub 令牌<br/>请前往 [ 令牌配置 ] 模块配置！', 'warning', 15000);
                 }
             });
         });
