@@ -49,6 +49,7 @@ a{text-decoration:none;}
 .icon-tick{background:url(../image/icon/tick.png) no-repeat;}
 .icon-warning{background:url(../image/icon/warning.png) no-repeat;}
 .icon-zoom{background:url(../image/icon/zoom.png) no-repeat;}
+.icon-code{background:url(../image/icon/code.png) no-repeat;}
 /* Scroll Bar */
 ::-webkit-scrollbar-track-piece{background:#F5F5F5;}
 ::-webkit-scrollbar{width:10px;height:10px;}

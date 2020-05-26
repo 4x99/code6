@@ -152,6 +152,49 @@
                                     },
                                     '-',
                                     {
+                                        text: '设置说明',
+                                        iconCls: 'icon-page-wrench',
+                                        handler: function (obj) {
+                                            var win = Ext.create('Ext.window.Window', {
+                                                title: '设置说明',
+                                                iconCls: 'icon-add',
+                                                width: 350,
+                                                layout: 'fit',
+                                                items: [
+                                                    {
+                                                        xtype: 'form',
+                                                        layout: 'form',
+                                                        bodyPadding: 15,
+                                                        items: [
+                                                            {
+                                                                name: 'description',
+                                                                xtype: 'textfield',
+                                                                fieldLabel: '说明',
+                                                            }
+                                                        ],
+                                                        buttons: [
+                                                            {
+                                                                text: '重置',
+                                                                handler: function () {
+                                                                    this.up('form').getForm().reset();
+                                                                }
+                                                            },
+                                                            {
+                                                                text: '提交',
+                                                                formBind: true,
+                                                                handler: function () {
+                                                                    var params = this.up('form').getValues();
+                                                                    batchOp('PUT', 'batchUpdate', params);
+                                                                    win.close();
+                                                                }
+                                                            }
+                                                        ]
+                                                    }
+                                                ]
+                                            }).show();
+                                        }
+                                    },
+                                    {
                                         iconCls: 'icon-cross',
                                         text: '删除记录',
                                         handler: function () {
@@ -259,34 +302,41 @@
                             },
                             items: [
                                 {
-                                    text: '快照',
-                                    iconCls: 'icon-bullet-green',
+                                    text: '操作',
+                                    iconCls: 'icon-page-edit',
                                     margin: '0 15 0 0',
-                                    padding: '3 13 3 14',
-                                    handler: function (obj) {
-                                        var winFragment = Ext.create('Ext.window.Window', {
-                                            title: '代码快照',
-                                            iconCls: 'icon-folder-page',
-                                            width: 1200,
-                                            height: 600,
-                                            bodyPadding: 15,
-                                            overflowY: 'auto',
-                                            html: '查 询 中 . .',
-                                        }).show().removeCls('x-unselectable');
-
-                                        var record = obj.up('buttongroup').getWidgetRecord();
-                                        tool.ajax('GET', '/api/codeFragment', {uuid: record.data.uuid}, function (rsp) {
-                                            if (!rsp.success) {
-                                                winFragment.setHtml(rsp.message);
-                                                return;
+                                    padding: '3 4 3 10',
+                                    menu: {
+                                        items: [
+                                            {
+                                                text: '设为未审',
+                                                iconCls: 'icon-bullet-gray',
+                                                handler: function (obj) {
+                                                    setStatus(obj, 0);
+                                                }
+                                            },
+                                            {
+                                                text: '设为误报',
+                                                iconCls: 'icon-bullet-blue',
+                                                handler: function (obj) {
+                                                    setStatus(obj, 1);
+                                                }
+                                            },
+                                            {
+                                                text: '设为异常',
+                                                iconCls: 'icon-bullet-red',
+                                                handler: function (obj) {
+                                                    setStatus(obj, 2);
+                                                }
+                                            },
+                                            {
+                                                text: '设为解决',
+                                                iconCls: 'icon-bullet-green',
+                                                handler: function (obj) {
+                                                    setStatus(obj, 3);
+                                                }
                                             }
-
-                                            var content = '';
-                                            Ext.each(rsp.data, function (item) {
-                                                content += '<code>' + Ext.String.htmlEncode(item.content) + '</code>';
-                                            })
-                                            winFragment.setHtml('<pre class="code-fragment">' + content + '</pre>');
-                                        });
+                                        ]
                                     }
                                 },
                                 {
@@ -295,12 +345,41 @@
                                     menu: {
                                         items: [
                                             {
-                                                text: '设置状态',
+                                                text: '代码快照',
+                                                iconCls: 'icon-code',
+                                                handler: function (obj) {
+                                                    var winFragment = Ext.create('Ext.window.Window', {
+                                                        title: '代码快照',
+                                                        iconCls: 'icon-folder-page',
+                                                        width: 1200,
+                                                        height: 600,
+                                                        bodyPadding: 15,
+                                                        overflowY: 'auto',
+                                                        html: '查 询 中 . .',
+                                                    }).show().removeCls('x-unselectable');
+
+                                                    var record = obj.up('buttongroup').getWidgetRecord();
+                                                    tool.ajax('GET', '/api/codeFragment', {uuid: record.data.uuid}, function (rsp) {
+                                                        if (!rsp.success) {
+                                                            winFragment.setHtml(rsp.message);
+                                                            return;
+                                                        }
+
+                                                        var content = '';
+                                                        Ext.each(rsp.data, function (item) {
+                                                            content += '<code>' + Ext.String.htmlEncode(item.content) + '</code>';
+                                                        })
+                                                        winFragment.setHtml('<pre class="code-fragment">' + content + '</pre>');
+                                                    });
+                                                }
+                                            },
+                                            {
+                                                text: '设置说明',
                                                 iconCls: 'icon-page-wrench',
                                                 handler: function (obj) {
                                                     var data = obj.up('buttongroup').getWidgetRecord().data;
                                                     var win = Ext.create('Ext.window.Window', {
-                                                        title: '设置状态',
+                                                        title: '设置说明',
                                                         iconCls: 'icon-add',
                                                         width: 350,
                                                         layout: 'fit',
@@ -310,15 +389,6 @@
                                                                 layout: 'form',
                                                                 bodyPadding: 15,
                                                                 items: [
-                                                                    {
-                                                                        name: 'status',
-                                                                        xtype: 'combo',
-                                                                        fieldLabel: '状态',
-                                                                        valueField: 'value',
-                                                                        editable: false,
-                                                                        store: {data: status},
-                                                                        value: data.status ? data.status : 0,
-                                                                    },
                                                                     {
                                                                         name: 'description',
                                                                         xtype: 'textfield',
@@ -425,7 +495,10 @@
                     tool.toast('请先勾选记录！');
                     return;
                 }
-
+                if (method == 'PUT') {
+                    batchRequest(method, route, params, records);
+                    return;
+                }
                 Ext.Msg.show({
                     title: '提示',
                     iconCls: 'icon-page',
@@ -435,22 +508,37 @@
                         if (btn !== 'yes') {
                             return;
                         }
+                        batchRequest(method, route, params, records);
+                    }
+                });
+            }
 
-                        var uuid = [];
-                        for (var record of records) {
-                            uuid.push(record.get('uuid'));
-                        }
+            function batchRequest(method, route, params, records) {
+                var uuid = [];
+                for (var record of records) {
+                    uuid.push(record.get('uuid'));
+                }
 
-                        params.uuid = Ext.encode(uuid);
-                        tool.ajax(method, '/api/codeLeak/' + route, params, function (rsp) {
-                            if (rsp.success) {
-                                tool.toast('操作成功！', 'success');
-                                grid.store.reload();
-                                grid.getSelectionModel().clearSelections();
-                            } else {
-                                tool.toast(rsp.message, 'error');
-                            }
-                        });
+                params.uuid = Ext.encode(uuid);
+                tool.ajax(method, '/api/codeLeak/' + route, params, function (rsp) {
+                    if (rsp.success) {
+                        tool.toast('操作成功！', 'success');
+                        grid.store.reload();
+                        grid.getSelectionModel().clearSelections();
+                    } else {
+                        tool.toast(rsp.message, 'error');
+                    }
+                });
+            }
+
+            function setStatus(obj, status) {
+                var data = obj.up('buttongroup').getWidgetRecord().data;
+                tool.ajax('PUT', '/api/codeLeak/' + data.id, {status: status}, function (rsp) {
+                    if (rsp.success) {
+                        var index = grid.store.indexOfId(data.id);
+                        grid.store.insert(Math.max(0, index), rsp.data);
+                    } else {
+                        tool.toast(rsp.message, 'error');
                     }
                 });
             }
