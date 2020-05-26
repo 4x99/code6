@@ -29,7 +29,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/api/home/load', 'HomeController@load');
     Route::get('/api/home/disk', 'HomeController@disk');
     Route::get('/api/home/memory', 'HomeController@memory');
-    Route::get('/api/home/github', 'HomeController@github');
     Route::get('/api/home/tokenQuota', 'HomeController@tokenQuota');
     Route::get('/api/home/jobCount', 'HomeController@jobCount');
     Route::get('/api/home/tokenCount', 'HomeController@tokenCount');
