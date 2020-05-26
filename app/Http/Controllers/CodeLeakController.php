@@ -58,12 +58,7 @@ class CodeLeakController extends Controller
     {
         try {
             $request->validate(['status' => 'integer']);
-            if ($request->has('status')) {
-                $data['status'] = $request->input('status');
-            }
-            if ($request->has('description')) {
-                $data['description'] = $request->input('description');
-            }
+            $data = $request->only('status', 'description');
             $data['handle_user'] = Auth::user()->email;
             $codeLeak = CodeLeak::find($id);
             $success = $codeLeak->update($data);
@@ -103,13 +98,8 @@ class CodeLeakController extends Controller
     {
         try {
             $uuid = json_decode($request->input('uuid'), true);
-            $data = ['handle_user' => Auth::user()->email];
-            if ($request->has('status')) {
-                $data['status'] = $request->input('status');
-            }
-            if ($request->has('description')) {
-                $data['description'] = $request->input('description');
-            }
+            $data = $request->only('status', 'description');
+            $data['handle_user'] = Auth::user()->email;
             $success = CodeLeak::whereIn('uuid', $uuid)->update($data);
             return ['success' => $success];
         } catch (\Exception $exception) {

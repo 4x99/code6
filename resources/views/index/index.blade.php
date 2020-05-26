@@ -1,75 +1,6 @@
 @extends('base')
 @section('content')
-    <style>
-        body {
-            padding: 0;
-        }
-
-        .nav > li {
-            display: inline-block;
-            margin-right: 50px;
-            font-size: 14px;
-            letter-spacing: 3px;
-            list-style: none;
-        }
-
-        .nav > li > a {
-            transition: all .3s ease;
-            color: #333;
-            text-decoration: none;
-            opacity: 0.7;
-        }
-
-        .nav .active, .nav > li > a:hover {
-            color: #1890FF;
-            opacity: 1;
-        }
-
-        #loading {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            margin-left: -30px;
-            width: 60px;
-            height: 60px;
-            text-align: center;
-            font-size: 10px;
-            z-index: 1;
-        }
-
-        #loading > div {
-            height: 100%;
-            width: 8px;
-            display: inline-block;
-            animation: stretchdelay 1.2s infinite ease-in-out;
-            background: #1890FF;
-        }
-
-        #loading :nth-child(2) {
-            animation-delay: -1.1s;
-        }
-
-        #loading :nth-child(3) {
-            animation-delay: -1s;
-        }
-
-        #loading :nth-child(4) {
-            animation-delay: -.9s;
-        }
-
-        #loading :nth-child(5) {
-            animation-delay: -.8s;
-        }
-
-        @keyframes stretchdelay {
-            0%, 40%, 100% {
-                transform: scaleY(0.4);
-            }
-            20% {
-                transform: scaleY(1.0);
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="{{ URL::asset('css/index.css?v=') . VERSION }}">
 
     <div id="loading">
         <div></div>
@@ -155,6 +86,7 @@
                                         items: [
                                             {
                                                 text: '修改密码',
+                                                margin: '0 5 0 0',
                                                 iconCls: 'icon-key',
                                                 handler: function () {
                                                     Ext.resetPassword();

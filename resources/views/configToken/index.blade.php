@@ -5,6 +5,7 @@
     <script>
         Ext.onReady(function () {
             Ext.QuickTips.init(true, {dismissDelay: 0});
+
             Ext.create('Ext.data.Store', {
                 storeId: 'store',
                 pageSize: 99999, // 不分页
@@ -14,6 +15,7 @@
                     url: '/api/configToken',
                 }
             });
+
             var tip = '';
             tip += '<p class="tip-title">1. 令牌是什么？<span></p>';
             tip += '<p>用来请求 GitHub API 的 Token（即 GitHub personal access token）</p><br/>';
@@ -84,12 +86,12 @@
                         hidden: true,
                     },
                     {
-                        text: 'GitHub接口限制',
+                        text: 'GitHub接口请求配额',
                         tooltip: '每分钟更新',
                         columns: [
                             {
                                 text: '接口用量',
-                                tooltip: '已用次数 / 限制次数',
+                                tooltip: '已用次数 / 最大允许请求次数',
                                 width: 180,
                                 renderer: function (value, cellmeta, record) {
                                     var item = [], data = record.data;
@@ -180,6 +182,7 @@
                     }
                 ]
             });
+
             function winForm(data) {
                 var win = Ext.create('Ext.window.Window', {
                     title: '令牌信息',
@@ -237,6 +240,7 @@
                     ]
                 }).show();
             }
+
             Ext.create('Ext.container.Container', {
                 renderTo: Ext.getBody(),
                 height: '100%',

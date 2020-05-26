@@ -64,8 +64,7 @@ class GitHubService
         $tokens = ConfigToken::inRandomOrder()->get()->pluck('token');
         foreach ($tokens as $token) {
             $client = ['token' => $token];
-            $httpClient = GuzzleClient::createWithConfig(['timeout' => 30]);
-            $builder = new Builder($httpClient);
+            $builder = new Builder(GuzzleClient::createWithConfig(['timeout' => 30]));
             $client['client'] = new Client($builder, 'v3.text-match');
             $client['client']->authenticate($token, null, Client::AUTH_HTTP_TOKEN);
             if ($this->updateClient($client)) {
