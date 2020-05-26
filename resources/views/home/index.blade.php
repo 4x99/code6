@@ -11,6 +11,7 @@
                 '    <p class="content">{name}</p>',
                 '</div>',
             );
+
             Ext.create('Ext.container.Container', {
                 id: 'container',
                 renderTo: Ext.getBody(),
@@ -204,6 +205,7 @@
                 if (rsp.success !== true) {
                     return false;
                 }
+
                 Ext.each(Ext.query('[class=metric-value]'), function (dom) {
                     var value = 0;
                     var total = rsp.data[dom.dataset.key];
@@ -237,15 +239,19 @@
                 height: 200,
                 autoFit: true,
             });
+
             chart.legend(false);
+
             chart.coordinate('theta', {
                 radius: 1,
                 innerRadius: 0.9,
             });
+
             chart.tooltip({
                 showTitle: false,
                 showMarkers: false,
             });
+
             chart.annotation().text({
                 position: ['50%', '50%'],
                 offsetY: -15,
@@ -255,6 +261,7 @@
                     textAlign: 'center',
                 }
             });
+
             chart.annotation().text({
                 position: ['50%', '50%'],
                 offsetY: 15,
@@ -264,6 +271,7 @@
                     textAlign: 'center',
                 }
             });
+
             var chartConfig = chart.interval().adjust('stack').position('percent').color('name', ['#1890FF', '#F0F0F0']);
             chartConfig.tooltip('name*value', (name, value) => {
                 return {
@@ -271,10 +279,12 @@
                     value: value,
                 };
             });
+
             chart.source([
                 {name: '可用', value: 0, percent: 0},
                 {name: '已用', value: 0, percent: 0},
             ]);
+
             chart.render();
 
             // GitHub 接口请求统计

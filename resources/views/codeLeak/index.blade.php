@@ -126,79 +126,47 @@
                                         text: '设为未审',
                                         iconCls: 'icon-bullet-gray',
                                         handler: function () {
-                                            batchOp('PUT', 'batchUpdate', {status: 0});
+                                            batchOpWithConfirm('PUT', 'batchUpdate', {status: 0});
                                         }
                                     },
                                     {
                                         text: '设为误报',
                                         iconCls: 'icon-bullet-blue',
                                         handler: function () {
-                                            batchOp('PUT', 'batchUpdate', {status: 1});
+                                            batchOpWithConfirm('PUT', 'batchUpdate', {status: 1});
                                         }
                                     },
                                     {
                                         text: '设为异常',
                                         iconCls: 'icon-bullet-red',
                                         handler: function () {
-                                            batchOp('PUT', 'batchUpdate', {status: 2});
+                                            batchOpWithConfirm('PUT', 'batchUpdate', {status: 2});
                                         }
                                     },
                                     {
                                         text: '设为解决',
                                         iconCls: 'icon-bullet-green',
                                         handler: function () {
-                                            batchOp('PUT', 'batchUpdate', {status: 3});
+                                            batchOpWithConfirm('PUT', 'batchUpdate', {status: 3});
                                         }
                                     },
                                     '-',
                                     {
-                                        text: '设置说明',
+                                        text: '编辑信息',
                                         iconCls: 'icon-page-wrench',
-                                        handler: function (obj) {
-                                            var win = Ext.create('Ext.window.Window', {
-                                                title: '设置说明',
-                                                iconCls: 'icon-add',
-                                                width: 350,
-                                                layout: 'fit',
-                                                items: [
-                                                    {
-                                                        xtype: 'form',
-                                                        layout: 'form',
-                                                        bodyPadding: 15,
-                                                        items: [
-                                                            {
-                                                                name: 'description',
-                                                                xtype: 'textfield',
-                                                                fieldLabel: '说明',
-                                                            }
-                                                        ],
-                                                        buttons: [
-                                                            {
-                                                                text: '重置',
-                                                                handler: function () {
-                                                                    this.up('form').getForm().reset();
-                                                                }
-                                                            },
-                                                            {
-                                                                text: '提交',
-                                                                formBind: true,
-                                                                handler: function () {
-                                                                    var params = this.up('form').getValues();
-                                                                    batchOp('PUT', 'batchUpdate', params);
-                                                                    win.close();
-                                                                }
-                                                            }
-                                                        ]
-                                                    }
-                                                ]
-                                            }).show();
+                                        handler: function () {
+                                            var win = winForm('', function () {
+                                                var params = this.up('form').getValues();
+                                                batchOp('PUT', 'batchUpdate', params);
+                                                win.close();
+                                            })
                                         }
                                     },
                                     {
                                         iconCls: 'icon-cross',
                                         text: '删除记录',
                                         handler: function () {
-                                            batchOp('DELETE', 'batchDestroy', {});
+                                            batchOpWithConfirm('DELETE', 'batchDestroy', {});
                                         }
                                     }
                                 ]
@@ -303,127 +271,52 @@
                             items: [
                                 {
                                     text: '操作',
-                                    iconCls: 'icon-page-edit',
-                                    margin: '0 15 0 0',
-                                    padding: '3 4 3 10',
+                                    iconCls: 'icon-bullet-green',
                                     menu: {
                                         items: [
                                             {
                                                 text: '设为未审',
                                                 iconCls: 'icon-bullet-gray',
                                                 handler: function (obj) {
-                                                    setStatus(obj, 0);
+                                                    var id = obj.up('buttongroup').getWidgetRecord().data.id;
+                                                    update(id, {status: 0});
                                                 }
                                             },
                                             {
                                                 text: '设为误报',
                                                 iconCls: 'icon-bullet-blue',
                                                 handler: function (obj) {
-                                                    setStatus(obj, 1);
+                                                    var id = obj.up('buttongroup').getWidgetRecord().data.id;
+                                                    update(id, {status: 1});
                                                 }
                                             },
                                             {
                                                 text: '设为异常',
                                                 iconCls: 'icon-bullet-red',
                                                 handler: function (obj) {
-                                                    setStatus(obj, 2);
+                                                    var id = obj.up('buttongroup').getWidgetRecord().data.id;
+                                                    update(id, {status: 2});
                                                 }
                                             },
                                             {
                                                 text: '设为解决',
                                                 iconCls: 'icon-bullet-green',
                                                 handler: function (obj) {
-                                                    setStatus(obj, 3);
-                                                }
-                                            }
-                                        ]
-                                    }
-                                },
-                                {
-                                    text: '更多',
-                                    iconCls: 'icon-bullet-orange',
-                                    menu: {
-                                        items: [
-                                            {
-                                                text: '代码快照',
-                                                iconCls: 'icon-code',
-                                                handler: function (obj) {
-                                                    var winFragment = Ext.create('Ext.window.Window', {
-                                                        title: '代码快照',
-                                                        iconCls: 'icon-folder-page',
-                                                        width: 1200,
-                                                        height: 600,
-                                                        bodyPadding: 15,
-                                                        overflowY: 'auto',
-                                                        html: '查 询 中 . .',
-                                                    }).show().removeCls('x-unselectable');
-
-                                                    var record = obj.up('buttongroup').getWidgetRecord();
-                                                    tool.ajax('GET', '/api/codeFragment', {uuid: record.data.uuid}, function (rsp) {
-                                                        if (!rsp.success) {
-                                                            winFragment.setHtml(rsp.message);
-                                                            return;
-                                                        }
-
-                                                        var content = '';
-                                                        Ext.each(rsp.data, function (item) {
-                                                            content += '<code>' + Ext.String.htmlEncode(item.content) + '</code>';
-                                                        })
-                                                        winFragment.setHtml('<pre class="code-fragment">' + content + '</pre>');
-                                                    });
+                                                    var id = obj.up('buttongroup').getWidgetRecord().data.id;
+                                                    update(id, {status: 3});
                                                 }
                                             },
+                                            '-',
                                             {
-                                                text: '设置说明',
+                                                text: '编辑信息',
                                                 iconCls: 'icon-page-wrench',
                                                 handler: function (obj) {
                                                     var data = obj.up('buttongroup').getWidgetRecord().data;
-                                                    var win = Ext.create('Ext.window.Window', {
-                                                        title: '设置说明',
-                                                        iconCls: 'icon-add',
-                                                        width: 350,
-                                                        layout: 'fit',
-                                                        items: [
-                                                            {
-                                                                xtype: 'form',
-                                                                layout: 'form',
-                                                                bodyPadding: 15,
-                                                                items: [
-                                                                    {
-                                                                        name: 'description',
-                                                                        xtype: 'textfield',
-                                                                        fieldLabel: '说明',
-                                                                        value: data.description,
-                                                                    }
-                                                                ],
-                                                                buttons: [
-                                                                    {
-                                                                        text: '重置',
-                                                                        handler: function () {
-                                                                            this.up('form').getForm().reset();
-                                                                        }
-                                                                    },
-                                                                    {
-                                                                        text: '提交',
-                                                                        formBind: true,
-                                                                        handler: function () {
-                                                                            var params = this.up('form').getValues();
-                                                                            tool.ajax('PUT', '/api/codeLeak/' + data.id, params, function (rsp) {
-                                                                                if (rsp.success) {
-                                                                                    win.close();
-                                                                                    tool.toast('操作成功！', 'success');
-                                                                                    var index = grid.store.indexOfId(data.id);
-                                                                                    grid.store.insert(Math.max(0, index), rsp.data);
-                                                                                } else {
-                                                                                    tool.toast(rsp.message, 'error');
-                                                                                }
-                                                                            });
-                                                                        }
-                                                                    }
-                                                                ]
-                                                            }
-                                                        ]
-                                                    }).show();
+                                                    var win = winForm(data.description, function () {
+                                                        var params = this.up('form').getValues();
+                                                        update(data.id, params);
+                                                        win.close();
+                                                    })
                                                 }
                                             },
                                             {
@@ -450,6 +343,44 @@
                                                                 }
                                                             });
                                                         }
+                                                    });
+                                                }
+                                            }
+                                        ]
+                                    }
+                                },
+                                {
+                                    text: '更多',
+                                    iconCls: 'icon-bullet-orange',
+                                    margin: '0 0 0 10',
+                                    menu: {
+                                        items: [
+                                            {
+                                                text: '代码快照',
+                                                iconCls: 'icon-folder-page',
+                                                handler: function (obj) {
+                                                    var winFragment = Ext.create('Ext.window.Window', {
+                                                        title: '代码快照',
+                                                        iconCls: 'icon-folder-page',
+                                                        width: 1200,
+                                                        height: 600,
+                                                        bodyPadding: 15,
+                                                        overflowY: 'auto',
+                                                        html: '查 询 中 . .',
+                                                    }).show().removeCls('x-unselectable');
+
+                                                    var record = obj.up('buttongroup').getWidgetRecord();
+                                                    tool.ajax('GET', '/api/codeFragment', {uuid: record.data.uuid}, function (rsp) {
+                                                        if (!rsp.success) {
+                                                            winFragment.setHtml(rsp.message);
+                                                            return;
+                                                        }
+
+                                                        var content = '';
+                                                        Ext.each(rsp.data, function (item) {
+                                                            content += '<code>' + Ext.String.htmlEncode(item.content) + '</code>';
+                                                        })
+                                                        winFragment.setHtml('<pre class="code-fragment">' + content + '</pre>');
                                                     });
                                                 }
                                             },
@@ -488,17 +419,59 @@
                 ]
             });
 
-            // 批量操作
-            function batchOp(method, route, params) {
-                var records = grid.getSelectionModel().getSelection();
-                if (!records.length) {
-                    tool.toast('请先勾选记录！');
-                    return;
-                }
-                if (method == 'PUT') {
-                    batchRequest(method, route, params, records);
-                    return;
-                }
+            // 编辑信息
+            function winForm(value, handler) {
+                return Ext.create('Ext.window.Window', {
+                    title: '编辑信息',
+                    iconCls: 'icon-add',
+                    width: 350,
+                    layout: 'fit',
+                    items: [
+                        {
+                            xtype: 'form',
+                            layout: 'form',
+                            bodyPadding: 15,
+                            items: [
+                                {
+                                    fieldLabel: '说明',
+                                    name: 'description',
+                                    xtype: 'textfield',
+                                    value: value,
+                                }
+                            ],
+                            buttons: [
+                                {
+                                    text: '重置',
+                                    handler: function () {
+                                        this.up('form').getForm().reset();
+                                    }
+                                },
+                                {
+                                    text: '提交',
+                                    formBind: true,
+                                    handler: handler
+                                }
+                            ]
+                        }
+                    ]
+                }).show();
+            }
+
+            // 更新数据
+            function update(id, params) {
+                tool.ajax('PUT', '/api/codeLeak/' + id, params, function (rsp) {
+                    if (rsp.success) {
+                        tool.toast('操作成功！', 'success');
+                        var index = grid.store.indexOfId(id);
+                        grid.store.insert(Math.max(0, index), rsp.data);
+                    } else {
+                        tool.toast(rsp.message, 'error');
+                    }
+                });
+            }
+
+            // 批量操作（确认执行）
+            function batchOpWithConfirm(method, route, params) {
                 Ext.Msg.show({
                     title: '提示',
                     iconCls: 'icon-page',
@@ -508,12 +481,19 @@
                         if (btn !== 'yes') {
                             return;
                         }
-                        batchRequest(method, route, params, records);
+                        batchOp(method, route, params);
                     }
                 });
             }
 
-            function batchRequest(method, route, params, records) {
+            // 批量操作
+            function batchOp(method, route, params) {
+                var records = grid.getSelectionModel().getSelection();
+                if (!records.length) {
+                    tool.toast('请先勾选记录！');
+                    return;
+                }
+
                 var uuid = [];
                 for (var record of records) {
                     uuid.push(record.get('uuid'));
@@ -525,18 +505,6 @@
                         tool.toast('操作成功！', 'success');
                         grid.store.reload();
                         grid.getSelectionModel().clearSelections();
-                    } else {
-                        tool.toast(rsp.message, 'error');
-                    }
-                });
-            }
-
-            function setStatus(obj, status) {
-                var data = obj.up('buttongroup').getWidgetRecord().data;
-                tool.ajax('PUT', '/api/codeLeak/' + data.id, {status: status}, function (rsp) {
-                    if (rsp.success) {
-                        var index = grid.store.indexOfId(data.id);
-                        grid.store.insert(Math.max(0, index), rsp.data);
                     } else {
                         tool.toast(rsp.message, 'error');
                     }
