@@ -58,7 +58,7 @@ class CodeLeakController extends Controller
     {
         try {
             $request->validate(['status' => 'integer']);
-            $data = $request->all(['status', 'description']);
+            $data = $request->only('status', 'description');
             $data['handle_user'] = Auth::user()->email;
             $codeLeak = CodeLeak::find($id);
             $success = $codeLeak->update($data);
@@ -97,9 +97,9 @@ class CodeLeakController extends Controller
     public function batchUpdate(Request $request)
     {
         try {
-            $status = $request->input('status');
             $uuid = json_decode($request->input('uuid'), true);
-            $data = ['status' => $status, 'handle_user' => Auth::user()->email];
+            $data = $request->only('status', 'description');
+            $data['handle_user'] = Auth::user()->email;
             $success = CodeLeak::whereIn('uuid', $uuid)->update($data);
             return ['success' => $success];
         } catch (\Exception $exception) {
