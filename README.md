@@ -76,8 +76,6 @@ composer config repo.packagist composer https://mirrors.aliyun.com/composer/
 cd <项目目录> && composer install
 ```
 
----
-
 ### 项目配置
 设置目录权限：
 ```
@@ -113,9 +111,6 @@ DB_PASSWORD=
 php artisan migrate
 ```
 
----
-
-
 ### 配置任务调度
 ```
 crontab -e -u <用户>
@@ -124,8 +119,6 @@ crontab -e -u <用户>
 ```
 * * * * * cd <项目目录> && php artisan schedule:run >> /dev/null 2>&1
 ```
-
----
 
 ### 创建用户
 ```
@@ -137,8 +130,6 @@ php artisan code6:user-add <邮箱> <密码>
 php artisan code6:user-list
 php artisan code6:user-delete <邮箱>
 ```
-
----
 
 ### 配置令牌与任务
 进入系统后请前往 `[ 令牌配置 ]` 和 `[ 任务配置 ]` 模块进行配置，配置完毕即可使用！
