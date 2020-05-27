@@ -41,21 +41,16 @@ class UserAddCommand extends Command
     {
         $email = $this->argument('email');
         $password = $this->argument('password');
-        if (!$this->checkEmail($email)) {
-            $this->error('User add fail, email format is incorrect!');
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $this->error('User add fail, Email format is not correct!');
             return;
         }
+
         $user = User::firstOrCreate(['email' => $email], ['password' => Hash::make($password)]);
         if ($user->wasRecentlyCreated) {
             $this->info('User add success!');
         } else {
             $this->error('User add fail, may already exist!');
         }
-    }
-
-    private function checkEmail($email)
-    {
-        $pattern = "/^[a-z\d]+(\.[a-z\d]+)*@([\da-z](-[\da-z])?)+(\.{1,2}[a-z]+)+$/";
-        return preg_match($pattern, $email);
     }
 }
