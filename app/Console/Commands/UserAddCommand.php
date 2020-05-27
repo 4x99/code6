@@ -42,7 +42,7 @@ class UserAddCommand extends Command
         $email = $this->argument('email');
         $password = $this->argument('password');
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->error('User add fail, Email format is not correct!');
+            $this->error('User add fail, email format is not correct!');
             return;
         }
 
