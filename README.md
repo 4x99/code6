@@ -6,7 +6,7 @@
 ![release](https://img.shields.io/github/v/release/4x99/code6?color=%231890FF&sort=semver&style=flat-square)
 ![stars](https://img.shields.io/github/stars/4x99/code6?color=%231890FF&style=flat-square)
 ![forks](https://img.shields.io/github/forks/4x99/code6?color=%231890FF&style=flat-square)
-![repo-size](https://img.shields.io/github/repo-size/4x99/code6?color=%231890FF&style=flat-square)
+![watchers](https://img.shields.io/github/watchers/4x99/code6?color=%231890FF&style=flat-square)
 
 码小六是一款 GitHub 代码泄露监控系统，通过定期扫描 GitHub 发现代码泄露行为，为企业安全保驾护航！
 
