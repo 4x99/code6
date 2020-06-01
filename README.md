@@ -1,78 +1,135 @@
-<p align="center"><img src="https://res.cloudinary.com/dtfbvvkyp/image/upload/v1566331377/laravel-logolockup-cmyk-red.svg" width="400"></p>
+<div align="center">
 
-<p align="center">
-<a href="https://travis-ci.org/laravel/framework"><img src="https://travis-ci.org/laravel/framework.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/v/stable.svg" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
-</p>
+![码小六](https://raw.githubusercontent.com/4x99/snapshot/master/code6/logo.png)
 
-## About Laravel
+![license](https://img.shields.io/github/license/4x99/code6?color=%231890FF&style=flat-square)
+![release](https://img.shields.io/github/v/release/4x99/code6?color=%231890FF&sort=semver&style=flat-square)
+![stars](https://img.shields.io/github/stars/4x99/code6?color=%231890FF&style=flat-square)
+![forks](https://img.shields.io/github/forks/4x99/code6?color=%231890FF&style=flat-square)
+![watchers](https://img.shields.io/github/watchers/4x99/code6?color=%231890FF&style=flat-square)
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+码小六是一款 GitHub 代码泄露监控系统，通过定期扫描 GitHub 发现代码泄露行为，为企业安全保驾护航！
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+</div>
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 系统特点
+- 全可视化界面，操作简单
+- 支持 GitHub 令牌管理及智能调度
+- 扫描结果信息丰富，支持批量操作
+- 任务配置灵活，可单独配置任务扫描参数
+- 支持白名单模式，主动忽略白名单仓库
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains over 1500 video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 运行环境
+- Linux
+- PHP >= 7.2.5
+- Composer
+- MySQL >= 5.7
+- Apache >= 2.4
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the Laravel [Patreon page](https://patreon.com/taylorotwell).
+## 系统界面
+请点击浏览大图 :P
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Cubet Techno Labs](https://cubettech.com)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[British Software Development](https://www.britishsoftware.co)**
-- **[Webdock, Fast VPS Hosting](https://www.webdock.io/en)**
-- **[DevSquad](https://devsquad.com)**
-- [UserInsights](https://userinsights.com)
-- [Fragrantica](https://www.fragrantica.com)
-- [SOFTonSOFA](https://softonsofa.com/)
-- [User10](https://user10.com)
-- [Soumettre.fr](https://soumettre.fr/)
-- [CodeBrisk](https://codebrisk.com)
-- [1Forge](https://1forge.com)
-- [TECPRESSO](https://tecpresso.co.jp/)
-- [Runtime Converter](http://runtimeconverter.com/)
-- [WebL'Agence](https://weblagence.com/)
-- [Invoice Ninja](https://www.invoiceninja.com)
-- [iMi digital](https://www.imi-digital.de/)
-- [Earthlink](https://www.earthlink.ro/)
-- [Steadfast Collective](https://steadfastcollective.com/)
-- [We Are The Robots Inc.](https://watr.mx/)
-- [Understand.io](https://www.understand.io/)
-- [Abdel Elrafa](https://abdelelrafa.com)
-- [Hyper Host](https://hyper.host)
-- [Appoly](https://www.appoly.co.uk)
-- [OP.GG](https://op.gg)
+![登录页面](https://raw.githubusercontent.com/4x99/snapshot/master/code6/login.png)
 
-## Contributing
+![应用概况](https://raw.githubusercontent.com/4x99/snapshot/master/code6/home.png)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+![扫描结果](https://raw.githubusercontent.com/4x99/snapshot/master/code6/code-leak.png)
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+## 安装指南
 
-## Security Vulnerabilities
+### 克隆代码
+```
+git clone https://github.com/4x99/code6.git <项目目录>
+```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+### 配置 Apache
+请确保已开启 `mod_rewrite` 模块
+```
+<VirtualHost *:80>
+    ServerName <ServerName>
+    DocumentRoot "<项目目录>/public"
+</VirtualHost>
+```
 
-## License
+### 下载依赖包
+安装 Composer：
+```
+curl -sS https://getcomposer.org/installer | php
+mv composer.phar /usr/local/bin/composer
+```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+配置阿里云镜像：
+```
+composer config repo.packagist composer https://mirrors.aliyun.com/composer/
+```
+
+下载项目依赖包：
+```
+cd <项目目录> && composer install
+```
+
+### 项目配置
+设置目录权限：
+```
+chmod -R 755 storage
+chown -R <用户名>:<组名> storage
+```
+
+创建配置文件：
+```
+cp .env.example .env
+```
+
+生成应用密钥：
+```
+php artisan key:generate
+```
+
+创建并配置数据库：
+```
+vim .env
+```
+```
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
+```
+
+自动生成表结构：
+```
+php artisan migrate
+```
+
+### 配置任务调度
+```
+crontab -e -u <用户>
+```
+
+```
+* * * * * cd <项目目录> && php artisan schedule:run >> /dev/null 2>&1
+```
+
+### 创建用户
+```
+php artisan code6:user-add <邮箱> <密码>
+```
+
+如需查看用户列表或删除用户请执行：
+```
+php artisan code6:user-list
+php artisan code6:user-delete <邮箱>
+```
+
+### 配置令牌与任务
+进入系统后请前往 `[ 令牌配置 ]` 和 `[ 任务配置 ]` 模块进行配置，配置完毕即可使用！

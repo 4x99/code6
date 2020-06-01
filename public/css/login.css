@@ -1,0 +1,85 @@
+body {
+    background: #0065FF !important;
+}
+
+.container {
+    box-sizing: border-box;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-left: -250px;
+    margin-top: -220px;
+    padding: 50px 30px;
+    border-radius: 20px;
+    width: 500px;
+    height: 400px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, .15);
+    text-align: center;
+    background: #FFF;
+}
+
+.logo {
+    margin: 0 auto;
+    width: 120px;
+    height: 26px;
+    background: url('../image/logo.png');
+}
+
+input, button {
+    display: block;
+    box-sizing: border-box;
+    margin: 35px auto;
+    width: 350px;
+    border-radius: 3px;
+}
+
+input {
+    padding: 10px;
+    border: 1px solid #BBB;
+    letter-spacing: 2px;
+    color: #666;
+}
+
+input:-webkit-autofill {
+    letter-spacing: 2px;
+    box-shadow: 0 0 0 1000px #FFF inset;
+    -webkit-text-fill-color: #333;
+}
+
+.btn {
+    padding: 12px 10px 12px 20px;
+    border: 0;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, .12);
+    box-shadow: 0 2px 0 rgba(0, 0, 0, .045);
+    cursor: pointer;
+    transition: all .3s;
+    font-size: 14px;
+    letter-spacing: 10px;
+    color: #FFF;
+    background: #1890FF;
+}
+
+.btn:hover {
+    background: #2F9CFF;
+}
+
+.register {
+    margin-left: 10px;
+    font-size: 14px;
+    transition: all .3s;
+    letter-spacing: 10px;
+    color: #AAA;
+}
+
+.register:hover {
+    color: #1890FF;
+}
+
+code {
+    padding: 3px 0;
+    background: #F5F5F5;
+}
+
+.toast-msg {
+    box-shadow: none !important;
+}

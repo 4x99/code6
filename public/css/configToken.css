@@ -1,0 +1,20 @@
+.tip-title, .x-window-text a {
+    color: #0070D5;
+}
+
+.x-window-text a:hover {
+    color: #F44336;
+}
+
+.progress {
+    background: #F5F5F5;
+}
+
+.progress > div {
+    background: #FFE082;
+    line-height: 20px;
+}
+
+.progress span {
+    padding-left: 8px;
+}

@@ -1,0 +1,220 @@
+* {
+    font-family: -apple-system, BlinkMacSystemFont, Verdana, 'Microsoft YaHei', sans-serif !important;
+    color: #666;
+}
+
+html {
+    overflow-y: hidden;
+}
+
+html, body {
+    box-sizing: border-box;
+    height: 100%;
+}
+
+iframe {
+    border: none;
+}
+
+a {
+    text-decoration: none;
+}
+
+/* ExtJS */
+.x-menu-item-text-default {
+    letter-spacing: 3px;
+    color: #666;
+}
+
+.x-form-text-default {
+    color: #666;
+}
+
+.x-grid-cell {
+    vertical-align: middle;
+}
+
+.x-column-header-text-inner {
+    margin-left: 3px;
+    letter-spacing: 3px;
+}
+
+.x-grid-cell-inner {
+    font-size: 12px;
+}
+
+.x-column-header {
+    background: #FAFAFA;
+}
+
+.x-btn-inner-default-small, .x-btn-inner-default-toolbar-small {
+    letter-spacing: 3px;
+}
+
+.x-title-text {
+    letter-spacing: 3px;
+}
+
+.x-window-text {
+    letter-spacing: 1px;
+}
+
+.x-toolbar-text-default {
+    letter-spacing: 3px;
+    color: #666;
+}
+
+.x-btn-default-toolbar-small {
+    padding: 3px 3px 3px 8px;
+}
+
+.x-form-item-label-text {
+    letter-spacing: 3px;
+}
+
+.x-boundlist-item {
+    color: #666;
+}
+
+/* Remove ExtJS focused style */
+.x-focus {
+    box-shadow: none !important;
+}
+
+.x-btn-focus {
+    box-shadow: none !important;
+}
+
+.x-grid-cell-inner-treecolumn::before {
+    border: none !important;
+}
+
+.x-grid-cell-inner:before {
+    border: none !important;
+}
+
+.x-grid-row-expander:focus {
+    outline: none;
+}
+
+.x-column-header-inner:after {
+    border: none !important;
+}
+
+.x-splitter-focus:after {
+    border: none;
+}
+
+/* Badge */
+.tag {
+    display: inline-block;
+    padding: 0 10px 0 13px;
+    line-height: 22px;
+    border-radius: 2px;
+    text-align: center;
+    letter-spacing: 3px;
+    color: #FFF;
+}
+
+.tag-blue {
+    background: #409EFF;
+}
+
+.tag-green {
+    background: #67C23A;
+}
+
+.tag-red {
+    background: #F56C6C;
+}
+
+.tag-gray {
+    background: #738C99;
+}
+
+/* ICON */
+.icon-add {
+    background: url(../image/icon/add.png) no-repeat;
+}
+
+.icon-bullet-blue {
+    background: url(../image/icon/bullet-blue.png) no-repeat;
+}
+
+.icon-bullet-gray {
+    background: url(../image/icon/bullet-gray.png) no-repeat;
+}
+
+.icon-bullet-green {
+    background: url(../image/icon/bullet-green.png) no-repeat;
+}
+
+.icon-bullet-orange {
+    background: url(../image/icon/bullet-orange.png) no-repeat;
+}
+
+.icon-bullet-red {
+    background: url(../image/icon/bullet-red.png) no-repeat;
+}
+
+.icon-cross {
+    background: url(../image/icon/cross.png) no-repeat;
+}
+
+.icon-folder-page {
+    background: url(../image/icon/folder-page.png) no-repeat;
+}
+
+.icon-go {
+    background: url(../image/icon/go.png) no-repeat;
+}
+
+.icon-key {
+    background: url(../image/icon/key.png) no-repeat;
+}
+
+.icon-page {
+    background: url(../image/icon/page.png) no-repeat;
+}
+
+.icon-page-edit {
+    background: url(../image/icon/page-edit.png) no-repeat;
+}
+
+.icon-page-star {
+    background: url(../image/icon/page-star.png) no-repeat;
+}
+
+.icon-page-wrench {
+    background: url(../image/icon/page-wrench.png) no-repeat;
+}
+
+.icon-tick {
+    background: url(../image/icon/tick.png) no-repeat;
+}
+
+.icon-warning {
+    background: url(../image/icon/warning.png) no-repeat;
+}
+
+.icon-zoom {
+    background: url(../image/icon/zoom.png) no-repeat;
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar-track-piece {
+    background: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D5D5D5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #CDCDCD;
+}

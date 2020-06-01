@@ -23,6 +23,11 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        if (config('app.env') !== 'local') {
+            error_reporting(0);
+            define('VERSION', trim(file_get_contents(base_path('version'))));
+        } else {
+            define('VERSION', time());
+        }
     }
 }
