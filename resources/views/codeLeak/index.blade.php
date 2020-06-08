@@ -159,7 +159,7 @@
                                                 var params = this.up('form').getValues();
                                                 batchOp('PUT', 'batchUpdate', params);
                                                 win.close();
-                                            })
+                                            }, true)
                                         }
                                     },
                                     {
@@ -316,7 +316,7 @@
                                                         var params = this.up('form').getValues();
                                                         update(data.id, params);
                                                         win.close();
-                                                    })
+                                                    }, false)
                                                 }
                                             },
                                             {
@@ -420,11 +420,12 @@
             });
 
             // 编辑信息
-            function winForm(value, handler) {
+            function winForm(value, handler, modal) {
                 return Ext.create('Ext.window.Window', {
                     title: '编辑信息',
                     iconCls: 'icon-add',
                     width: 350,
+                    modal: modal,
                     layout: 'fit',
                     items: [
                         {
