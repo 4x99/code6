@@ -72,10 +72,12 @@ class JobRunCommand extends Command
         $this->log = Log::channel($this->signature);
         $this->log->info('Start job');
 
-        $this->createGitHubService();
-        $this->whitelist = ConfigWhitelist::all()->keyBy('value');
-
         while ($job = $this->takeJob()) {
+            if (!$this->service) {
+                $this->createGitHubService();
+                $this->whitelist = ConfigWhitelist::all()->keyBy('value');
+            }
+
             $page = 1;
             $keyword = $job->keyword;
             $configJob = ConfigJob::where('keyword', $keyword)->first();
