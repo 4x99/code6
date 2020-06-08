@@ -201,22 +201,24 @@
             });
 
             // 数据指标
-            tool.ajax('GET', '/api/home/metric', {}, function (rsp) {
-                if (rsp.success !== true) {
-                    return false;
-                }
+            newTask(60000, function () {
+                tool.ajax('GET', '/api/home/metric', {}, function (rsp) {
+                    if (rsp.success !== true) {
+                        return false;
+                    }
 
-                Ext.each(Ext.query('[class=metric-value]'), function (dom) {
-                    var value = 0;
-                    var total = rsp.data[dom.dataset.key];
-                    var step = Math.ceil(total / 20);
-                    var task = newTask(30, function () {
-                        if ((value += step) >= total) {
-                            task.stop();
-                            value = total;
-                        }
-                        dom.innerHTML = value;
-                    })
+                    Ext.each(Ext.query('[class=metric-value]'), function (dom) {
+                        var value = 0;
+                        var total = rsp.data[dom.dataset.key];
+                        var step = Math.ceil(total / 20);
+                        var task = newTask(30, function () {
+                            if ((value += step) >= total) {
+                                task.stop();
+                                value = total;
+                            }
+                            dom.innerHTML = value;
+                        })
+                    });
                 });
             });
 
