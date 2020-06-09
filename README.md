@@ -25,7 +25,7 @@
 
 ## 运行环境
 - Linux
-- PHP >= 7.2.5
+- PHP >= 7.3.0
 - Composer
 - MySQL >= 5.7
 - Apache >= 2.4
@@ -62,7 +62,8 @@ git clone https://github.com/4x99/code6.git <项目目录>
 ### 下载依赖包
 安装 Composer：
 ```
-curl -sS https://getcomposer.org/installer | php
+curl -O https://mirrors.aliyun.com/composer/composer.phar
+chmod +x composer.phar
 mv composer.phar /usr/local/bin/composer
 ```
 
