@@ -74,7 +74,7 @@ composer config repo.packagist composer https://mirrors.aliyun.com/composer/
 
 下载项目依赖包：
 ```
-cd <项目目录> && composer install
+cd <项目目录> && composer install --no-dev --prefer-dist --optimize-autoloader
 ```
 
 ### 项目配置
