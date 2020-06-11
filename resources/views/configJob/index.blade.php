@@ -1,5 +1,10 @@
 @extends('base')
 @section('content')
+    <style>
+        .help span, .help a { color: #1565C0; }
+        .help a { text-decoration: none; }
+        .x-form-trigger { background-position: 0px center !important; }
+    </style>
     <script>
         Ext.onReady(function () {
             Ext.create('Ext.data.Store', {
@@ -148,6 +153,27 @@
                                     name: 'keyword',
                                     fieldLabel: '扫描关键字',
                                     value: data.keyword,
+                                    triggers: {
+                                        search: {
+                                            cls: 'icon-page-star',
+                                            handler: function(){
+                                                var content = '1.查询包含 blacklist 关键字的代码：<span>blacklist</span><br/><br/>' +
+                                                    '2.关键字包含特殊符号（非字母和数字）请用双引号括起：<span>"xxx@qq.com"</span><br/><br/>' +
+                                                    '3.多个关键字匹配请用AND（全部大写）拼接：<span>blacklist AND whitelist</span><br/><br/>' +
+                                                    '4.包含blacklist关键字不包含whitelist使用NOT（全部大写）：<span>blacklist NOT whitelist</span><br/><br/>' +
+                                                    '5.查询PHP编写的包含blacklist关键字的代码：<span>blacklist language:PHP</span><br/><br/>' +
+                                                    '6.查询非PHP编写的包含blacklist关键字的代码：<span>blacklist -language:PHP</span><br/><br/>' +
+                                                    '更多查询语法请参考：<a href="https://help.github.com/en/github/searching-for-information-on-github/understanding-the-search-syntax" target="_blank">Understanding the search syntax - GitHub Help</a>';
+
+                                                Ext.Msg.show({
+                                                    title: '关键字说明',
+                                                    maxHeight: 600,
+                                                    iconCls: 'icon-page-star',
+                                                    message: '<div class="help">' + content + '</div>'
+                                                }).removeCls('x-unselectable');
+                                            }
+                                        }
+                                    }
                                 },
                                 {
                                     xtype: 'numberfield',
