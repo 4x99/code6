@@ -1,0 +1,11 @@
+.x-window-text a, .x-window-text span {
+    color: #0070D5;
+}
+
+.x-window-text a:hover {
+    color: #F44336;
+}
+
+.x-form-trigger {
+    background-position: 0 center !important;
+}
