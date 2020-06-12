@@ -16,16 +16,17 @@
                 }
             });
 
-            var tip = '';
-            tip += '<p class="tip-title">1. 令牌是什么？<span></p>';
-            tip += '<p>用来请求 GitHub API 的 Token（即 GitHub personal access token）</p><br/>';
-            tip += '<p class="tip-title">2. 如何申请令牌？</p>';
-            tip += '<p>GitHub - Settings - Developer settings - Personal access tokens - Generate new token';
-            tip += '（<a target="_blank" href="https://github.com/settings/tokens/new">直达</a>）</p><br/>';
-            tip += '<p class="tip-title">3. 为何需要配置多个令牌？</p>';
-            tip += '<p>监控需要大量请求 GitHub API，而 GitHub 限制了 API 的请求速率';
-            tip += '（<a target="_blank" href="https://developer.github.com/v3/#rate-limiting">GitHub API v3 - Rate limiting</a>）</p>';
-            tip += '<p>因此需要多个 GitHub 账号创建令牌用于轮询请求（建议至少配置 5 个令牌）</p>';
+            var content = '';
+            content += '<p class="tip-title">1. 令牌是什么？<span></p>';
+            content += '<p>用来请求 GitHub API 的 Token（即 GitHub personal access token）</p><br/>';
+            content += '<p class="tip-title">2. 如何申请令牌？</p>';
+            content += '<p>GitHub - Settings - Developer settings - Personal access tokens - Generate new token';
+            content += '（<a target="_blank" href="https://github.com/settings/tokens/new">直达</a>）</p><br/>';
+            content += '<p class="tip-title">3. 为何需要配置多个令牌？</p>';
+            content += '<p>监控需要大量请求 GitHub API，而 GitHub 限制了 API 的请求速率';
+            content += '（<a target="_blank" href="https://developer.github.com/v3/#rate-limiting">GitHub API v3 - Rate limiting</a>）</p>';
+            content += '<p>因此需要多个 GitHub 账号创建令牌用于轮询请求（建议至少配置 5 个令牌）</p>';
+
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
                 tbar: {
@@ -40,7 +41,7 @@
                                     iconCls: 'icon-page-star',
                                     modal: false,
                                     maxWidth: 800,
-                                    message: tip,
+                                    message: content,
                                 });
                             }
                         },

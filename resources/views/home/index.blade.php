@@ -164,7 +164,7 @@
                             {
                                 columnWidth: 0.5,
                                 margin: '0 15',
-                                bodyPadding: '80 0 0 0',
+                                bodyPadding: '70 0 0 0',
                                 height: 315,
                                 html: new Ext.XTemplate(
                                     '<p class="center"><a target="_blank" href="{repo}"><img src="{src}" /></a></p>',
