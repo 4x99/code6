@@ -138,7 +138,6 @@ class JobRunCommand extends Command
             if ($url) { // 非首页
                 return ResponseMediator::getContent($client->getHttpClient()->get($url));
             }
-            $keyword = sprintf('"%s"', $keyword); // 精确匹配
             return $client->api('search')->code($keyword, 'indexed'); // 首页
         } catch (Exception $e) {
             $this->log->warning($e->getMessage());
