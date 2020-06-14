@@ -18,6 +18,12 @@
                 }
             });
 
+            var storeType = [
+                {value: 0, text: '记录文件的每个版本', qtip: '即文件每次提交（包含关键字）会产生一条新的未审记录'},
+                {value: 1, text: '一个文件只记录一次', qtip: '一个文件只记录一次'},
+                {value: 2, text: '一个仓库只记录一次', qtip: '一个仓库只记录一次'},
+            ];
+
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
                 tbar: {
@@ -63,6 +69,15 @@
                         dataIndex: 'scan_interval_min',
                         width: 180,
                         align: 'center',
+                    },
+                    {
+                        text: '扫描结果',
+                        dataIndex: 'store_type',
+                        width: 180,
+                        align: 'center',
+                        renderer: function (value) {
+                            return storeType[value].text;
+                        }
                     },
                     {
                         text: '最后扫描时间',
@@ -189,6 +204,22 @@
                                     value: data.scan_interval_min ? data.scan_interval_min : 60,
                                 },
                                 {
+                                    xtype: 'combo',
+                                    name: 'store_type',
+                                    fieldLabel: '扫描结果',
+                                    editable: false,
+                                    valueField: 'value',
+                                    store: {data: storeType},
+                                    value: data.store_type ? data.store_type : 0,
+                                    listConfig: {
+                                        tpl: [
+                                            '<tpl for=".">',
+                                            '<li role="option" class="x-boundlist-item" data-qtip="{qtip}">{text}</li>',
+                                            '</tpl>'
+                                        ]
+                                    }
+                                },
+                                {
                                     name: 'description',
                                     fieldLabel: '说　　明',
                                     allowBlank: true,
@@ -230,11 +261,13 @@
             function winHelp() {
                 var content = '<div class="help">';
                 content += '<p>1. 精确匹配：<span>keyword</span></p>';
-                content += '<p>2. 关键字有空格或其他特殊符号（引号）：<span>"smtp.qq.com"</span></p>';
+                content += '<p>2. 关键字有空格或其他符号（引号）：<span>"smtp.qq.com"</span></p>';
                 content += '<p>3. 匹配多个关键字（AND）：<span>mysql AND password</span>（同时匹配 mysql 和 password）</p>';
                 content += '<p>4. 排除特定关键字（NOT）：<span>mysql NOT localhost</span>（匹配 mysql 但不含 localhost）</p>';
                 content += '<p>5. 扫描时 GitHub 会忽略以下符号：<span>@ . , : ; / \\ ` \' " = * ! ? # $ & + ^ | ~ < > ( ) { } [ ]</span></pre>';
-                content += '<p><br/>更多关键字高级语法请阅读：<a href="https://help.github.com/cn/github/searching-for-information-on-github/understanding-the-search-syntax" target="_blank">了解搜索语法 - GitHub 帮助</a></p>';
+                content += '<p><br/>更多关键字高级语法请浏览 ';
+                content += '<a href="https://help.github.com/cn/github/searching-for-information-on-github/understanding-the-search-syntax" target="_blank">了解搜索语法</a> ';
+                content += '或使用 <a href="https://github.com/search/advanced" target="_blank">高级搜索</a> 工具</p>';
                 content += '</div>';
 
                 Ext.Msg.show({

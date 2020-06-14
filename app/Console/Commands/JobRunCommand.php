@@ -85,7 +85,7 @@ class JobRunCommand extends Command
             do {
                 $client = $this->service->getClient();
                 $data = $this->searchCode($client, $keyword, $nextPage ?? null);
-                $count = $this->store($data, $keyword);
+                $count = $this->store($data, $configJob);
                 $this->log->info('Stored', ['keyword' => $keyword, 'page' => $page, 'count' => $count]);
                 $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
                 $nextPage = $lastResponse['next'] ?? false;
@@ -149,10 +149,10 @@ class JobRunCommand extends Command
      * 保存数据
      *
      * @param $data
-     * @param $keyword
-     * @return array
+     * @param $configJob
+     * @return int[]
      */
-    private function store($data, $keyword)
+    private function store($data, $configJob)
     {
         $count = ['leak' => 0, 'fragment' => 0];
 
@@ -161,8 +161,8 @@ class JobRunCommand extends Command
         }
 
         foreach ($data['items'] as $item) {
-            $item['keyword'] = $keyword;
-            if (!$uuid = $this->storeLeak($item)) {
+            $item['keyword'] = $configJob->keyword;
+            if (!$uuid = $this->storeLeak($item, $configJob->store_type)) {
                 continue;
             }
             $count['leak']++;
@@ -180,9 +180,10 @@ class JobRunCommand extends Command
      * 保存代码泄露数据
      *
      * @param $item
+     * @param $storeType
      * @return bool|string
      */
-    private function storeLeak($item)
+    private function storeLeak($item, $storeType)
     {
         $repoOwner = $item['repository']['owner']['login'];
         $repoName = $item['repository']['name'];
@@ -199,10 +200,22 @@ class JobRunCommand extends Command
         }
 
         // 数据入库
+        $where = [];
         $uuid = md5("$repoOwner/$repoName/$blob/{$item['path']}");
-        $leak = CodeLeak::firstOrCreate(
-            ['uuid' => $uuid],
-            [
+        switch ($storeType) {
+            case configJob::STORE_TYPE_ALL:
+                $where = ['uuid' => $uuid];
+                break;
+            case configJob::STORE_TYPE_FILE_STORE_ONCE:
+                $where = ['repo_owner' => $repoOwner, 'repo_name' => $repoName, 'path' => $item['path']];
+                break;
+            case configJob::STORE_TYPE_REPO_STORE_ONCE:
+                $where = ['repo_owner' => $repoOwner, 'repo_name' => $repoName];
+                break;
+        }
+
+        $leak = CodeLeak::firstOrCreate($where, [
+                'uuid' => $uuid,
                 'keyword' => $item['keyword'],
                 'repo_owner' => $repoOwner,
                 'repo_name' => $repoName,
