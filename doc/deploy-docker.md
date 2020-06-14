@@ -1,19 +1,19 @@
 # Docker 部署
-## 克隆代码
-```
-git clone https://github.com/4x99/code6.git <项目目录>
-```
-
----
-
 ## 创建 MySQL 实例
 Docker 镜像不包含 MySQL 实例，请安装 MySQL、创建数据库并授权。
 
 ---
 
+## 克隆代码
+```
+git clone https://github.com/4x99/code6.git
+```
+
+---
+
 ## 使用 Dockerfile 创建镜像
 ```
-cd <项目目录>
+cd code6
 docker build -t code6 .
 ```
 
