@@ -26,7 +26,7 @@ class ConfigJobController extends Controller
     }
 
     /**
-     * 保存令牌
+     * 保存任务
      *
      * @param  Request  $request
      * @return array
@@ -40,6 +40,7 @@ class ConfigJobController extends Controller
                 [
                     'scan_page' => $request->input('scan_page', 100),
                     'scan_interval_min' => $request->input('scan_interval_min', 60),
+                    'store_type' => $request->input('store_type', 0),
                     'description' => $request->input('description') ?? ''
                 ]
             );
@@ -63,7 +64,7 @@ class ConfigJobController extends Controller
     {
         try {
             $request->validate(['keyword' => ['required', 'string', 'max:255']]);
-            $fields = ['keyword', 'scan_page', 'scan_interval_min', 'description'];
+            $fields = ['keyword', 'scan_page', 'scan_interval_min', 'store_type', 'description'];
             $configJob = ConfigJob::find($id);
             $success = $configJob->update($request->all($fields));
             return ['success' => $success, 'data' => $configJob];

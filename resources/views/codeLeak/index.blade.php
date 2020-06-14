@@ -243,7 +243,7 @@
                     {
                         text: '匹配关键字',
                         dataIndex: 'keyword',
-                        width: 130,
+                        flex: 1,
                         align: 'center',
                     },
                     {
