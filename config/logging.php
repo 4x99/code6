@@ -39,7 +39,7 @@ return [
 
         'daily' => [
             'driver' => 'daily',
-            'path' => storage_path(sprintf('logs/%s.log', config('app.name'))),
+            'path' => storage_path('logs/code6.log'),
             'level' => 'info',
             'days' => 7,
         ],
