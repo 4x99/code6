@@ -194,7 +194,7 @@
                                     name: 'scan_page',
                                     fieldLabel: '扫描页数',
                                     minValue: 1,
-                                    value: data.scan_page ? data.scan_page : 10,
+                                    value: data.scan_page ? data.scan_page : 5,
                                 },
                                 {
                                     xtype: 'numberfield',
