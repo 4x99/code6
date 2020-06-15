@@ -282,7 +282,7 @@
                 };
             });
 
-            chart.source([
+            chart.data([
                 {name: '可用', value: 0, percent: 0},
                 {name: '已用', value: 0, percent: 0},
             ]);
