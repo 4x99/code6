@@ -72,24 +72,26 @@ class JobRunCommand extends Command
         $this->log = Log::channel($this->signature);
         $this->log->info('Start job');
 
-        while ($job = $this->takeJob()) {
-            if (!$this->service) {
-                $this->createGitHubService();
-                $this->whitelist = ConfigWhitelist::all()->keyBy('value');
-            }
+        if (!QueueJob::count()) {
+            $this->log->info('The queue is empty');
+            exit;
+        }
 
+        $this->createGitHubService();
+        $this->whitelist = ConfigWhitelist::all()->keyBy('value');
+
+        while ($job = $this->takeJob()) {
             $page = 1;
             $keyword = $job->keyword;
             $configJob = ConfigJob::where('keyword', $keyword)->first();
             $configJob->last_scan_at = date('Y-m-d H:i:s');
             do {
                 $client = $this->service->getClient();
-                $data = $this->searchCode($client, $keyword, $nextPage ?? null);
-                $count = $this->store($data, $keyword);
+                $data = $this->searchCode($client, $keyword, $page);
+                $count = $this->store($data, $configJob);
                 $this->log->info('Stored', ['keyword' => $keyword, 'page' => $page, 'count' => $count]);
                 $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
-                $nextPage = $lastResponse['next'] ?? false;
-            } while ($nextPage && (++$page <= $configJob->scan_page));
+            } while ($lastResponse['next'] && (++$page <= $configJob->scan_page));
             $configJob->save();
         }
 
@@ -117,7 +119,6 @@ class JobRunCommand extends Command
     private function takeJob()
     {
         if (!$job = QueueJob::orderBy('created_at')->first()) {
-            $this->log->info('The queue is empty');
             return false;
         }
         $job->delete();
@@ -129,17 +130,14 @@ class JobRunCommand extends Command
      *
      * @param $client
      * @param $keyword
-     * @param  null  $url
+     * @param  int  $page
      * @return array|bool|string
      */
-    private function searchCode($client, $keyword, $url = null)
+    private function searchCode($client, $keyword, $page = 1)
     {
         try {
-            if ($url) { // 非首页
-                return ResponseMediator::getContent($client->getHttpClient()->get($url));
-            }
             $keyword = sprintf('"%s"', $keyword); // 精确匹配
-            return $client->api('search')->code($keyword, 'indexed'); // 首页
+            return $client->api('search')->setPage($page)->code($keyword, 'indexed');
         } catch (Exception $e) {
             $this->log->warning($e->getMessage());
             return false;
@@ -150,10 +148,10 @@ class JobRunCommand extends Command
      * 保存数据
      *
      * @param $data
-     * @param $keyword
-     * @return array
+     * @param $configJob
+     * @return int[]
      */
-    private function store($data, $keyword)
+    private function store($data, $configJob)
     {
         $count = ['leak' => 0, 'fragment' => 0];
 
@@ -162,8 +160,8 @@ class JobRunCommand extends Command
         }
 
         foreach ($data['items'] as $item) {
-            $item['keyword'] = $keyword;
-            if (!$uuid = $this->storeLeak($item)) {
+            $item['keyword'] = $configJob->keyword;
+            if (!$uuid = $this->storeLeak($item, $configJob->store_type)) {
                 continue;
             }
             $count['leak']++;
@@ -181,9 +179,10 @@ class JobRunCommand extends Command
      * 保存代码泄露数据
      *
      * @param $item
+     * @param $storeType
      * @return bool|string
      */
-    private function storeLeak($item)
+    private function storeLeak($item, $storeType)
     {
         $repoOwner = $item['repository']['owner']['login'];
         $repoName = $item['repository']['name'];
@@ -200,10 +199,22 @@ class JobRunCommand extends Command
         }
 
         // 数据入库
+        $where = [];
         $uuid = md5("$repoOwner/$repoName/$blob/{$item['path']}");
-        $leak = CodeLeak::firstOrCreate(
-            ['uuid' => $uuid],
-            [
+        switch ($storeType) {
+            case configJob::STORE_TYPE_ALL:
+                $where = ['uuid' => $uuid];
+                break;
+            case configJob::STORE_TYPE_FILE_STORE_ONCE:
+                $where = ['repo_owner' => $repoOwner, 'repo_name' => $repoName, 'path' => $item['path']];
+                break;
+            case configJob::STORE_TYPE_REPO_STORE_ONCE:
+                $where = ['repo_owner' => $repoOwner, 'repo_name' => $repoName];
+                break;
+        }
+
+        $leak = CodeLeak::firstOrCreate($where, [
+                'uuid' => $uuid,
                 'keyword' => $item['keyword'],
                 'repo_owner' => $repoOwner,
                 'repo_name' => $repoName,

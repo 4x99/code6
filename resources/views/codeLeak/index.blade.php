@@ -243,7 +243,7 @@
                     {
                         text: '匹配关键字',
                         dataIndex: 'keyword',
-                        width: 130,
+                        flex: 1,
                         align: 'center',
                     },
                     {
@@ -278,32 +278,32 @@
                                                 text: '设为未审',
                                                 iconCls: 'icon-bullet-gray',
                                                 handler: function (obj) {
-                                                    var id = obj.up('buttongroup').getWidgetRecord().data.id;
-                                                    update(id, {status: 0});
+                                                    var record = obj.up('buttongroup').getWidgetRecord();
+                                                    update(record, 'status', 0);
                                                 }
                                             },
                                             {
                                                 text: '设为误报',
                                                 iconCls: 'icon-bullet-blue',
                                                 handler: function (obj) {
-                                                    var id = obj.up('buttongroup').getWidgetRecord().data.id;
-                                                    update(id, {status: 1});
+                                                    var record = obj.up('buttongroup').getWidgetRecord();
+                                                    update(record, 'status', 1);
                                                 }
                                             },
                                             {
                                                 text: '设为异常',
                                                 iconCls: 'icon-bullet-red',
                                                 handler: function (obj) {
-                                                    var id = obj.up('buttongroup').getWidgetRecord().data.id;
-                                                    update(id, {status: 2});
+                                                    var record = obj.up('buttongroup').getWidgetRecord();
+                                                    update(record, 'status', 2);
                                                 }
                                             },
                                             {
                                                 text: '设为解决',
                                                 iconCls: 'icon-bullet-green',
                                                 handler: function (obj) {
-                                                    var id = obj.up('buttongroup').getWidgetRecord().data.id;
-                                                    update(id, {status: 3});
+                                                    var record = obj.up('buttongroup').getWidgetRecord();
+                                                    update(record, 'status', 3);
                                                 }
                                             },
                                             '-',
@@ -311,10 +311,10 @@
                                                 text: '编辑信息',
                                                 iconCls: 'icon-page-wrench',
                                                 handler: function (obj) {
-                                                    var data = obj.up('buttongroup').getWidgetRecord().data;
-                                                    var win = winForm(data.description, function () {
+                                                    var record = obj.up('buttongroup').getWidgetRecord();
+                                                    var win = winForm(record.data.description, function () {
                                                         var params = this.up('form').getValues();
-                                                        update(data.id, params);
+                                                        update(record, 'description', params.description);
                                                         win.close();
                                                     }, false)
                                                 }
@@ -459,12 +459,15 @@
             }
 
             // 更新数据
-            function update(id, params) {
-                tool.ajax('PUT', '/api/codeLeak/' + id, params, function (rsp) {
+            function update(record, field, value) {
+                var params = {};
+                params[field] = value;
+                tool.ajax('PUT', '/api/codeLeak/' + record.id, params, function (rsp) {
                     if (rsp.success) {
                         tool.toast('操作成功！', 'success');
-                        var index = grid.store.indexOfId(id);
-                        grid.store.insert(Math.max(0, index), rsp.data);
+                        record.set(field, rsp.data[field]);
+                        record.dirty = false;
+                        record.commit();
                     } else {
                         tool.toast(rsp.message, 'error');
                     }
