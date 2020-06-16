@@ -29,11 +29,6 @@
                 tbar: {
                     margin: '5 12 15 18',
                     items: [
-                        {
-                            text: '帮助信息',
-                            iconCls: 'icon-page-star',
-                            handler: winHelp,
-                        },
                         '->',
                         {
                             text: '新增任务',
@@ -156,7 +151,7 @@
             function winForm(data) {
                 var win = Ext.create('Ext.window.Window', {
                     title: '任务信息',
-                    width: 500,
+                    width: 600,
                     iconCls: 'icon-page-wrench',
                     layout: 'fit',
                     items: [
@@ -174,27 +169,13 @@
                                     name: 'keyword',
                                     fieldLabel: '扫描关键字',
                                     value: data.keyword,
-                                    triggers: {
-                                        search: {
-                                            cls: 'icon-zoom',
-                                            tooltip: '查看关键字搜索结果',
-                                            handler: function () {
-                                                var keyword = this.up('form').getValues().keyword;
-                                                if (!keyword) {
-                                                    tool.toast('还未设置关键字！');
-                                                    return;
-                                                }
-                                                tool.winOpen(GitHub + 'search?o=desc&q=' + keyword + '&s=indexed&type=Code')
-                                            }
-                                        }
-                                    }
                                 },
                                 {
                                     xtype: 'numberfield',
                                     name: 'scan_page',
-                                    fieldLabel: '扫描页数',
+                                    fieldLabel: '扫描页数（每页 30 条）',
                                     minValue: 1,
-                                    value: data.scan_page ? data.scan_page : 5,
+                                    value: data.scan_page ? data.scan_page : 3,
                                 },
                                 {
                                     xtype: 'numberfield',
@@ -256,28 +237,6 @@
                         }
                     ]
                 }).show();
-            }
-
-            function winHelp() {
-                var content = '<div class="help">';
-                content += '<p>1. 精确匹配：<span>keyword</span></p>';
-                content += '<p>2. 关键字有空格或其他符号（引号）：<span>"smtp.qq.com"</span></p>';
-                content += '<p>3. 匹配多个关键字（AND）：<span>mysql AND password</span>（同时匹配 mysql 和 password）</p>';
-                content += '<p>4. 排除特定关键字（NOT）：<span>mysql NOT localhost</span>（匹配 mysql 但不含 localhost）</p>';
-                content += '<p>5. 扫描时 GitHub 会忽略以下符号：<span>@ . , : ; / \\ ` \' " = * ! ? # $ & + ^ | ~ < > ( ) { } [ ]</span></pre>';
-                content += '<p><br/>更多关键字高级语法请浏览 ';
-                content += '<a href="https://help.github.com/cn/github/searching-for-information-on-github/understanding-the-search-syntax" target="_blank">了解搜索语法</a> ';
-                content += '或使用 <a href="https://github.com/search/advanced" target="_blank">高级搜索</a> 工具</p>';
-                content += '</div>';
-
-                Ext.Msg.show({
-                    title: '关键字设置说明',
-                    maxWidth: 800,
-                    maxHeight: 600,
-                    modal: false,
-                    iconCls: 'icon-page-star',
-                    message: content,
-                }).removeCls('x-unselectable');
             }
 
             Ext.create('Ext.container.Container', {
