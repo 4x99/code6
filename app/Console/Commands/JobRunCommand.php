@@ -72,24 +72,26 @@ class JobRunCommand extends Command
         $this->log = Log::channel($this->signature);
         $this->log->info('Start job');
 
-        while ($job = $this->takeJob()) {
-            if (!$this->service) {
-                $this->createGitHubService();
-                $this->whitelist = ConfigWhitelist::all()->keyBy('value');
-            }
+        if (!QueueJob::count()) {
+            $this->log->info('The queue is empty');
+            exit;
+        }
 
+        $this->createGitHubService();
+        $this->whitelist = ConfigWhitelist::all()->keyBy('value');
+
+        while ($job = $this->takeJob()) {
             $page = 1;
             $keyword = $job->keyword;
             $configJob = ConfigJob::where('keyword', $keyword)->first();
             $configJob->last_scan_at = date('Y-m-d H:i:s');
             do {
                 $client = $this->service->getClient();
-                $data = $this->searchCode($client, $keyword, $nextPage ?? null);
+                $data = $this->searchCode($client, $keyword, $page);
                 $count = $this->store($data, $configJob);
                 $this->log->info('Stored', ['keyword' => $keyword, 'page' => $page, 'count' => $count]);
                 $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
-                $nextPage = $lastResponse['next'] ?? false;
-            } while ($nextPage && (++$page <= $configJob->scan_page));
+            } while ($lastResponse['next'] && (++$page <= $configJob->scan_page));
             $configJob->save();
         }
 
@@ -117,7 +119,6 @@ class JobRunCommand extends Command
     private function takeJob()
     {
         if (!$job = QueueJob::orderBy('created_at')->first()) {
-            $this->log->info('The queue is empty');
             return false;
         }
         $job->delete();
@@ -129,16 +130,14 @@ class JobRunCommand extends Command
      *
      * @param $client
      * @param $keyword
-     * @param  null  $url
+     * @param  int  $page
      * @return array|bool|string
      */
-    private function searchCode($client, $keyword, $url = null)
+    private function searchCode($client, $keyword, $page = 1)
     {
         try {
-            if ($url) { // 非首页
-                return ResponseMediator::getContent($client->getHttpClient()->get($url));
-            }
-            return $client->api('search')->code($keyword, 'indexed'); // 首页
+            $keyword = sprintf('"%s"', $keyword); // 精确匹配
+            return $client->api('search')->setPage($page)->code($keyword, 'indexed');
         } catch (Exception $e) {
             $this->log->warning($e->getMessage());
             return false;
