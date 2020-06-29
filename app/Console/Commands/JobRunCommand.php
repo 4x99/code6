@@ -72,11 +72,6 @@ class JobRunCommand extends Command
         $this->log = Log::channel($this->signature);
         $this->log->info('Start job');
 
-        if (!QueueJob::count()) {
-            $this->log->info('The queue is empty');
-            exit;
-        }
-
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
 
