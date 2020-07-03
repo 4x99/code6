@@ -30,7 +30,7 @@
                 {
                     color: 'red',
                     text: '异常',
-                    tooltip: '此令牌无法使用（请检查 GitHub 账号及令牌是否正常）',
+                    tooltip: '此令牌无法使用（请检查 GitHub 账号及令牌是否异常）',
                 },
             ]
 

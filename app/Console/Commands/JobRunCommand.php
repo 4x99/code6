@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Exception;
-use Github\Client;
 use App\Models\CodeFragment;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
@@ -48,7 +47,7 @@ class JobRunCommand extends Command
     /**
      * GitHub Service
      *
-     * @var Client
+     * @var GitHubService
      */
     protected $service;
 
