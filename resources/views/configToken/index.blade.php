@@ -16,6 +16,24 @@
                 }
             });
 
+            var status = [
+                {
+                    color: 'blue',
+                    text: '未知',
+                    tooltip: '没有读取到此令牌状态（可能是当前请求 GitHub 网络不通畅）'
+                },
+                {
+                    color: 'green',
+                    text: '正常',
+                    tooltip: '此令牌可正常使用'
+                },
+                {
+                    color: 'red',
+                    text: '异常',
+                    tooltip: '此令牌无法使用（请检查 GitHub 账号及令牌是否正常）'
+                },
+            ]
+
             var content = '';
             content += '<p class="tip-title">1. 令牌是什么？<span></p>';
             content += '<p>用来请求 GitHub API 的 Token（即 GitHub personal access token）</p><br/>';
@@ -71,13 +89,15 @@
                     },
                     {
                         text: '状态',
-                        tooltip: '每分钟更新',
                         dataIndex: 'status',
                         width: 150,
                         align: 'center',
-                        xtype: 'booleancolumn',
-                        trueText: '<div class="tag tag-green">正常</div>',
-                        falseText: '<div class="tag tag-red">异常</div>',
+                        renderer: function (value, cellmeta) {
+                            var data = status[value];
+                            var tpl = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>');
+                            cellmeta.tdAttr = 'data-qtip="' + data.tooltip + '"'
+                            return tpl.apply(data);
+                        }
                     },
                     {
                         text: '创建时间',
@@ -88,7 +108,6 @@
                     },
                     {
                         text: 'GitHub接口请求配额',
-                        tooltip: '每分钟更新',
                         columns: [
                             {
                                 text: '接口用量',

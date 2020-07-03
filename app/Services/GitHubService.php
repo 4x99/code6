@@ -23,6 +23,7 @@ class GitHubService
     const HTTP_DELAY = 2000;
     const HTTP_MAX_RETRIES = 5;
     const GET_CLIENT_TIMEOUT = 1800;
+    const HTTP_CODE_UNAUTHORIZED = 401;
     const RATE_LIMIT_UNAUTHENTICATED = 10; // 未授权限制请求频率：10 次 / 分钟
 
     public $clients = [];
@@ -87,7 +88,6 @@ class GitHubService
                 'headers' => ['User-Agent' => $this->userAgent],
                 'handler' => $handlerStack,
             ]));
-
             $client = ['token' => $token];
             $client['client'] = new Client($builder, 'v3.text-match');
             $client['client']->authenticate($token, null, Client::AUTH_HTTP_TOKEN);
@@ -105,17 +105,23 @@ class GitHubService
      */
     private function updateClient(&$client)
     {
-        $resource = null;
+        $code = $resource = null;
         try {
             $resource = $client['client']->api('rate_limit')->getResource('search');
         } catch (Exception $e) {
-            Log::warning($e->getMessage(), ['token' => $client['token']]);
+            $code = $e->getCode();
+            Log::debug($e->getMessage(), ['token' => $client['token']]);
         }
 
         $client['api_limit'] = $resource ? $resource->getLimit() : 0;
-        $client['api_reset_at'] = $resource ? $resource->getReset() : 0;
+        $client['api_reset_at'] = $resource ? $resource->getReset() : null;
         $client['api_remaining'] = $resource ? $resource->getRemaining() : 0;
-        $client['status'] = (int) ($resource && $client['api_limit'] != self::RATE_LIMIT_UNAUTHENTICATED);
+        if ($code == self::HTTP_CODE_UNAUTHORIZED || $client['api_limit'] == self::RATE_LIMIT_UNAUTHENTICATED) {
+            $client['status'] = ConfigToken::STATUS_ABNORMAL;
+        } else {
+            $client['status'] = $resource ? ConfigToken::STATUS_NORMAL : ConfigToken::STATUS_UNKNOWN;
+        }
+
         $this->updateConfigToken($client);
         return (bool) $client['status'];
     }
