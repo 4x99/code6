@@ -123,7 +123,7 @@ class GitHubService
         }
 
         $this->updateConfigToken($client);
-        return (bool) $client['status'];
+        return $client['status'] == ConfigToken::STATUS_NORMAL;
     }
 
     /**

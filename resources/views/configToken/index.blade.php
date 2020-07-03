@@ -20,17 +20,17 @@
                 {
                     color: 'blue',
                     text: '未知',
-                    tooltip: '没有读取到此令牌状态（可能是当前请求 GitHub 网络不通畅）'
+                    tooltip: '没有读取到此令牌状态（可能是当前请求 GitHub 网络不通畅）',
                 },
                 {
                     color: 'green',
                     text: '正常',
-                    tooltip: '此令牌可正常使用'
+                    tooltip: '此令牌可正常使用',
                 },
                 {
                     color: 'red',
                     text: '异常',
-                    tooltip: '此令牌无法使用（请检查 GitHub 账号及令牌是否正常）'
+                    tooltip: '此令牌无法使用（请检查 GitHub 账号及令牌是否正常）',
                 },
             ]
 
@@ -167,7 +167,7 @@
                                     margin: '0 20 0 0',
                                     handler: function (obj) {
                                         var record = obj.up().getWidgetRecord();
-                                        winForm(record.data)
+                                        winForm(record.data);
                                     }
                                 },
                                 {
