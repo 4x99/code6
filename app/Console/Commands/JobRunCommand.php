@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Exception;
-use Github\Client;
 use App\Models\CodeFragment;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
@@ -48,7 +47,7 @@ class JobRunCommand extends Command
     /**
      * GitHub Service
      *
-     * @var Client
+     * @var GitHubService
      */
     protected $service;
 
@@ -71,11 +70,6 @@ class JobRunCommand extends Command
     {
         $this->log = Log::channel($this->signature);
         $this->log->info('Start job');
-
-        if (!QueueJob::count()) {
-            $this->log->info('The queue is empty');
-            exit;
-        }
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
