@@ -16,6 +16,24 @@
                 }
             });
 
+            var status = [
+                {
+                    color: 'blue',
+                    text: '未知',
+                    tooltip: '没有读取到此令牌状态（可能是当前请求 GitHub 网络不通畅）',
+                },
+                {
+                    color: 'green',
+                    text: '正常',
+                    tooltip: '此令牌可正常使用',
+                },
+                {
+                    color: 'red',
+                    text: '异常',
+                    tooltip: '此令牌无法使用（请检查 GitHub 账号及令牌是否异常）',
+                },
+            ]
+
             var content = '';
             content += '<p class="tip-title">1. 令牌是什么？<span></p>';
             content += '<p>用来请求 GitHub API 的 Token（即 GitHub personal access token）</p><br/>';
@@ -25,7 +43,7 @@
             content += '<p class="tip-title">3. 为何需要配置多个令牌？</p>';
             content += '<p>监控需要大量请求 GitHub API，而 GitHub 限制了 API 的请求速率';
             content += '（<a target="_blank" href="https://developer.github.com/v3/#rate-limiting">GitHub API v3 - Rate limiting</a>）</p>';
-            content += '<p>因此需要多个 GitHub 账号创建令牌用于轮询请求（建议至少配置 5 个令牌）</p>';
+            content += '<p>因此需要多个 GitHub 账号创建令牌用于轮询请求（建议至少配置 3 个令牌）</p>';
 
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
@@ -71,13 +89,15 @@
                     },
                     {
                         text: '状态',
-                        tooltip: '每分钟更新',
                         dataIndex: 'status',
                         width: 150,
                         align: 'center',
-                        xtype: 'booleancolumn',
-                        trueText: '<div class="tag tag-green">正常</div>',
-                        falseText: '<div class="tag tag-red">异常</div>',
+                        renderer: function (value, cellmeta) {
+                            var data = status[value];
+                            var tpl = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>');
+                            cellmeta.tdAttr = 'data-qtip="' + data.tooltip + '"'
+                            return tpl.apply(data);
+                        }
                     },
                     {
                         text: '创建时间',
@@ -88,7 +108,6 @@
                     },
                     {
                         text: 'GitHub接口请求配额',
-                        tooltip: '每分钟更新',
                         columns: [
                             {
                                 text: '接口用量',
@@ -148,7 +167,7 @@
                                     margin: '0 20 0 0',
                                     handler: function (obj) {
                                         var record = obj.up().getWidgetRecord();
-                                        winForm(record.data)
+                                        winForm(record.data);
                                     }
                                 },
                                 {
