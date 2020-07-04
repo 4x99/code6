@@ -351,7 +351,7 @@
                                 },
                                 {
                                     text: '更多',
-                                    iconCls: 'icon-bullet-orange',
+                                    iconCls: 'icon-bullet-blue',
                                     margin: '0 0 0 10',
                                     menu: {
                                         items: [

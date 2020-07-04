@@ -30,8 +30,8 @@ class HomeController extends Controller
     {
         $data = [
             'codeLeakCount' => CodeLeak::count(),
-            'codeLeakPending' => CodeLeak::where('status', 0)->count(),
-            'codeLeakSolved' => CodeLeak::where('status', 3)->count(),
+            'codeLeakPending' => CodeLeak::where('status', CodeLeak::STATUS_PENDING)->count(),
+            'codeLeakSolved' => CodeLeak::where('status', CodeLeak::STATUS_SOLVED)->count(),
             'queueJobCount' => QueueJob::count(),
         ];
         return ['success' => true, 'data' => $data];
@@ -88,8 +88,8 @@ class HomeController extends Controller
     public function tokenQuota()
     {
         try {
-            $total = ConfigToken::where('status', 1)->sum('api_limit');
-            $remaining = ConfigToken::where('status', 1)->sum('api_remaining');
+            $total = ConfigToken::where('status', ConfigToken::STATUS_NORMAL)->sum('api_limit');
+            $remaining = ConfigToken::where('status', ConfigToken::STATUS_NORMAL)->sum('api_remaining');
             $used = $total - $remaining;
             $data = [
                 [
