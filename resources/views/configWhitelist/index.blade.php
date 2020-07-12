@@ -19,6 +19,7 @@
             // 白名单列表
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
+                selType: 'checkboxmodel',
                 tbar: {
                     margin: '5 12 15 18',
                     items: [
@@ -27,6 +28,44 @@
                             html: '提示：扫描任务将自动忽略白名单内的仓库',
                         },
                         '->',
+                        {
+                            text: '批量删除',
+                            margin: '0 13 0 0',
+                            iconCls: 'icon-cross',
+                            handler: function () {
+                                Ext.Msg.show({
+                                    title: '提示',
+                                    iconCls: 'icon-page',
+                                    message: '确定执行此操作？',
+                                    buttons: Ext.Msg.YESNO,
+                                    fn: function (btn) {
+                                        if (btn !== 'yes') {
+                                            return;
+                                        }
+                                        var records = grid.getSelectionModel().getSelection();
+                                        if (!records.length) {
+                                            tool.toast('请先勾选记录！');
+                                            return;
+                                        }
+                                        var id = [];
+                                        for (var record of records) {
+                                            id.push(record.get('id'));
+                                        }
+
+                                        var params = {id: Ext.encode(id)};
+                                        tool.ajax('DELETE', '/api/configWhitelist/batchDestroy', params, function (rsp) {
+                                            if (rsp.success) {
+                                                tool.toast('操作成功！', 'success');
+                                                grid.store.reload();
+                                                grid.getSelectionModel().clearSelections();
+                                            } else {
+                                                tool.toast(rsp.message, 'error');
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        },
                         {
                             text: '新增白名单',
                             iconCls: 'icon-add',
