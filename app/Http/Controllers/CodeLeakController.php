@@ -118,7 +118,7 @@ class CodeLeakController extends Controller
         try {
             $uuid = json_decode($request->input('uuid'), true);
             if ($success = CodeLeak::whereIn('uuid', $uuid)->delete()) {
-                $success = CodeFragment::whereIn('uuid', $uuid)->delete();
+                CodeFragment::whereIn('uuid', $uuid)->delete();
             }
             return ['success' => $success];
         } catch (\Exception $exception) {
