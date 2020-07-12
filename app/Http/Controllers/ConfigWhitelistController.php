@@ -60,4 +60,21 @@ class ConfigWhitelistController extends Controller
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
+
+    /**
+     * 批量删除白名单
+     *
+     * @param  Request  $request
+     * @return array
+     */
+    public function batchDestroy(Request $request)
+    {
+        try {
+            $id = json_decode($request->input('id'), true);
+            $success = ConfigWhitelist::destroy($id);
+            return ['success' => $success];
+        } catch (\Exception $exception) {
+            return ['success' => false, 'message' => $exception->getMessage()];
+        }
+    }
 }
