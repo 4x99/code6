@@ -57,6 +57,13 @@ return [
             'level' => 'info',
             'days' => 7,
         ],
+
+        'code6:notify' => [
+            'driver' => 'daily',
+            'path' => storage_path('logs/notify.log'),
+            'level' => 'info',
+            'days' => 7,
+        ],
     ],
 
 ];
