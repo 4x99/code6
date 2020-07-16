@@ -201,6 +201,22 @@ a {
     background: url(../image/icon/zoom.png) no-repeat;
 }
 
+.icon-cog {
+    background: url(../image/icon/cog.png) no-repeat;
+}
+
+.icon-email {
+    background: url(../image/icon/email.png) no-repeat;
+}
+
+.icon-ding-talk {
+    background: url(../image/icon/ding-talk.png) no-repeat;
+}
+
+.icon-work-wechat {
+    background: url(../image/icon/work-wechat.png) no-repeat;
+}
+
 /* Scroll Bar */
 ::-webkit-scrollbar-track-piece {
     background: #F5F5F5;

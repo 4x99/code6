@@ -59,6 +59,10 @@
                                                 text: '白名单配置',
                                                 url: '/configWhitelist',
                                             },
+                                            {
+                                                text: '通知配置',
+                                                url: '/configNotify',
+                                            },
                                         ]
                                     }
                                 },
