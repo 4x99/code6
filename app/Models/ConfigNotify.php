@@ -16,5 +16,5 @@ class ConfigNotify extends Model
     const TYPE_WORK_WECHAT = 'workWechat';
 
     protected $table = 'config_notify';
-    protected $fillable = ['type', 'value', 'enable'];
+    protected $fillable = ['type', 'value', 'enable', 'interval'];
 }

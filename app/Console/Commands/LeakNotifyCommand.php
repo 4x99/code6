@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\CodeLeak;
 use App\Models\ConfigNotify;
 use App\Services\NoticeService;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class LeakNotifyCommand extends Command
@@ -38,22 +39,26 @@ class LeakNotifyCommand extends Command
      */
     public function handle()
     {
-        $now = now();
-        $fiveMinutesAgo = now()->subMinutes(5);
-        $count = CodeLeak::whereBetween('created_at', [$fiveMinutesAgo, $now])->count();
-        if (!$count) {
-            return;
-        }
+        $time = strtotime(date('Y-m-d H:i'));
 
-        // 消息通知
-        $content = "扫描时间：{$now->format('Y-m-d H:i:s')} - {$fiveMinutesAgo->format('Y-m-d H:i:s')}\n";
-        $content .= "扫描结果：共发现 {$count} 处代码泄露！\n";
         $noticeService = new NoticeService();
         $configs = ConfigNotify::get();
         foreach ($configs as $config) {
-            if (!$config->enable) {
+            // 通知开启 + 通知间隔匹配
+            if (!$config->enable || $time % ($config->interval * 60) != 0) {
                 continue;
             }
+
+            // 泄露统计
+            $end = Carbon::parse()->timestamp($time);
+            $start = Carbon::parse()->timestamp($time)->subMinutes($config->interval);
+            if (!$count = CodeLeak::query()->whereBetween('created_at', [$start, $end])->count()) {
+                continue;
+            }
+
+            // 泄露通知
+            $content = "扫描时间：{$start->format('Y-m-d H:i:s')} - {$end->format('Y-m-d H:i:s')}\n";
+            $content .= "扫描结果：共发现 {$count} 处代码泄露！\n";
             switch ($config->type) {
                 case ConfigNotify::TYPE_EMAIL:
                     $emailContent = str_replace("\n", '<br/>', $content);

@@ -17,6 +17,7 @@ class CreateConfigNotifyTable extends Migration
             $table->id();
             $table->string('type', 32)->unique();
             $table->text('value')->nullable();
+            $table->integer('interval')->default(1);
             $table->boolean('enable')->default(1);
             $table->timestamps();
         });

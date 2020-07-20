@@ -25,13 +25,16 @@
                             iconCls: 'icon-page-edit',
                             width: 90,
                             handler: function () {
-                                var value = this.up('form').getForm().getValues();
-                                var enable = value.enable;
-                                delete value.enable;
+                                var values = this.up('form').getForm().getValues();
+                                var enable = values.enable;
+                                var interval = values.interval;
+                                delete values.enable;
+                                delete values.interval;
                                 var params = {
                                     type: type,
+                                    value: JSON.stringify(values),
                                     enable: enable,
-                                    value: JSON.stringify(value)
+                                    interval: interval,
                                 }
                                 tool.ajax('POST', '/api/configNotify', params, function (rsp) {
                                     if (rsp.success) {
@@ -114,7 +117,7 @@
                         name: 'to',
                         fieldLabel: '接收邮箱',
                         value: "{{$config['email']['value']['to']??''}}",
-                        emptyText:'支持多个，每行一个',
+                        emptyText: '支持多个，每行一个',
                     },
                     {
                         xtype: 'combo',
@@ -127,7 +130,86 @@
                         editable: false,
                         value: '{{$config['email']['enable']??0}}',
                     },
+                    {
+                        xtype: 'numberfield',
+                        name: 'interval',
+                        minValue: 1,
+                        fieldLabel: '通知间隔',
+                        value: '{{$config['email']['interval']??5}}',
+                        listeners: {
+                            render: function (c) {
+                                Ext.QuickTips.register({
+                                    target: c.getEl(),
+                                    text: '分钟'
+                                });
+                            }
+                        },
+                    },
                     btn('email')
+                ]
+            });
+
+            var workWechat = Ext.create('Ext.form.Panel', {
+                title: '企业微信',
+                iconCls: 'icon-work-wechat',
+                defaults: itemDefaults,
+                tools: [{
+                    iconCls: 'icon-cog',
+                    tooltip: '企业微信文档',
+                    handler: function () {
+                        window.open('https://work.weixin.qq.com/help?person_id=1&doc_id=13376')
+                    },
+                }],
+                items: [
+                    {
+                        xtype: 'textfield',
+                        name: 'key',
+                        fieldLabel: '　访问秘钥',
+                        value: '{{$config['workWechat']['value']['key']??''}}',
+                    },
+                    {
+                        xtype: 'textareafield',
+                        name: 'mentioned_list',
+                        fieldLabel: '@用户 ID',
+                        allowBlank: true,
+                        value: '{{$config['workWechat']['value']['mentioned_list']??''}}',
+                        emptyText: '支持多个，每行一个',
+                    },
+                    {
+                        xtype: 'textareafield',
+                        name: 'mentioned_mobile_list',
+                        fieldLabel: '@手机列表',
+                        allowBlank: true,
+                        value: '{{$config['workWechat']['value']['mentioned_mobile_list']??''}}',
+                        emptyText: '支持多个，每行一个',
+                    },
+                    {
+                        xtype: 'combo',
+                        name: 'enable',
+                        fieldLabel: '　是否启用',
+                        store: comboStore,
+                        queryMode: 'local',
+                        displayField: 'text',
+                        valueField: 'value',
+                        editable: false,
+                        value: '{{$config['workWechat']['enable']??0}}',
+                    },
+                    {
+                        xtype: 'numberfield',
+                        name: 'interval',
+                        minValue: 1,
+                        fieldLabel: '　通知间隔',
+                        value: '{{$config['workWechat']['interval']??5}}',
+                        listeners: {
+                            render: function (c) {
+                                Ext.QuickTips.register({
+                                    target: c.getEl(),
+                                    text: '分钟'
+                                });
+                            }
+                        },
+                    },
+                    btn('workWechat')
                 ]
             });
 
@@ -135,7 +217,7 @@
                 title: '钉钉',
                 iconCls: 'icon-ding-talk',
                 defaults: itemDefaults,
-                tools:[{
+                tools: [{
                     iconCls: 'icon-cog',
                     tooltip: '钉钉文档',
                     handler: function () {
@@ -155,7 +237,7 @@
                         fieldLabel: '@手机列表',
                         allowBlank: true,
                         value: '{{$config['dingTalk']['value']['atMobiles']??''}}',
-                        emptyText:'支持多个，每行一个',
+                        emptyText: '支持多个，每行一个',
                     },
                     {
                         xtype: 'combo',
@@ -179,59 +261,24 @@
                         editable: false,
                         value: '{{$config['dingTalk']['enable']??0}}',
                     },
+                    {
+                        xtype: 'numberfield',
+                        name: 'interval',
+                        minValue: 1,
+                        fieldLabel: '　通知间隔',
+                        value: '{{$config['dingTalk']['interval']??5}}',
+                        listeners: {
+                            render: function (c) {
+                                Ext.QuickTips.register({
+                                    target: c.getEl(),
+                                    text: '分钟'
+                                });
+                            }
+                        },
+                    },
                     btn('dingTalk')
                 ]
             });
-
-            var workWechat = Ext.create('Ext.form.Panel', {
-                title: '企业微信',
-                iconCls: 'icon-work-wechat',
-                defaults: itemDefaults,
-                tools:[{
-                    iconCls: 'icon-cog',
-                    tooltip: '企业微信文档',
-                    handler: function () {
-                        window.open('https://work.weixin.qq.com/help?person_id=1&doc_id=13376')
-                    },
-                }],
-                items: [
-                    {
-                        xtype: 'textfield',
-                        name: 'key',
-                        fieldLabel: '　访问秘钥',
-                        value: '{{$config['workWechat']['value']['key']??''}}',
-                    },
-                    {
-                        xtype: 'textareafield',
-                        name: 'mentioned_list',
-                        fieldLabel: '@用户 ID',
-                        allowBlank: true,
-                        value: '{{$config['workWechat']['value']['mentioned_list']??''}}',
-                        emptyText:'支持多个，每行一个',
-                    },
-                    {
-                        xtype: 'textareafield',
-                        name: 'mentioned_mobile_list',
-                        fieldLabel: '@手机列表',
-                        allowBlank: true,
-                        value: '{{$config['workWechat']['value']['mentioned_mobile_list']??''}}',
-                        emptyText:'支持多个，每行一个',
-                    },
-                    {
-                        xtype: 'combo',
-                        name: 'enable',
-                        fieldLabel: '　是否启用',
-                        store: comboStore,
-                        queryMode: 'local',
-                        displayField: 'text',
-                        valueField: 'value',
-                        editable: false,
-                        value: '{{$config['workWechat']['enable']??0}}',
-                    },
-                    btn('workWechat')
-                ]
-            });
-
 
             Ext.create('Ext.panel.Panel', {
                 renderTo: Ext.getBody(),
@@ -241,12 +288,12 @@
                     layout: 'form',
                     columnWidth: 1 / 3,
                     margin: 5,
-                    height: 400,
+                    height: 450,
                     iconCls: 'icon-page',
                     bodyPadding: 30,
                     bodyStyle: 'background:#FAFAFA'
                 },
-                items: [email, dingTalk, workWechat]
+                items: [email, workWechat, dingTalk,]
             });
         })
         ;

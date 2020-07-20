@@ -30,8 +30,9 @@ class ConfigNotifyController extends Controller
                 'type' => ['required', 'string'],
                 'value' => ['required', 'string'],
                 'enable' => ['required', 'integer'],
+                'interval' => ['required', 'integer'],
             ]);
-            $params = $request->all(['type', 'value', 'enable']);
+            $params = $request->all(['type', 'value', 'enable', 'interval']);
             if ($configNotify = ConfigNotify::whereType($params['type'])->first()) {
                 $success = (bool) $configNotify->update($params);
             } else {

@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('code6:job-add')->everyMinute();
         $schedule->command('code6:job-run')->everyMinute()->withoutOverlapping();
-        $schedule->command('code6:leak-notify')->everyFiveMinutes();
+        $schedule->command('code6:leak-notify')->everyMinute();
     }
 
     /**
