@@ -8,14 +8,14 @@ use App\Services\NotifyService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
-class LeakNotifyCommand extends Command
+class NotificationCommand extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'code6:leak-notify';
+    protected $signature = 'code6:notification';
 
     /**
      * The console command description.
@@ -39,9 +39,9 @@ class LeakNotifyCommand extends Command
      */
     public function handle()
     {
-        $time = strtotime(date('Y-m-d H:i'));
+        $time = strtotime(date('Y-m-d H:i',LARAVEL_START));
 
-        $noticeService = new NotifyService();
+        $notifyService = new NotifyService();
         $configs = ConfigNotify::get();
         foreach ($configs as $config) {
             // 通知开启 + 通知间隔匹配
@@ -52,7 +52,7 @@ class LeakNotifyCommand extends Command
             // 泄露统计
             $end = Carbon::parse()->timestamp($time);
             $start = Carbon::parse()->timestamp($time)->subMinutes($config->interval);
-            if (!$count = CodeLeak::query()->whereBetween('created_at', [$start, $end])->count()) {
+            if (!$count = CodeLeak::whereStatus(CodeLeak::STATUS_PENDING)->whereBetween('created_at', [$start, $end])->count()) {
                 continue;
             }
 
@@ -63,19 +63,19 @@ class LeakNotifyCommand extends Command
             switch ($config->type) {
                 case ConfigNotify::TYPE_EMAIL:
                     $emailContent = str_replace("\n", '<br/>', $content);
-                    $noticeService->email($emailContent, $config);
+                    $notifyService->email($emailContent, $config);
                     break;
                 case ConfigNotify::TYPE_DING_TALK:
-                    $noticeService->dingTalk($content, $config);
+                    $notifyService->dingTalk($content, $config);
                     break;
                 case ConfigNotify::TYPE_WORK_WECHAT:
-                    $noticeService->workWechat($content, $config);
+                    $notifyService->workWechat($content, $config);
                     break;
                 case ConfigNotify::TYPE_TELEGRAM:
-                    $noticeService->telegram($content, $config);
+                    $notifyService->telegram($content, $config);
                     break;
                 case ConfigNotify::TYPE_WEBHOOK:
-                    $noticeService->webhook($content, $config);
+                    $notifyService->webhook($content, $config);
                     break;
             }
         }
