@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConfigNotify;
+use App\Services\NotifyService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 class ConfigNotifyController extends Controller
 {
-
     public function view()
     {
         $data = [
@@ -27,41 +28,44 @@ class ConfigNotifyController extends Controller
     {
         try {
             $request->validate([
-                'type' => ['required', 'string'],
-                'value' => ['required', 'string'],
+                'type' => ['required', Rule::in(ConfigNotify::TYPE)],
                 'enable' => ['required', 'integer'],
-                'interval' => ['required', 'integer'],
+                'interval_min' => ['required', 'integer'],
             ]);
-            $params = $request->all(['type', 'value', 'enable', 'interval']);
-            if ($configNotify = ConfigNotify::whereType($params['type'])->first()) {
-                $success = (bool) $configNotify->update($params);
-            } else {
-                $configNotify = ConfigNotify::create($params);
-                $success = (bool) $configNotify;
-            }
-            return ['success' => $success, 'data' => $configNotify];
+            $data = $request->only(['enable', 'interval_min']);
+            $data['value'] = json_encode($request->except(['type', 'enable', 'interval_min']));
+            $data = ConfigNotify::updateOrCreate(['type' => $request->input('type')], $data);
+            return ['success' => true, 'data' => $data];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
     /**
-     * 获取配置
+     * 通知测试
+     *
+     * @param  Request  $request
+     * @return mixed
+     */
+    public function test(Request $request)
+    {
+        $config = $request->all();
+        $type = $config['type'];
+        $service = new NotifyService();
+        return $service->$type('码小六消息通知测试', $config);
+    }
+
+    /**
+     * 读取配置
      *
      * @return mixed
      */
     private function getConfig()
     {
         $config = ConfigNotify::get()->keyBy('type')->toArray();
-        foreach (ConfigNotify::TYPE as $type) {
-            $typeConfig = $config[$type] ?? ['enable' => 0, 'value' => ''];
-            $typeConfig['value'] = json_decode($typeConfig['value'], true) ?: [];
-            foreach ($typeConfig['value'] as &$item) {
-                $item = str_replace("\n", "\\n", $item);// 防止多行报错
-            }
-            $config[$type] = $typeConfig;
+        foreach ($config as &$value) {
+            $value['value'] = json_decode($value['value'], true);
         }
         return $config;
     }
-
 }

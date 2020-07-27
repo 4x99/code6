@@ -11,7 +11,7 @@ Ext.define('plugin.toast', {
             this.div.applyStyles({
                 position: 'fixed',
                 right: '20px',
-                bottom: '20px',
+                bottom: '48px',
                 width: '300px',
                 zIndex: 99999,
                 fontSize: '14px',

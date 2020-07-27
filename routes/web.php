@@ -49,6 +49,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('/api/configWhitelist', 'ConfigWhitelistController');
 
     Route::get('/configNotify', 'configNotifyController@view');
+    Route::post('/api/test', 'configNotifyController@test');
     Route::resource('/api/configNotify', 'configNotifyController');
 
     Route::resource('/api/codeFragment', 'CodeFragmentController');

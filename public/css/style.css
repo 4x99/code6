@@ -21,6 +21,10 @@ a {
 }
 
 /* ExtJS */
+.x-panel-header-title-default {
+    font-size: 14px;
+}
+
 .x-menu-item-text-default {
     letter-spacing: 3px;
     color: #666;
@@ -185,6 +189,10 @@ a {
     background: url(../image/icon/key.png) no-repeat;
 }
 
+.icon-page-lightning {
+    background: url(../image/icon/page-lightning.png) no-repeat;
+}
+
 .icon-page {
     background: url(../image/icon/page.png) no-repeat;
 }
@@ -232,7 +240,6 @@ a {
 .icon-zoom {
     background: url(../image/icon/zoom.png) no-repeat;
 }
-
 
 /* Scroll Bar */
 ::-webkit-scrollbar-track-piece {

@@ -4,366 +4,303 @@
         Ext.onReady(function () {
             Ext.QuickTips.init(true, {dismissDelay: 0});
 
-            function btn(type) {
-                return {
-                    xtype: 'buttongroup',
-                    baseCls: 'border:0',
-                    items: [
-                        {
-                            text: '重置',
-                            iconCls: 'icon-page-wrench',
-                            margin: '0 15 0 105',
-                            padding: '5 6 5 15',
-                            width: 90,
-                            handler: function () {
-                                this.up('form').reset();
-                            }
-                        },
-                        Ext.create('Ext.Button', {
-                            text: '保存',
-                            padding: '5 6 5 15',
-                            iconCls: 'icon-page-edit',
-                            width: 90,
-                            handler: function () {
-                                var values = this.up('form').getForm().getValues();
-                                var enable = values.enable;
-                                var interval = values.interval;
-                                delete values.enable;
-                                delete values.interval;
-                                var params = {
-                                    type: type,
-                                    value: JSON.stringify(values),
-                                    enable: enable,
-                                    interval: interval,
-                                }
-                                tool.ajax('POST', '/api/configNotify', params, function (rsp) {
-                                    if (rsp.success) {
-                                        tool.toast('操作成功！', 'success');
-                                    } else {
-                                        tool.toast('操作失败！', 'error');
-                                    }
-                                });
-                            }
-                        })
-                    ]
+            Ext.define('panel', {
+                extend: 'Ext.form.Panel',
+                defaults: {
+                    xtype: 'textfield',
+                    width: '100%',
+                    margin: '0 0 15 0',
+                    allowBlank: false,
+                    labelAlign: 'right',
+                    labelWidth: 85,
                 }
-            }
-
-            var itemDefaults = {
-                allowBlank: false,
-                xtype: 'textfield',
-                labelWidth: 100,
-                width: 300,
-                margin: '0 0 18 0',
-            };
-
-            var comboStore = Ext.create('Ext.data.Store', {
-                data: [
-                    {text: '是', value: 1},
-                    {text: '否', value: 0},
-                ]
             });
 
-            var textAreaTip = function (field) {
-                Ext.QuickTips.register({
-                    target: field.el,
-                    text: '支持多个，每行一个'
-                });
-            };
-
-            var email = Ext.create('Ext.form.Panel', {
+            var email = Ext.create('panel', {
                 title: '邮件',
                 iconCls: 'icon-email',
-                defaults: itemDefaults,
                 items: [
+                    createEnableField('email'),
                     {
                         xtype: 'combo',
                         name: 'host',
                         fieldLabel: '服 务 器',
-                        store: Ext.create('Ext.data.Store', {
+                        store: {
                             data: [
-                                {value: 'smtp.qq.com'},
-                                {value: 'smtp.163.com'},
-                                {value: 'smtp.126.com'},
-                                {value: 'smtp.aliyun.com'},
-                                {value: 'smtp.gmail.com'},
-                                {value: 'smtp.exmail.qq.com'}
+                                {text: 'smtp.qq.com'},
+                                {text: 'smtp.163.com'},
+                                {text: 'smtp.126.com'},
+                                {text: 'smtp.aliyun.com'},
+                                {text: 'smtp.gmail.com'},
+                                {text: 'smtp.exmail.qq.com'},
                             ]
-                        }),
+                        },
                         queryMode: 'local',
-                        displayField: 'value',
-                        valueField: 'value',
+                        valueField: 'text',
                         typeAhead: true,
-                        value: '{{$config['email']['value']['host']??''}}',
+                        value: getConfig('email.value.host'),
                     },
                     {
                         xtype: 'numberfield',
                         name: 'port',
                         fieldLabel: '端　　口',
-                        value: '{{$config['email']['value']['port']??25}}',
+                        value: getConfig('email.value.port', 465),
+                        allowBlank: true,
+                        listeners: {
+                            render: function (c) {
+                                Ext.QuickTips.register({
+                                    target: c.getEl(),
+                                    text: '已启用 SSL 协议，通常使用 465 而非 25 端口',
+                                });
+                            }
+                        }
                     },
                     {
                         name: 'username',
                         fieldLabel: '账　　号',
-                        value: '{{$config['email']['value']['username']??''}}',
+                        value: getConfig('email.value.username'),
                     },
                     {
                         name: 'password',
                         fieldLabel: '授 权 码',
-                        value: '{{$config['email']['value']['password']??''}}',
+                        value: getConfig('email.value.password'),
                     },
                     {
                         xtype: 'textareafield',
                         name: 'to',
                         fieldLabel: '接收邮箱',
-                        value: "{{$config['email']['value']['to']??''}}",
-                        emptyText: '支持多个，每行一个',
+                        emptyText: '支持多个邮箱（一行一个）',
+                        value: getConfig('email.value.to'),
                     },
-                    {
-                        xtype: 'combo',
-                        name: 'enable',
-                        fieldLabel: '是否启用',
-                        store: comboStore,
-                        queryMode: 'local',
-                        displayField: 'text',
-                        valueField: 'value',
-                        editable: false,
-                        value: '{{$config['email']['enable']??0}}',
-                    },
-                    {
-                        xtype: 'numberfield',
-                        name: 'interval',
-                        minValue: 1,
-                        fieldLabel: '通知间隔',
-                        value: '{{$config['email']['interval']??5}}',
-                        listeners: {
-                            render: function (c) {
-                                Ext.QuickTips.register({
-                                    target: c.getEl(),
-                                    text: '分钟'
-                                });
-                            }
-                        },
-                    },
-                    btn('email')
+                    createIntervalField('email'),
+                    createBtn('email'),
                 ]
             });
 
-            var dingTalk = Ext.create('Ext.form.Panel', {
-                title: '钉钉',
-                iconCls: 'icon-ding-talk',
-                defaults: itemDefaults,
-                tools: [{
-                    iconCls: 'icon-cog',
-                    tooltip: '钉钉文档',
-                    handler: function () {
-                        window.open('https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq/e9d991e2')
-                    },
-                }],
-                items: [
-                    {
-                        xtype: 'textfield',
-                        name: 'webhook',
-                        fieldLabel: 'webhook',
-                        value: '{{$config['dingTalk']['value']['webhook']??''}}',
-                    },
-                    {
-                        xtype: 'combo',
-                        name: 'enable',
-                        fieldLabel: '　是否启用',
-                        store: comboStore,
-                        queryMode: 'local',
-                        displayField: 'text',
-                        valueField: 'value',
-                        editable: false,
-                        value: '{{$config['dingTalk']['enable']??0}}',
-                    },
-                    {
-                        xtype: 'numberfield',
-                        name: 'interval',
-                        minValue: 1,
-                        fieldLabel: '　通知间隔',
-                        value: '{{$config['dingTalk']['interval']??5}}',
-                        listeners: {
-                            render: function (c) {
-                                Ext.QuickTips.register({
-                                    target: c.getEl(),
-                                    text: '分钟'
-                                });
-                            }
-                        },
-                    },
-                    btn('dingTalk')
-                ]
-            });
-
-            var workWechat = Ext.create('Ext.form.Panel', {
-                title: '企业微信',
-                iconCls: 'icon-work-wechat',
-                defaults: itemDefaults,
-                tools: [{
-                    iconCls: 'icon-cog',
-                    tooltip: '企业微信文档',
-                    handler: function () {
-                        window.open('https://work.weixin.qq.com/help?person_id=1&doc_id=13376')
-                    },
-                }],
-                items: [
-                    {
-                        xtype: 'textfield',
-                        name: 'webhook',
-                        fieldLabel: 'webhook',
-                        value: '{{$config['workWechat']['value']['webhook']??''}}',
-                    },
-                    {
-                        xtype: 'combo',
-                        name: 'enable',
-                        fieldLabel: '　是否启用',
-                        store: comboStore,
-                        queryMode: 'local',
-                        displayField: 'text',
-                        valueField: 'value',
-                        editable: false,
-                        value: '{{$config['workWechat']['enable']??0}}',
-                    },
-                    {
-                        xtype: 'numberfield',
-                        name: 'interval',
-                        minValue: 1,
-                        fieldLabel: '　通知间隔',
-                        value: '{{$config['workWechat']['interval']??5}}',
-                        listeners: {
-                            render: function (c) {
-                                Ext.QuickTips.register({
-                                    target: c.getEl(),
-                                    text: '分钟'
-                                });
-                            }
-                        },
-                    },
-                    btn('workWechat')
-                ]
-            });
-
-            var telegram = Ext.create('Ext.form.Panel', {
-                title: 'Telegram',
-                iconCls: 'icon-telegram',
-                defaults: itemDefaults,
-                tools: [{
-                    iconCls: 'icon-cog',
-                    tooltip: 'Telegram文档',
-                    handler: function () {
-                        window.open('https://core.telegram.org/bots/api')
-                    },
-                }],
-                items: [
-                    {
-                        xtype: 'textfield',
-                        name: 'token',
-                        fieldLabel: '　token',
-                        value: '{{$config['telegram']['value']['token']??''}}',
-                    },
-                    {
-                        xtype: 'textfield',
-                        name: 'chat_id',
-                        fieldLabel: 'chat_id',
-                        value: '{{$config['telegram']['value']['chat_id']??''}}',
-                    },
-                    {
-                        xtype: 'combo',
-                        name: 'enable',
-                        fieldLabel: '是否启用',
-                        store: comboStore,
-                        queryMode: 'local',
-                        displayField: 'text',
-                        valueField: 'value',
-                        editable: false,
-                        value: '{{$config['telegram']['enable']??0}}',
-                    },
-                    {
-                        xtype: 'numberfield',
-                        name: 'interval',
-                        minValue: 1,
-                        fieldLabel: '通知间隔',
-                        value: '{{$config['telegram']['interval']??5}}',
-                        listeners: {
-                            render: function (c) {
-                                Ext.QuickTips.register({
-                                    target: c.getEl(),
-                                    text: '分钟'
-                                });
-                            }
-                        },
-                    },
-                    btn('telegram')
-                ]
-            });
-
-            var webhook = Ext.create('Ext.form.Panel', {
+            var webhook = Ext.create('panel', {
                 title: 'Webhook',
-                iconCls: 'icon-page-wrench',
-                defaults: itemDefaults,
+                iconCls: 'icon-page-star',
                 items: [
-                    {
-                        xtype: 'textfield',
-                        name: 'webhook',
-                        fieldLabel: 'webhook',
-                        value: '{{$config['webhook']['value']['webhook']??''}}',
-                    },
+                    createEnableField('webhook'),
+                    createWebhookField('webhook'),
                     {
                         xtype: 'textareafield',
                         name: 'headers',
-                        fieldLabel: '请求头',
-                        value: "{{$config['webhook']['value']['headers']??''}}",
-                        emptyText: '每行一个,格式如：\nkey: value',
+                        fieldLabel: '请 求 头',
+                        allowBlank: true,
+                        emptyText: '示例：\nUser-Agent: Code6\nContent-Type: application/json;charset=utf8',
+                        value: getConfig('webhook.value.headers'),
                     },
-                    {
-                        xtype: 'combo',
-                        name: 'enable',
-                        fieldLabel: '是否启用',
-                        store: comboStore,
-                        queryMode: 'local',
-                        displayField: 'text',
-                        valueField: 'value',
-                        editable: false,
-                        value: '{{$config['webhook']['enable']??0}}',
-                    },
-                    {
-                        xtype: 'numberfield',
-                        name: 'interval',
-                        minValue: 1,
-                        fieldLabel: '通知间隔',
-                        value: '{{$config['webhook']['interval']??5}}',
-                        listeners: {
-                            render: function (c) {
-                                Ext.QuickTips.register({
-                                    target: c.getEl(),
-                                    text: '分钟'
-                                });
-                            }
-                        },
-                    },
-                    btn('webhook')
+                    createIntervalField('webhook'),
+                    createBtn('webhook'),
                 ]
             });
 
+            var telegram = Ext.create('panel', {
+                title: 'Telegram',
+                iconCls: 'icon-telegram',
+                tools: [{
+                    iconCls: 'icon-page',
+                    tooltip: 'Telegram 文档',
+                    handler: function () {
+                        tool.winOpen('https://core.telegram.org/bots/api');
+                    },
+                }],
+                items: [
+                    createEnableField('telegram'),
+                    {
+                        name: 'chat_id',
+                        fieldLabel: '频　　道',
+                        value: getConfig('telegram.value.chat_id'),
+                        emptyText: '请填写 chat_id ..',
+                    },
+                    {
+                        name: 'token',
+                        fieldLabel: '令　　牌',
+                        value: getConfig('telegram.value.token'),
+                        emptyText: '请填写 token ..',
+                    },
+                    createIntervalField('telegram'),
+                    createBtn('telegram'),
+                ]
+            });
+
+            var dingTalk = Ext.create('panel', {
+                title: '钉钉',
+                iconCls: 'icon-ding-talk',
+                height: 280,
+                tools: [{
+                    iconCls: 'icon-page',
+                    tooltip: '钉钉文档',
+                    handler: function () {
+                        tool.winOpen('https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq');
+                    }
+                }],
+                items: [
+                    createEnableField('dingTalk'),
+                    createWebhookField('dingTalk'),
+                    createIntervalField('dingTalk'),
+                    createBtn('dingTalk'),
+                ]
+            });
+
+            var workWechat = Ext.create('panel', {
+                title: '企业微信',
+                iconCls: 'icon-work-wechat',
+                height: 280,
+                tools: [{
+                    iconCls: 'icon-page',
+                    tooltip: '企业微信文档',
+                    handler: function () {
+                        tool.winOpen('https://work.weixin.qq.com/help?doc_id=13376');
+                    }
+                }],
+                items: [
+                    createEnableField('workWechat'),
+                    createWebhookField('workWechat'),
+                    createIntervalField('workWechat'),
+                    createBtn('workWechat'),
+                ]
+            });
+
+            function createBtn(type) {
+                return {
+                    xtype: 'buttongroup',
+                    baseCls: 'border:0',
+                    layout: {
+                        type: 'hbox',
+                        pack: 'end',
+                    },
+                    defaults: {
+                        padding: '4 8 4 13',
+                        width: 100,
+                    },
+                    items: [
+                        {
+                            text: '重置',
+                            iconCls: 'icon-page-wrench',
+                            handler: function () {
+                                this.up('form').reset();
+                            }
+                        },
+                        {
+                            text: '测试',
+                            iconCls: 'icon-page-lightning',
+                            margin: '0 20',
+                            tooltip: '测试发送通知',
+                            handler: function () {
+                                var form = this.up('form');
+                                if (!form.isValid()) {
+                                    tool.toast('信息有误！');
+                                    return false;
+                                }
+
+                                var params = this.up('form').getForm().getValues();
+                                params.type = type;
+                                tool.ajax('POST', '/api/test', params, function (rsp) {
+                                    if (rsp.success) {
+                                        tool.toast('发送成功！', 'success');
+                                    } else {
+                                        tool.toast(rsp.message, 'error');
+                                    }
+                                });
+                            }
+                        },
+                        {
+                            text: '保存',
+                            iconCls: 'icon-page-edit',
+                            handler: function () {
+                                var form = this.up('form');
+                                if (!form.isValid()) {
+                                    tool.toast('信息有误！');
+                                    return false;
+                                }
+
+                                var params = this.up('form').getForm().getValues();
+                                params.type = type;
+                                tool.ajax('POST', '/api/configNotify', params, function (rsp) {
+                                    if (rsp.success) {
+                                        tool.toast('保存成功！', 'success');
+                                    } else {
+                                        tool.toast('保存失败！', 'error');
+                                    }
+                                });
+                            }
+                        }
+                    ]
+                }
+            }
+
+            function createEnableField(type) {
+                return {
+                    xtype: 'combo',
+                    name: 'enable',
+                    fieldLabel: '是否启用',
+                    store: {
+                        data: [
+                            {text: '是', value: 1},
+                            {text: '否', value: 0},
+                        ]
+                    },
+                    valueField: 'value',
+                    editable: false,
+                    value: getConfig(type + '.enable', 0),
+                };
+            }
+
+            function createIntervalField(type) {
+                return {
+                    xtype: 'numberfield',
+                    name: 'interval_min',
+                    minValue: 1,
+                    fieldLabel: '通知间隔',
+                    step: 5,
+                    value: getConfig(type + '.interval_min', 5),
+                    listeners: {
+                        render: function (c) {
+                            Ext.QuickTips.register({
+                                target: c.getEl(),
+                                text: '分钟',
+                            });
+                        }
+                    }
+                };
+            }
+
+            function createWebhookField(type) {
+                return {
+                    name: 'webhook',
+                    fieldLabel: '地　　址',
+                    value: getConfig(type + '.value.webhook'),
+                    emptyText: '请填写 webhook 地址 ..',
+                };
+            }
+
+            // 读取配置
+            function getConfig(key = '', defaultValue = '') {
+                var data = @json($config);
+                Ext.each(key.split('.'), function (attr) {
+                    data = data[attr];
+                    data = data ? data : defaultValue;
+                    return data !== undefined;
+                });
+                return data;
+            }
 
             Ext.create('Ext.panel.Panel', {
                 renderTo: Ext.getBody(),
                 layout: 'column',
-                margin: '0 10 0 10',
+                margin: '5 15 0 15',
                 defaults: {
                     layout: 'form',
                     columnWidth: 1 / 3,
-                    margin: 5,
-                    height: 440,
-                    iconCls: 'icon-page',
-                    bodyPadding: 30,
-                    bodyStyle: 'background:#FAFAFA'
+                    margin: 10,
+                    height: 415,
+                    bodyPadding: 20,
+                    bodyStyle: 'background:#FAFAFA',
                 },
-                items: [email, dingTalk, workWechat, telegram, webhook]
+                items: [email, webhook, telegram, dingTalk, workWechat],
             });
-        })
-        ;
+        });
     </script>
 @endsection
