@@ -80,6 +80,18 @@
             var webhook = Ext.create('panel', {
                 title: 'Webhook',
                 iconCls: 'icon-page-star',
+                tools: [{
+                    iconCls: 'icon-page',
+                    tooltip: 'Webhook 文档',
+                    handler: function () {
+                        Ext.Msg.show({
+                            title: 'Webhook文档',
+                            iconCls: 'icon-page',
+                            modal: false,
+                            message: '请求方式：post<br/>请求参数：content',
+                        });
+                    }
+                }],
                 items: [
                     createEnableField('webhook'),
                     createWebhookField('webhook'),
