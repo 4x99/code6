@@ -46,19 +46,7 @@
                                             {
                                                 text: '扫描结果',
                                                 url: '/codeLeak',
-                                            },
-                                            {
-                                                text: '任务配置',
-                                                url: '/configJob',
-                                            },
-                                            {
-                                                text: '令牌配置',
-                                                url: '/configToken',
-                                            },
-                                            {
-                                                text: '白名单配置',
-                                                url: '/configWhitelist',
-                                            },
+                                            }
                                         ]
                                     }
                                 },
@@ -75,8 +63,49 @@
                                 ]
                             },
                             {
+                                text: '配置中心',
+                                iconCls: 'icon-cog',
+                                margin: '0 40 0 -15',
+                                menu: {
+                                    xtype: 'menu',
+                                    items: {
+                                        xtype: 'buttongroup',
+                                        columns: 2,
+                                        defaults: {
+                                            margin: '0 5 5 0',
+                                            hrefTarget: 'frame',
+                                            handler: function () {
+                                                Ext.clickMenu(-1);
+                                            }
+                                        },
+                                        items: [
+                                            {
+                                                text: '任务配置',
+                                                iconCls: 'icon-page-star',
+                                                href: '/configJob',
+                                            },
+                                            {
+                                                text: '令牌配置',
+                                                iconCls: 'icon-page-key',
+                                                href: '/configToken',
+                                            },
+                                            {
+                                                text: '通知配置',
+                                                iconCls: 'icon-email',
+                                                href: '/configNotify',
+                                            },
+                                            {
+                                                text: '白 名 单',
+                                                iconCls: 'icon-page-db',
+                                                href: '/configWhitelist',
+                                            }
+                                        ]
+                                    }
+                                }
+                            },
+                            {
                                 text: '个人中心',
-                                iconCls: 'icon-page-wrench',
+                                iconCls: 'icon-user',
                                 margin: '0 25 0 0',
                                 menu: {
                                     xtype: 'menu',
