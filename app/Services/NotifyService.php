@@ -2,14 +2,13 @@
 
 namespace App\Services;
 
-use App\Models\ConfigNotify;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 
 class NotifyService
 {
-    const EMAIL_TITLE = '码小六：发现未审记录';
+    const EMAIL_TITLE = '码小六消息通知';
     const URL_TELEGRAM = 'https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s';
 
     /**
