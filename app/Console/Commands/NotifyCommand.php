@@ -101,6 +101,7 @@ class NotifyCommand extends Command
     private function getContent($data)
     {
         $content = [];
+        $content[] = "码小六消息通知";
         $content[] = "开始时间：{$data['stime']}";
         $content[] = "结束时间：{$data['etime']}";
         $content[] = "扫描结果：本时段共有 {$data['count']} 个未审记录";
