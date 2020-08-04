@@ -62,7 +62,8 @@
                     },
                     {
                         name: 'password',
-                        fieldLabel: '授 权 码',
+                        fieldLabel: '密　　码',
+                        emptyText: '请填写授权码 ..',
                         value: getConfig('email.value.password'),
                     },
                     {
@@ -73,6 +74,7 @@
                         value: getConfig('email.value.to'),
                     },
                     createIntervalField('email'),
+                    createTimeField('email'),
                     createBtn('email'),
                 ]
             });
@@ -98,12 +100,13 @@
                     {
                         xtype: 'textareafield',
                         name: 'headers',
-                        fieldLabel: '请 求 头',
+                        fieldLabel: '请求头部',
                         allowBlank: true,
                         emptyText: '示例：\nUser-Agent: Code6\nContent-Type: application/json;charset=utf8',
                         value: getConfig('webhook.value.headers'),
                     },
                     createIntervalField('webhook'),
+                    createTimeField('webhook'),
                     createBtn('webhook'),
                 ]
             });
@@ -133,6 +136,7 @@
                         emptyText: '请填写 token ..',
                     },
                     createIntervalField('telegram'),
+                    createTimeField('telegram'),
                     createBtn('telegram'),
                 ]
             });
@@ -152,6 +156,7 @@
                     createEnableField('dingTalk'),
                     createWebhookField('dingTalk'),
                     createIntervalField('dingTalk'),
+                    createTimeField('dingTalk'),
                     createBtn('dingTalk'),
                 ]
             });
@@ -171,6 +176,7 @@
                     createEnableField('workWechat'),
                     createWebhookField('workWechat'),
                     createIntervalField('workWechat'),
+                    createTimeField('workWechat'),
                     createBtn('workWechat'),
                 ]
             });
@@ -279,6 +285,43 @@
                 };
             }
 
+            function createTimeField(type) {
+                return {
+                    xtype: 'container',
+                    layout: 'hbox',
+                    width: '100%',
+                    defaults: {
+                        xtype: 'timefield',
+                        format: 'H:i:s',
+                        increment: 1,
+                        allowBlank: false,
+                    },
+                    items: [
+                        {
+                            xtype: 'label',
+                            margin: '4 5',
+                            text: '通知时段：',
+                            style: 'letter-spacing:3px'
+                        },
+                        {
+                            name: 'start_time',
+                            flex: 1,
+                            value: getConfig(type + '.start_time', '08:00'),
+                        },
+                        {
+                            xtype: 'label',
+                            margin: '4 10',
+                            text: '-',
+                        },
+                        {
+                            name: 'end_time',
+                            flex: 1,
+                            value: getConfig(type + '.start_time', '22:00'),
+                        }
+                    ]
+                };
+            }
+
             function createWebhookField(type) {
                 return {
                     name: 'webhook',
@@ -307,7 +350,7 @@
                     layout: 'form',
                     columnWidth: 1 / 3,
                     margin: 10,
-                    height: 415,
+                    height: 450,
                     bodyPadding: 20,
                     bodyStyle: 'background:#FAFAFA',
                 },

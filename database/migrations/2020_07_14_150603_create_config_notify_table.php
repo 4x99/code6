@@ -16,9 +16,11 @@ class CreateConfigNotifyTable extends Migration
         Schema::create('config_notify', function (Blueprint $table) {
             $table->id();
             $table->string('type', 32)->unique();
-            $table->text('value')->nullable();
+            $table->time('start_time');
+            $table->time('end_time');
             $table->integer('interval_min')->default(1);
             $table->boolean('enable')->default(1);
+            $table->text('value')->nullable();
             $table->timestamps();
         });
     }

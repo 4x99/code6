@@ -20,5 +20,5 @@ class ConfigNotify extends Model
     const TYPE_WEBHOOK = 'webhook';
 
     protected $table = 'config_notify';
-    protected $fillable = ['type', 'value', 'enable', 'interval_min'];
+    protected $fillable = ['type', 'value', 'enable', 'interval_min', 'start_time', 'end_time'];
 }
