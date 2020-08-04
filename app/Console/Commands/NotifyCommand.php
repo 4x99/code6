@@ -52,8 +52,13 @@ class NotifyCommand extends Command
         $timestamp = floor(LARAVEL_START - LARAVEL_START % 60);
         $service = new NotifyService();
         $configs = ConfigNotify::where('enable', 1)->get();
+        $time = date('H:i:s', $timestamp);
 
         foreach ($configs as $config) {
+            if ($time < $config->start_time || $time > $config->end_time) {
+                continue;
+            }
+
             if ($timestamp % ($config->interval_min * 60) != 0) {
                 continue;
             }
@@ -104,7 +109,7 @@ class NotifyCommand extends Command
         $content[] = "码小六消息通知";
         $content[] = "开始时间：{$data['stime']}";
         $content[] = "结束时间：{$data['etime']}";
-        $content[] = "本时段共有 {$data['count']} 个未审记录";
+        $content[] = "本时段共有 {$data['count']} 条未审记录";
         return $content;
     }
 }
