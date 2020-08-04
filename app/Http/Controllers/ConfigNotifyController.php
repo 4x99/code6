@@ -31,9 +31,12 @@ class ConfigNotifyController extends Controller
                 'type' => ['required', Rule::in(ConfigNotify::TYPE)],
                 'enable' => ['required', 'integer'],
                 'interval_min' => ['required', 'integer'],
+                'start_time' => ['required'],
+                'end_time' => ['required'],
             ]);
-            $data = $request->only(['enable', 'interval_min']);
-            $data['value'] = json_encode($request->except(['type', 'enable', 'interval_min']));
+            $commonField = ['enable', 'interval_min', 'start_time', 'end_time'];
+            $data = $request->only($commonField);
+            $data['value'] = json_encode($request->except(array_merge($commonField, ['type'])));
             $data = ConfigNotify::updateOrCreate(['type' => $request->input('type')], $data);
             return ['success' => true, 'data' => $data];
         } catch (\Exception $e) {
