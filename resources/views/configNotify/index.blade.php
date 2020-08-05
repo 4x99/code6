@@ -316,7 +316,7 @@
                         {
                             name: 'end_time',
                             flex: 1,
-                            value: getConfig(type + '.start_time', '22:00'),
+                            value: getConfig(type + '.end_time', '22:00'),
                         }
                     ]
                 };
