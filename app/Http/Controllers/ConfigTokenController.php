@@ -16,10 +16,9 @@ class ConfigTokenController extends Controller
     /**
      * 令牌列表
      *
-     * @param  Request  $request
      * @return \Illuminate\Support\Collection
      */
-    public function index(Request $request)
+    public function index()
     {
         return ConfigToken::orderByDesc('id')->get();
     }
