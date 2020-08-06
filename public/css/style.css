@@ -21,6 +21,10 @@ a {
 }
 
 /* ExtJS */
+.x-panel-header-title-default {
+    font-size: 14px;
+}
+
 .x-menu-item-text-default {
     letter-spacing: 3px;
     color: #666;
@@ -157,8 +161,20 @@ a {
     background: url(../image/icon/bullet-red.png) no-repeat;
 }
 
+.icon-cog {
+    background: url(../image/icon/cog.png) no-repeat;
+}
+
 .icon-cross {
     background: url(../image/icon/cross.png) no-repeat;
+}
+
+.icon-ding-talk {
+    background: url(../image/icon/ding-talk.png) no-repeat;
+}
+
+.icon-email {
+    background: url(../image/icon/email.png) no-repeat;
 }
 
 .icon-folder-page {
@@ -173,12 +189,24 @@ a {
     background: url(../image/icon/key.png) no-repeat;
 }
 
+.icon-page-lightning {
+    background: url(../image/icon/page-lightning.png) no-repeat;
+}
+
 .icon-page {
     background: url(../image/icon/page.png) no-repeat;
 }
 
+.icon-page-db {
+    background: url(../image/icon/page-db.png) no-repeat;
+}
+
 .icon-page-edit {
     background: url(../image/icon/page-edit.png) no-repeat;
+}
+
+.icon-page-key {
+    background: url(../image/icon/page-key.png) no-repeat;
 }
 
 .icon-page-star {
@@ -189,12 +217,24 @@ a {
     background: url(../image/icon/page-wrench.png) no-repeat;
 }
 
+.icon-telegram {
+    background: url(../image/icon/telegram.png) no-repeat;
+}
+
 .icon-tick {
     background: url(../image/icon/tick.png) no-repeat;
 }
 
+.icon-user {
+    background: url(../image/icon/user.png) no-repeat;
+}
+
 .icon-warning {
     background: url(../image/icon/warning.png) no-repeat;
+}
+
+.icon-work-wechat {
+    background: url(../image/icon/work-wechat.png) no-repeat;
 }
 
 .icon-zoom {

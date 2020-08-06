@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\QueueJob;
 use App\Models\CodeLeak;
@@ -12,7 +11,7 @@ use App\Utils\SystemUtil;
 
 class HomeController extends Controller
 {
-    public function view(Request $request)
+    public function view()
     {
         $data = [
             'title' => '应用概况',

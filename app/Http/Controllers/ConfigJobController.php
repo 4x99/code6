@@ -17,10 +17,9 @@ class ConfigJobController extends Controller
     /**
      * 任务列表
      *
-     * @param  Request  $request
      * @return \Illuminate\Support\Collection
      */
-    public function index(Request $request)
+    public function index()
     {
         return ConfigJob::orderByDesc('id')->get();
     }
