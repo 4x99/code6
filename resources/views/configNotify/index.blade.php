@@ -293,7 +293,7 @@
                     defaults: {
                         xtype: 'timefield',
                         format: 'H:i:s',
-                        increment: 1,
+                        increment: 30,
                         allowBlank: false,
                     },
                     items: [
