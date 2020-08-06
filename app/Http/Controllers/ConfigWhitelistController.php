@@ -7,7 +7,7 @@ use App\Models\ConfigWhitelist;
 
 class ConfigWhitelistController extends Controller
 {
-    public function view(Request $request)
+    public function view()
     {
         $data = ['title' => '白名单配置'];
         return view('configWhitelist.index', $data);
