@@ -37,7 +37,7 @@ class CodeLeakController extends Controller
             return $query->where('status', $request->input('status'));
         });
 
-        foreach (['repo_owner', 'repo_name', 'keyword', 'path'] as $field) {
+        foreach (['repo_owner', 'repo_name', 'repo_description', 'keyword', 'path'] as $field) {
             $query->when($request->input($field), function ($query, $value) use ($field) {
                 return $query->where($field, 'like', "%$value%");
             });
