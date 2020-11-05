@@ -130,7 +130,6 @@ class JobRunCommand extends Command
     private function searchCode($client, $keyword, $page = 1)
     {
         try {
-            $keyword = sprintf('"%s"', $keyword); // 精确匹配
             return $client->api('search')->setPage($page)->code($keyword, 'indexed');
         } catch (Exception $e) {
             $this->log->warning($e->getMessage());
