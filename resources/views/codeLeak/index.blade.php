@@ -50,7 +50,7 @@
                                     format: 'Y-m-d',
                                     maxValue: new Date(),
                                     emptyText: '开始日期',
-                                    width: 114,
+                                    width: 115,
                                 },
                                 {
                                     xtype: 'datefield',
@@ -58,7 +58,7 @@
                                     format: 'Y-m-d',
                                     maxValue: new Date(),
                                     emptyText: '结束日期',
-                                    width: 114,
+                                    width: 115,
                                 },
                                 {
                                     xtype: 'combo',
@@ -82,19 +82,19 @@
                                     xtype: 'textfield',
                                     name: 'path',
                                     emptyText: '文件路径',
-                                    width: 146,
+                                    width: 130,
                                 },
                                 {
                                     xtype: 'textfield',
                                     name: 'repo_description',
                                     emptyText: '仓库描述',
-                                    width: 120,
+                                    width: 130,
                                 },
                                 {
                                     xtype: 'textfield',
                                     name: 'keyword',
                                     emptyText: '匹配关键字',
-                                    width: 146,
+                                    width: 130,
                                 },
                                 {
                                     xtype: 'buttongroup',
