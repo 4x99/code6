@@ -1,5 +1,6 @@
 @extends('base')
 @section('content')
+    <link rel="stylesheet" href="{{ URL::asset('css/configNotify.css?v=') . VERSION }}">
     <script>
         Ext.onReady(function () {
             Ext.QuickTips.init(true, {dismissDelay: 0});
@@ -83,7 +84,7 @@
                 title: 'Webhook',
                 iconCls: 'icon-page-star',
                 tools: [{
-                    iconCls: 'icon-page',
+                    type: 'help',
                     tooltip: 'Webhook 文档',
                     handler: function () {
                         Ext.Msg.show({
@@ -115,7 +116,7 @@
                 title: 'Telegram',
                 iconCls: 'icon-telegram',
                 tools: [{
-                    iconCls: 'icon-page',
+                    type: 'help',
                     tooltip: 'Telegram 文档',
                     handler: function () {
                         tool.winOpen('https://core.telegram.org/bots/api');
@@ -146,10 +147,19 @@
                 iconCls: 'icon-ding-talk',
                 height: 280,
                 tools: [{
-                    iconCls: 'icon-page',
+                    type: 'help',
                     tooltip: '钉钉文档',
                     handler: function () {
-                        tool.winOpen('https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq');
+                        var url = 'https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq';
+                        var message = '官方文档：<a target="_blank" href="' + url + '">查看</a><br/><br/>';
+                        message += '安全设置（二选一）：<br/>1. IP 地址（段）<br/>2. 自定义关键词（填写：<span>码小六</span>）';
+
+                        Ext.Msg.show({
+                            title: '钉钉文档',
+                            iconCls: 'icon-page',
+                            modal: false,
+                            message: message,
+                        });
                     }
                 }],
                 items: [
@@ -166,7 +176,7 @@
                 iconCls: 'icon-work-wechat',
                 height: 280,
                 tools: [{
-                    iconCls: 'icon-page',
+                    type: 'help',
                     tooltip: '企业微信文档',
                     handler: function () {
                         tool.winOpen('https://work.weixin.qq.com/help?doc_id=13376');
@@ -301,7 +311,7 @@
                             xtype: 'label',
                             margin: '4 5',
                             text: '通知时段：',
-                            style: 'letter-spacing:3px'
+                            style: 'letter-spacing:3px',
                         },
                         {
                             name: 'start_time',
