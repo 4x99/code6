@@ -70,6 +70,9 @@ class HomeController extends Controller
     public function memory()
     {
         $memory = SystemUtil::memory();
+        if ((int) $memory['MemTotal'] <= 0) {
+            return ['success' => false];
+        }
         $used = $memory['MemTotal'] - $memory['MemFree'] - $memory['Cached'] - $memory['Buffers'];
         $data = [
             'used' => SystemUtil::conv($used),

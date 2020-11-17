@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
             error_reporting(0);
             define('VERSION', trim(file_get_contents(base_path('version'))));
         } else {
+            error_reporting(E_ALL ^ E_NOTICE ^ E_WARNING);
             define('VERSION', time());
         }
     }
