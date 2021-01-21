@@ -46,7 +46,7 @@
             content += '<p class="tip-title">3. 为何需要配置多个令牌？</p>';
             content += '<p>GitHub 限制了 API 的请求速率';
             content += '（<a target="_blank" href="https://docs.github.com/en/rest/reference/search#rate-limit">文档</a>），';
-            content += '需要调度多个令牌用于轮询请求（建议至少配置 3 个）</p><br/>';
+            content += '系统需要调度多个令牌用于轮询请求（建议至少配置 3 个）</p><br/>';
             content += '<p class="tip-title">4. 可以用一个 GitHub 账号创建多个令牌吗？<span></p>';
             content += '<p>不可以，同一账号多个令牌共享配额，需要多个 GitHub 账号，每个账号创建一个令牌。</p>';
 
@@ -226,6 +226,7 @@
                                     fieldLabel: '令牌',
                                     allowBlank: false,
                                     value: data.token,
+                                    emptyText : '点击右边图标申请..',
                                     triggers: {
                                         search: {
                                             cls: 'icon-page-get',
@@ -241,6 +242,7 @@
                                     xtype: 'textfield',
                                     fieldLabel: '说明',
                                     value: data.description,
+                                    emptyText : '备注信息（选填）..',
                                 }
                             ],
                             buttons: [
