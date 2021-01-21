@@ -38,6 +38,7 @@ input {
     border: 1px solid #BBB;
     letter-spacing: 2px;
     color: #666;
+    filter: none;
 }
 
 input:-webkit-autofill {
