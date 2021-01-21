@@ -205,6 +205,10 @@ a {
     background: url(../image/icon/page-edit.png) no-repeat;
 }
 
+.icon-page-get {
+    background: url(../image/icon/page-get.png) no-repeat;
+}
+
 .icon-page-key {
     background: url(../image/icon/page-key.png) no-repeat;
 }
