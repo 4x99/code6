@@ -184,7 +184,7 @@
                                                     tool.toast('还未设置关键字！');
                                                     return;
                                                 }
-                                                tool.winOpen(GitHub + 'search?o=desc&q=' + keyword + '&s=indexed&type=Code')
+                                                tool.winOpen(GitHub + 'search?o=desc&q=' + keyword + '&s=indexed&type=Code');
                                             }
                                         }
                                     }
@@ -215,7 +215,7 @@
                                         tpl: [
                                             '<tpl for=".">',
                                             '<li role="option" class="x-boundlist-item" data-qtip="{qtip}">{text}</li>',
-                                            '</tpl>'
+                                            '</tpl>',
                                         ]
                                     }
                                 },
