@@ -21,6 +21,8 @@
                     data: {
                         clock: '',
                         load: ['未知', '未知', '未知'],
+                        configToken: 'cross',
+                        configJob: 'cross',
                         disk: {
                             used: '未知',
                             total: '未知',
@@ -88,14 +90,25 @@
                             },
                             {
                                 bodyPadding: '14 0',
-                                html: new Ext.XTemplate(
-                                    '<div class="center">',
-                                    '    <p class="title">版本信息</p>',
-                                    '    <p class="content">{version}（GPL v3）</p>',
-                                    '</div>',
-                                ).apply({
-                                    version: '{{ VERSION }}',
-                                })
+                                bind: {
+                                    html: new Ext.XTemplate(
+                                        '<div class="center">',
+                                        '    <p class="title">配置状态</p>',
+                                        '    <p class="content">',
+                                        '        <span class="config-item">',
+                                        '            令牌配置：<span class="config-icon x-btn icon-{token}"></span>',
+                                        '        </span>',
+                                        '        <span class="config-item">',
+                                        '            任务配置：<span class="config-icon x-btn icon-{job}"></span>',
+                                        '        </span>',
+                                        '    </p>',
+                                        '</div>',
+                                    ).apply({
+                                        version: '{{ VERSION }}',
+                                        token: '{configToken}',
+                                        job: '{configJob}',
+                                    })
+                                }
                             }
                         ],
                     },
@@ -149,14 +162,13 @@
                                         }
                                     },
                                     {
-                                        margin: '25 0 0 0',
+                                        margin: '15 0 0 0',
                                         height: 100,
                                         html: new Ext.XTemplate(
-                                            '    <p class="title">运行环境</p>',
-                                            '    <p class="content">PHP {phpVersion} + Laravel {laravelVersion}</p>',
+                                            '    <p class="title">版本信息</p>',
+                                            '    <p class="content">{version}（GPL v3）</p>',
                                         ).apply({
-                                            phpVersion: '{{ PHP_VERSION }}',
-                                            laravelVersion: '{{ app()::VERSION }}',
+                                            version: '{{ VERSION }}',
                                         })
                                     }
                                 ]
@@ -298,19 +310,44 @@
                 });
             });
 
-            // 检查任务
-            tool.ajax('GET', '/api/home/jobCount', {}, function (rsp) {
-                if (!rsp.data) {
-                    tool.toast('尚未配置扫描任务<br/>请前往 [ 任务配置 ] 模块配置！', 'warning', 15000);
+            // 检查令牌
+            tool.ajax('GET', '/api/home/tokenCount', {}, function (rsp) {
+                if (rsp.data) {
+                    viewModel.setData({configToken: 'tick'});
+                } else {
+                    showHelp();
                 }
             });
 
-            // 检查令牌
-            tool.ajax('GET', '/api/home/tokenCount', {}, function (rsp) {
-                if (!rsp.data) {
-                    tool.toast('尚未配置 GitHub 令牌<br/>请前往 [ 令牌配置 ] 模块配置！', 'warning', 15000);
+            // 检查任务
+            tool.ajax('GET', '/api/home/jobCount', {}, function (rsp) {
+                if (rsp.data) {
+                    viewModel.setData({configJob: 'tick'});
                 }
             });
+
+            function showHelp() {
+                var msg = [];
+                msg.push('<b class="hl">扫 描 流 程</b>\n');
+                msg.push('＋－－－－－－－－－－－－－＋　　　　令　牌　　　　＋－－－－－－－－－－－－－－＋');
+                msg.push('｜　　　　　　　　　　　　　｜－－－－－－－－－－＞｜　　　　　　　　　　　　　　｜');
+                msg.push('｜　　　码　　小　　六　　　｜　　　　　　　　　　　｜　　ＧｉｔＨｕｂ　ＡＰＩ　　｜');
+                msg.push('｜　　　　　　　　　　　　　｜＜－－－－－－－－－－｜　　　　　　　　　　　　　　｜');
+                msg.push('＋－－－－－－－－－－－－－＋　　扫　描　结　果　　＋－－－－－－－－－－－－－－＋');
+                msg.push('\n');
+                msg.push('<b class="hl">配 置 说 明</b>\n');
+                msg.push('<p>[ 配置中心 ] - [ 令牌配置 ]：设置从官网申请到的接口令牌</p>');
+                msg.push('<p>[ 配置中心 ] - [ 任务配置 ]：设置需要扫描的关键字及参数</p>');
+
+                Ext.Msg.show({
+                    title: '新手指引',
+                    modal: false,
+                    iconCls: 'icon-page-star',
+                    width: 700,
+                    maxWidth: 700,
+                    message: '<pre class="help">' + msg.join('\n') + '</pre>',
+                }).removeCls('x-unselectable');
+            }
         });
     </script>
 @endsection
