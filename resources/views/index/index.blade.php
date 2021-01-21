@@ -12,6 +12,8 @@
 
     <script>
         Ext.onReady(function () {
+            Ext.QuickTips.init();
+
             Ext.create('Ext.container.Container', {
                 renderTo: Ext.getBody(),
                 height: '100%',
@@ -80,14 +82,14 @@
                                         },
                                         items: [
                                             {
-                                                text: '任务配置',
-                                                iconCls: 'icon-page-star',
-                                                href: '/configJob',
-                                            },
-                                            {
                                                 text: '令牌配置',
                                                 iconCls: 'icon-page-key',
                                                 href: '/configToken',
+                                            },
+                                            {
+                                                text: '任务配置',
+                                                iconCls: 'icon-page-star',
+                                                href: '/configJob',
                                             },
                                             {
                                                 text: '通知配置',
