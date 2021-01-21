@@ -20,6 +20,10 @@ a {
     text-decoration: none;
 }
 
+input::-webkit-input-placeholder {
+    color: #AAA;
+}
+
 /* ExtJS */
 .x-panel-header-title-default {
     font-size: 14px;
