@@ -219,7 +219,7 @@
                             handler: function () {
                                 var form = this.up('form');
                                 if (!form.isValid()) {
-                                    tool.toast('信息有误！');
+                                    tool.toast('配置有误！');
                                     return false;
                                 }
 
@@ -240,7 +240,7 @@
                             handler: function () {
                                 var form = this.up('form');
                                 if (!form.isValid()) {
-                                    tool.toast('信息有误！');
+                                    tool.toast('配置有误！');
                                     return false;
                                 }
 
@@ -356,6 +356,15 @@
                 renderTo: Ext.getBody(),
                 layout: 'column',
                 margin: '5 15 0 15',
+                tbar: {
+                    margin: '5 12 12 0',
+                    items: [
+                        {
+                            xtype: 'tbtext',
+                            html: '提示：扫描到新结果时将根据本页配置进行通知（无配置则不通知）',
+                        }
+                    ]
+                },
                 defaults: {
                     layout: 'form',
                     columnWidth: 1 / 3,
