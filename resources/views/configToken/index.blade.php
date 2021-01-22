@@ -16,23 +16,28 @@
                 }
             });
 
-            var status = [
-                {
+            var status = {
+                '-1': {
+                    color: 'gray',
+                    text: '未同步',
+                    tooltip: '状态将在稍后自动更新..',
+                },
+                '0': {
                     color: 'blue',
                     text: '未知',
                     tooltip: '没有读取到此令牌状态（可能是当前请求 GitHub 网络不通畅）',
                 },
-                {
+                '1': {
                     color: 'green',
                     text: '正常',
                     tooltip: '此令牌可正常使用',
                 },
-                {
+                '2': {
                     color: 'red',
                     text: '异常',
                     tooltip: '此令牌无法使用（请检查 GitHub 账号及令牌是否异常）',
                 },
-            ]
+            }
 
             var urlGenToken = 'https://github.com/settings/tokens/new';
 
@@ -97,8 +102,8 @@
                         dataIndex: 'status',
                         width: 150,
                         align: 'center',
-                        renderer: function (value, cellmeta) {
-                            var data = status[value];
+                        renderer: function (value, cellmeta, record) {
+                            var data = record.data.created_at !== record.data.updated_at ? status[value] : status['-1'];
                             var tpl = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>');
                             cellmeta.tdAttr = 'data-qtip="' + data.tooltip + '"'
                             return tpl.apply(data);
@@ -115,9 +120,8 @@
                         text: 'GitHub接口请求配额',
                         columns: [
                             {
-                                text: '接口用量',
-                                tooltip: '已用次数 / 最大允许请求次数',
-                                width: 180,
+                                text: '接口请求量/上限',
+                                width: 200,
                                 renderer: function (value, cellmeta, record) {
                                     var item = [], data = record.data;
                                     item.limit = data.api_limit;
@@ -133,10 +137,10 @@
                                 }
                             },
                             {
-                                text: '重置时间',
+                                text: '配额重置时间',
                                 dataIndex: 'api_reset_at',
                                 align: 'center',
-                                width: 180,
+                                width: 200,
                                 renderer: function (value) {
                                     return value ? value : '-';
                                 }
@@ -226,7 +230,7 @@
                                     fieldLabel: '令牌',
                                     allowBlank: false,
                                     value: data.token,
-                                    emptyText : '点击右边图标申请..',
+                                    emptyText: '点击右边图标申请..',
                                     triggers: {
                                         search: {
                                             cls: 'icon-page-get',
@@ -242,7 +246,7 @@
                                     xtype: 'textfield',
                                     fieldLabel: '说明',
                                     value: data.description,
-                                    emptyText : '备注信息（选填）..',
+                                    emptyText: '备注信息（选填）..',
                                 }
                             ],
                             buttons: [
