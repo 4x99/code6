@@ -1,3 +1,7 @@
+.tag {
+    min-width: 70px;
+}
+
 .x-form-trigger {
     background-position: 0 center !important;
 }
