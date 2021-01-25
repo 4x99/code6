@@ -46,6 +46,25 @@ class ConfigWhitelistController extends Controller
     }
 
     /**
+     * 批量加入白名单
+     *
+     * @param  Request  $request
+     * @return array
+     */
+    public function batchStore(Request $request)
+    {
+        try {
+            $values = json_decode($request->input('values'), true);
+            foreach ($values as $value) {
+                ConfigWhitelist::firstOrCreate(['value' => $value]);
+            }
+            return ['success' => true];
+        } catch (\Exception $exception) {
+            return ['success' => false, 'message' => $exception->getMessage()];
+        }
+    }
+
+    /**
      * 删除白名单
      *
      * @param  int  $id
