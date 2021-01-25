@@ -175,6 +175,13 @@
                                         handler: function () {
                                             batchOpWithConfirm('DELETE', 'batchDestroy', {});
                                         }
+                                    },
+                                    {
+                                        text: '加入白名单',
+                                        iconCls: 'icon-add',
+                                        handler: function () {
+                                            batchAddWhiteList();
+                                        }
                                     }
                                 ]
                             }
@@ -518,6 +525,40 @@
                         grid.getSelectionModel().clearSelections();
                     } else {
                         tool.toast(rsp.message, 'error');
+                    }
+                });
+            }
+
+            // 批量操作
+            function batchAddWhiteList() {
+                var records = grid.getSelectionModel().getSelection();
+                if (!records.length) {
+                    tool.toast('请先勾选记录！');
+                    return;
+                }
+
+                Ext.Msg.show({
+                    title: '提示',
+                    iconCls: 'icon-page-star',
+                    message: '确定执行此操作？',
+                    buttons: Ext.Msg.YESNO,
+                    fn: function (btn) {
+                        if (btn !== 'yes') {
+                            return;
+                        }
+                        var values = [];
+                        for (var record of records) {
+                            values.push(record.get('repo_owner') + '/' + record.get('repo_name'));
+                        }
+
+                        tool.ajax('POST', '/api/configWhitelist/batchStore', {values: Ext.encode(values)}, function (rsp) {
+                            if (rsp.success) {
+                                tool.toast('操作成功！', 'success');
+                                grid.getSelectionModel().clearSelections();
+                            } else {
+                                tool.toast(rsp.message, 'error');
+                            }
+                        });
                     }
                 });
             }
