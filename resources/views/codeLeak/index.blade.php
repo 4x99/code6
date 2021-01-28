@@ -166,7 +166,7 @@
                                                 var params = this.up('form').getValues();
                                                 batchOp('PUT', 'batchUpdate', params);
                                                 win.close();
-                                            }, true)
+                                            }, true);
                                         }
                                     },
                                     {
@@ -330,7 +330,7 @@
                                                         var params = this.up('form').getValues();
                                                         update(record, 'description', params.description);
                                                         win.close();
-                                                    }, false)
+                                                    }, false);
                                                 }
                                             },
                                             {
@@ -464,7 +464,7 @@
                                 {
                                     text: '提交',
                                     formBind: true,
-                                    handler: handler
+                                    handler: handler,
                                 }
                             ]
                         }
@@ -554,7 +554,7 @@
                         tool.ajax('POST', '/api/configWhitelist/batchStore', {values: Ext.encode(values)}, function (rsp) {
                             if (rsp.success) {
                                 tool.toast('操作成功！', 'success');
-                                grid.getSelectionModel().clearSelections();
+                                grid.getSelectionModel().deselectAll();
                             } else {
                                 tool.toast(rsp.message, 'error');
                             }
