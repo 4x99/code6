@@ -54,13 +54,16 @@ class ConfigWhitelistController extends Controller
     public function batchStore(Request $request)
     {
         try {
+            $data = [];
             $values = json_decode($request->input('values'), true);
+            $values = array_unique($values);
             foreach ($values as $value) {
-                ConfigWhitelist::firstOrCreate(['value' => $value]);
+                $data[] = ['value' => $value];
             }
+            ConfigWhitelist::insertOrIgnore($data);
             return ['success' => true];
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
