@@ -150,7 +150,7 @@
                     type: 'help',
                     tooltip: '钉钉文档',
                     handler: function () {
-                        var url = 'https://ding-doc.dingtalk.com/doc#/serverapi2/qf2nxq';
+                        var url = 'https://developers.dingtalk.com/document/app/custom-robot-access';
                         var message = '官方文档：<a target="_blank" href="' + url + '">查看</a><br/><br/>';
                         message += '安全设置（二选一）：<br/>1. IP 地址（段）<br/>2. 自定义关键词（填写：<span>码小六</span>）';
 
