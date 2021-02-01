@@ -30,7 +30,7 @@
 
         function register() {
             var msg = '<p>请通过命令行方式创建用户：</p>';
-            msg += '<p><code>php <项目路径>/artisan code6:user-add <邮箱> <密码></code></p>';
+            msg += '<p><code>php artisan code6:user-add <邮箱> <密码></code></p>';
 
             Ext.Msg.show({
                 title: '注册用户',

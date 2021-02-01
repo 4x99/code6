@@ -20,6 +20,10 @@ a {
     text-decoration: none;
 }
 
+input::-webkit-input-placeholder {
+    color: #AAA;
+}
+
 /* ExtJS */
 .x-panel-header-title-default {
     font-size: 14px;
@@ -203,6 +207,10 @@ a {
 
 .icon-page-edit {
     background: url(../image/icon/page-edit.png) no-repeat;
+}
+
+.icon-page-get {
+    background: url(../image/icon/page-get.png) no-repeat;
 }
 
 .icon-page-key {

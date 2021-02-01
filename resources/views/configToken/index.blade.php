@@ -16,34 +16,44 @@
                 }
             });
 
-            var status = [
-                {
+            var status = {
+                '-1': {
+                    color: 'gray',
+                    text: '未同步',
+                    tooltip: '状态将在稍后自动更新..',
+                },
+                '0': {
                     color: 'blue',
                     text: '未知',
                     tooltip: '没有读取到此令牌状态（可能是当前请求 GitHub 网络不通畅）',
                 },
-                {
+                '1': {
                     color: 'green',
                     text: '正常',
                     tooltip: '此令牌可正常使用',
                 },
-                {
+                '2': {
                     color: 'red',
                     text: '异常',
                     tooltip: '此令牌无法使用（请检查 GitHub 账号及令牌是否异常）',
                 },
-            ]
+            }
+
+            var urlGenToken = 'https://github.com/settings/tokens/new';
 
             var content = '';
             content += '<p class="tip-title">1. 令牌是什么？<span></p>';
             content += '<p>用来请求 GitHub API 的 Token（即 GitHub personal access token）</p><br/>';
             content += '<p class="tip-title">2. 如何申请令牌？</p>';
             content += '<p>GitHub - Settings - Developer settings - Personal access tokens - Generate new token';
-            content += '（<a target="_blank" href="https://github.com/settings/tokens/new">直达</a>）</p><br/>';
+            content += '（<a target="_blank" href="' + urlGenToken + '">直达</a>）</p>';
+            content += '<p>提示：填写 Note 信息后直接点击 Generate token 按钮生成，无需设置其他选项。</p><br/>';
             content += '<p class="tip-title">3. 为何需要配置多个令牌？</p>';
-            content += '<p>监控需要大量请求 GitHub API，而 GitHub 限制了 API 的请求速率';
-            content += '（<a target="_blank" href="https://developer.github.com/v3/#rate-limiting">GitHub API v3 - Rate limiting</a>）</p>';
-            content += '<p>因此需要多个 GitHub 账号创建令牌用于轮询请求（建议至少配置 3 个令牌）</p>';
+            content += '<p>GitHub 限制了 API 的请求速率';
+            content += '（<a target="_blank" href="https://docs.github.com/en/rest/reference/search#rate-limit">文档</a>），';
+            content += '系统需要调度多个令牌用于轮询请求（建议至少配置 3 个）</p><br/>';
+            content += '<p class="tip-title">4. 可以用一个 GitHub 账号创建多个令牌吗？<span></p>';
+            content += '<p>不可以，同一账号多个令牌共享配额，需要多个 GitHub 账号，每个账号创建一个令牌。</p>';
 
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
@@ -60,7 +70,7 @@
                                     modal: false,
                                     maxWidth: 800,
                                     message: content,
-                                });
+                                }).removeCls('x-unselectable');
                             }
                         },
                         '->',
@@ -92,8 +102,8 @@
                         dataIndex: 'status',
                         width: 150,
                         align: 'center',
-                        renderer: function (value, cellmeta) {
-                            var data = status[value];
+                        renderer: function (value, cellmeta, record) {
+                            var data = record.data.created_at !== record.data.updated_at ? status[value] : status['-1'];
                             var tpl = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>');
                             cellmeta.tdAttr = 'data-qtip="' + data.tooltip + '"'
                             return tpl.apply(data);
@@ -110,9 +120,8 @@
                         text: 'GitHub接口请求配额',
                         columns: [
                             {
-                                text: '接口用量',
-                                tooltip: '已用次数 / 最大允许请求次数',
-                                width: 180,
+                                text: '接口请求量/上限',
+                                width: 200,
                                 renderer: function (value, cellmeta, record) {
                                     var item = [], data = record.data;
                                     item.limit = data.api_limit;
@@ -128,10 +137,10 @@
                                 }
                             },
                             {
-                                text: '重置时间',
+                                text: '配额重置时间',
                                 dataIndex: 'api_reset_at',
                                 align: 'center',
-                                width: 180,
+                                width: 200,
                                 renderer: function (value) {
                                     return value ? value : '-';
                                 }
@@ -221,12 +230,23 @@
                                     fieldLabel: '令牌',
                                     allowBlank: false,
                                     value: data.token,
+                                    emptyText: '点击右边图标申请..',
+                                    triggers: {
+                                        search: {
+                                            cls: 'icon-page-get',
+                                            tooltip: '前往 GitHub 申请令牌',
+                                            handler: function () {
+                                                tool.winOpen(urlGenToken);
+                                            }
+                                        }
+                                    }
                                 },
                                 {
                                     name: 'description',
                                     xtype: 'textfield',
                                     fieldLabel: '说明',
                                     value: data.description,
+                                    emptyText: '备注信息（选填）..',
                                 }
                             ],
                             buttons: [
