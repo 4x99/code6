@@ -19,7 +19,7 @@
             });
 
             var storeType = [
-                {value: 0, text: '记录文件的每个版本', qtip: '即文件每次提交（包含关键字）会产生一条新的未审记录'},
+                {value: 0, text: '记录文件的每个版本', qtip: '即文件每次提交（包含关键字）都会产生一条新的未审记录'},
                 {value: 1, text: '一个文件只记录一次', qtip: '一个文件只记录一次'},
                 {value: 2, text: '一个仓库只记录一次', qtip: '一个仓库只记录一次'},
             ];
@@ -184,7 +184,7 @@
                                                     tool.toast('还未设置关键字！');
                                                     return;
                                                 }
-                                                tool.winOpen(GitHub + 'search?o=desc&q=' + keyword + '&s=indexed&type=Code')
+                                                tool.winOpen(GitHub + 'search?o=desc&q=' + keyword + '&s=indexed&type=Code');
                                             }
                                         }
                                     }
@@ -215,7 +215,7 @@
                                         tpl: [
                                             '<tpl for=".">',
                                             '<li role="option" class="x-boundlist-item" data-qtip="{qtip}">{text}</li>',
-                                            '</tpl>'
+                                            '</tpl>',
                                         ]
                                     }
                                 },
@@ -224,6 +224,7 @@
                                     fieldLabel: '说　　明',
                                     allowBlank: true,
                                     value: data.description,
+                                    emptyText : '备注信息（选填）..',
                                 }
                             ],
                             buttons: [

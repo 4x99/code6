@@ -42,3 +42,28 @@
     height: 100%;
     background: #1890FF;
 }
+
+.config-item {
+    margin: 0 8px;
+}
+
+.config-icon {
+    width: 16px;
+    height: 16px;
+    cursor: default;
+    opacity: 0.8;
+}
+
+.help {
+    margin: 10px;
+}
+
+.help b {
+    font-weight: 400;
+    color: #0070D5;
+}
+
+.help p {
+    margin: 0;
+    letter-spacing: 3px;
+}
