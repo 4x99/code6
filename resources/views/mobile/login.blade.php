@@ -42,7 +42,7 @@
                 var params = {email: me.email, password: me.password};
                 axios.post('/api/login', params).then(function (rsp) {
                     if (rsp.data.success) {
-                        window.location = '/mobile/home';
+                        window.location = '/mobile';
                     } else {
                         me.$toast({message: rsp.data.message, position: 'bottom'});
                     }
