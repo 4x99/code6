@@ -1,0 +1,108 @@
+body {
+    padding: 5px;
+    background: #F6F8FC;
+}
+
+.header {
+    padding: 20px 0;
+    width: 100%;
+    background: #FFF;
+}
+
+.logo {
+    margin: 0 auto;
+    width: 150px;
+    height: 30px;
+    background: url("../image/logo.png");
+    background-size: 100%;
+    background-repeat: no-repeat;
+}
+
+.overview {
+    height: 100px;
+    padding: 5px 0;
+}
+
+.metric {
+    width: 49%;
+    height: 100px;
+    text-align: center;
+    background-color: lightskyblue;
+}
+
+.metric-left {
+    float: left;
+    padding-right: 0.5%;
+}
+
+.metric-right {
+    float: right;
+    padding-left: 0.5%;
+}
+
+.metric > p {
+    color: white;
+    margin: 0.8em 0;
+}
+
+.metric-name {
+    font-size: 16px;
+}
+
+.metric-value {
+    font-size: 24px;
+}
+
+.van-cell {
+    font-size: 14px;
+    line-height: 2em;
+}
+
+.codeLeak .van-cell {
+    margin-top: 5px;
+}
+
+.codeLeak .van-cell span {
+    margin: 0;
+    word-break: break-all;
+    color: #999;
+}
+
+.tag {
+    display: inline-block;
+    margin: 0 5px 7px 0;
+    padding: 2px 5px;
+    width: 36px;
+    line-height: 1.3em;
+    letter-spacing: 2px;
+    border-radius: 2px;
+    text-align: center;
+    color: #FFF;
+}
+
+.van-pagination {
+    padding-top: 5px;
+}
+
+.van-ellipsis {
+    font-size: 14px;
+    letter-spacing: 2px;
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar-track-piece {
+    background: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D5D5D5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #CDCDCD;
+}

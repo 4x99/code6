@@ -54,3 +54,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('/api/codeFragment', 'CodeFragmentController');
 });
+
+Route::get('/mobile/login', 'Mobile\LoginController@view');
+Route::group(['middleware' => ['auth']], function () {
+    Route::get('/mobile/home', 'Mobile\HomeController@view');
+});
