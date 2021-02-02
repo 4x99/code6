@@ -5,7 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use Illuminate\Support\Facades\Auth;
 
-class Authenticate
+class AuthenticateMobile
 {
     /**
      * Handle an incoming request.
@@ -21,7 +21,7 @@ class Authenticate
             if ($request->ajax() || $request->wantsJson()) {
                 return response()->json(['success' => false, 'message' => 'Unauthorized'])->setStatusCode(401);
             } else {
-                return redirect()->guest('login');
+                return redirect()->guest('mobile/login');
             }
         }
         return $next($request);
