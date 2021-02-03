@@ -115,10 +115,10 @@
                     me.page.current = page;
                     me.page.count = rsp.data.last_page ? rsp.data.last_page : 0;
                     me.list.data = rsp.data.data;
-                    scrollTo({top: 0, behavior: 'smooth'});
+                    scrollTo(0, 0);
                     me.loading = false;
                 }).catch(function (rsp) {
-                    me.$toast.fail(rsp);
+                    me.$toast.fail(rsp.message);
                     me.loading = false;
                 });
             },
@@ -163,7 +163,7 @@
                         me.$toast.fail(rsp.data.message);
                     }
                 }).catch(function (rsp) {
-                    me.$toast.fail(rsp);
+                    me.$toast.fail(rsp.message);
                 });
             },
         },
