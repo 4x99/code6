@@ -12,156 +12,153 @@
     <script type="text/javascript" src="{{ URL::asset('js/axios.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/vant.min.js') }}"></script>
 </head>
+
 <body>
 <div id="app">
+    <!-- 头部开始 -->
     <div class="header">
         <div class="logo"></div>
     </div>
-    <van-pull-refresh v-model="loading" success-text="刷新成功" @refresh="refresh">
-        <div class="overview">
-            <div class="metric metric-left">
-                <p class="metric-value">[[codeLeakCount]]</p>
-                <p class="metric-name">扫描记录数</p>
-            </div>
-            <div class="metric metric-right">
-                <p class="metric-value">[[codeLeakPending]]</p>
-                <p class="metric-name">未审记录数</p>
-            </div>
-        </div>
-        <div class="codeLeak">
-            <van-dropdown-menu>
-                <van-dropdown-item v-model="status" :options="statusOptions" @change="loadCodeLeak(1)"/>
-            </van-dropdown-menu>
-            <van-list>
-                <template v-if="codeLeaks.length > 0">
-                    <van-cell v-for="codeLeak in codeLeaks" @click="showAction(codeLeak)">
-                        <div>
-                            <span v-html="formatStatus(codeLeak.status)"></span>
-                            <span>[[codeLeak.created_at]]</span>
-                        </div>
-                        <div>
-                            仓　库：[[codeLeak.repo_owner]]/[[codeLeak.repo_name]]
-                        </div>
-                        <div>
-                            关键字：[[codeLeak.keyword]]
-                        </div>
-                    </van-cell>
-                    <van-pagination v-model="currentPage" :page-count="pageCount" @change="loadCodeLeak(currentPage)" mode="simple"/>
-                </template>
-                <template v-else-if="finished">
-                    <van-empty description="暂 无 数 据"/>
-                </template>
-            </van-list>
-            <van-action-sheet v-model="show" :actions="actions" @select="onSelect"></van-action-sheet>
-        </div>
+    <!-- 头部结束 -->
+
+    <van-divider></van-divider>
+
+    <!-- 列表开始 -->
+    <van-pull-refresh v-model="loading" success-text="刷新成功" @refresh="load(page.current)">
+        <van-list>
+            <template v-if="list.data && list.data.length > 0">
+                <van-cell class="item" v-for="item in list.data" @click="showAction(item)">
+                    <template #title>
+                        <span v-html="formatStatus(item.status)"></span>
+                        [[item.created_at]]
+                    </template>
+
+                    <template #label>
+                        关键字：[[item.keyword]]
+                        <br/>
+                        仓　库：[[item.repo_owner]]/[[item.repo_name]]
+                        <br/>
+                        文　件：[[item.path]]
+                        <br/>
+                        描　述：<span v-if="item.repo_description">[[item.repo_description]]</span><span v-else>无</span>
+                    </template>
+                </van-cell>
+            </template>
+
+            <van-empty v-else-if="!loading" description="暂 无 数 据"></van-empty>
+        </van-list>
     </van-pull-refresh>
+    <!-- 列表结束 -->
+
+    <!-- 分页开始 -->
+    <van-pagination v-show="page.count>1" @change="load(page.current)" v-model="page.current" :page-count="page.count">
+        <template #prev-text>
+            <van-icon name="arrow-left"></van-icon>
+        </template>
+        <template #next-text>
+            <van-icon name="arrow"></van-icon>
+        </template>
+    </van-pagination>
+    <!-- 分页结束 -->
+
+    <!-- 菜单开始 -->
+    <van-action-sheet v-model="action.show" :actions="action.data" @select="onActionSelect"></van-action-sheet>
+    <!-- 菜单结束 -->
+
+    <!-- 标签开始 -->
+    <van-tabbar v-model="tab.current" active-color="#1890FF" @change="load(1)">
+        <van-tabbar-item name="all" icon="more-o">全部</van-tabbar-item>
+        <van-tabbar-item name="0" icon="question-o">未审</van-tabbar-item>
+        <van-tabbar-item name="1" icon="close">误报</van-tabbar-item>
+        <van-tabbar-item name="2" icon="warning-o">异常</van-tabbar-item>
+        <van-tabbar-item name="3" icon="passed">解决</van-tabbar-item>
+    </van-tabbar>
+    <!-- 标签结束 -->
 </div>
 </body>
 <script>
-    let STATUS_PENDING = 0;
-    let STATUS_FALSE = 1;
-    let STATUS_ABNORMAL = 2;
-    let STATUS_SOLVED = 3;
-    let GitHub = 'https://github.com/';
-
     new Vue({
         el: '#app',
         delimiters: ['[[', ']]'],
         data: {
-            loading: false,
-            finished: false,
-            show: false,
-            status: '',
-            statusOptions: [
-                {"value": '', "text": "全部状态"},
-                {"value": 0, "text": "未审"},
-                {"value": 1, "text": "误报"},
-                {"value": 2, "text": "异常"},
-                {"value": 3, "text": "解决"}
-            ],
-            actions: [
-                {name: '设为未审', color: '#738C99'},
-                {name: '设为误报', color: '#409EFF'},
-                {name: '设为异常', color: '#F56C6C'},
-                {name: '设为解决', color: '#67C23A'},
-                {name: '查看源码'},
-            ],
-            codeLeakCount: 0,
-            codeLeakPending: 0,
-            codeLeaks: [],
-            currentPage: 1,
-            pageCount: 0,
+            loading: true,
+            page: {
+                count: 0,
+                current: 1,
+            },
+            action: {
+                show: false,
+                data: [
+                    {name: '设为未审', value: 0, color: '#738C99'},
+                    {name: '设为误报', value: 1, color: '#409EFF'},
+                    {name: '设为异常', value: 2, color: '#F56C6C'},
+                    {name: '设为解决', value: 3, color: '#67C23A'},
+                    {name: '查看代码', value: 'view-source'},
+                ]
+            },
+            list: {
+                data: [],
+                selection: [],
+            },
+            tab: {
+                current: 'all',
+            }
         },
         methods: {
-            load() {
-                this.loadMetric();
-                this.loadCodeLeak(1);
-            },
-            refresh() {
-                this.load();
-                this.loading = false;
-                this.finished = true;
-            },
-            loadMetric() {
+            load(page) {
                 let me = this;
-                axios.get('/api/home/metric').then(function (rsp) {
-                    me.codeLeakCount = rsp.data.data.codeLeakCount;
-                    me.codeLeakPending = rsp.data.data.codeLeakPending;
-                }).catch(function (rsp) {
-                });
-            },
-            loadCodeLeak(page) {
-                page = page ? page : 1;
-                let me = this;
-                let url = '/api/codeLeak?limit=20&status=' + me.status + '&page=' + page
-                axios.get(url).then(function (rsp) {
-                    me.codeLeaks = rsp.data.data ? rsp.data.data : [];
-                    me.pageCount = rsp.data.last_page ? rsp.data.last_page : 0;
+                let params = {page: page ? page : 1, limit: 10};
+                if (me.tab.current !== 'all') {
+                    params.status = me.tab.current;
+                }
+                axios.get('/api/codeLeak', {params: params}).then(function (rsp) {
+                    me.page.current = page;
+                    me.page.count = rsp.data.last_page ? rsp.data.last_page : 0;
+                    me.list.data = rsp.data.data;
+                    scrollTo({top: 0, behavior: 'smooth'});
+                    me.loading = false;
                 }).catch(function (rsp) {
                     me.$toast.fail(rsp);
+                    me.loading = false;
                 });
             },
-            showAction(codeLeak) {
-                this.codeLeak = codeLeak;
-                this.show = true;
+            showAction(item) {
+                this.list.selection = item;
+                this.action.show = true;
             },
             formatStatus(status) {
-                let conf = {
-                    0: {color: '#738C99', text: '未审'},
-                    1: {color: '#409EFF', text: '误报'},
-                    2: {color: '#F56C6C', text: '异常'},
-                    3: {color: '#67C23A', text: '解决'},
-                }
-                return '<div class="tag" style="background:' + conf[status].color + '">' + conf[status].text + '</div>';
+                let conf = [
+                    {color: '#738C99', text: '未审'},
+                    {color: '#409EFF', text: '误报'},
+                    {color: '#F56C6C', text: '异常'},
+                    {color: '#67C23A', text: '解决'},
+                ];
+                return `<div class="tag" style="background:${conf[status].color}">${conf[status].text}</div>`;
             },
-            onSelect(item) {
+            onActionSelect(item) {
                 let me = this;
-                this.show = false;
-                switch (item.name) {
-                    case '设为未审':
-                        me.updateStatus(STATUS_PENDING);
+                me.action.show = false;
+                switch (item.value) {
+                    case 0:
+                    case 1:
+                    case 2:
+                    case 3:
+                        me.update({status: item.value});
                         break;
-                    case '设为误报':
-                        me.updateStatus(STATUS_FALSE);
-                        break;
-                    case '设为异常':
-                        me.updateStatus(STATUS_ABNORMAL);
-                        break;
-                    case '设为解决':
-                        me.updateStatus(STATUS_SOLVED);
-                        break;
-                    case '查看源码':
-                        let url = GitHub + me.codeLeak.repo_owner + '/' + me.codeLeak.repo_name + '/blob/' + me.codeLeak.html_url_blob + '/' + me.codeLeak.path;
+                    case 'view-source':
+                        let s = me.list.selection;
+                        let url = `https://github.com/${s.repo_owner}/${s.repo_name}/blob/${s.html_url_blob}/${s.path}`;
                         window.location.href = url;
                         break;
                 }
             },
-            updateStatus(status) {
+            update(data) {
                 let me = this;
-                axios.put('/api/codeLeak/' + me.codeLeak.id, {status: status}).then(function (rsp) {
+                let item = me.list.selection;
+                axios.put('/api/codeLeak/' + item.id, data).then(function (rsp) {
                     if (rsp.data.success) {
-                        me.codeLeak.status = status;
-                        me.$toast.success('操作成功！');
+                        item = Object.assign(item, data);
+                        me.$toast.success('操作成功');
                     } else {
                         me.$toast.fail(rsp.data.message);
                     }
@@ -171,7 +168,7 @@
             },
         },
         mounted: function () {
-            this.load();
+            this.load(1);
         }
     });
 </script>
