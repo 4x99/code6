@@ -1,78 +1,27 @@
 body {
-    padding: 5px;
-    background: #F6F8FC;
+    font-family: Consolas, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+    padding-bottom: 50px;
+    color: #666;
 }
 
 .header {
-    padding: 20px 0;
+    padding-top: 20px;
     width: 100%;
-    background: #FFF;
 }
 
 .logo {
     margin: 0 auto;
-    width: 150px;
-    height: 30px;
-    background: url("../image/logo.png");
+    width: 120px;
+    height: 26px;
+    background: url("../image/logo-mobile.png") no-repeat;
     background-size: 100%;
-    background-repeat: no-repeat;
-}
-
-.overview {
-    height: 100px;
-    padding: 5px 0;
-}
-
-.metric {
-    width: 49%;
-    height: 100px;
-    text-align: center;
-    background-color: lightskyblue;
-}
-
-.metric-left {
-    float: left;
-    padding-right: 0.5%;
-}
-
-.metric-right {
-    float: right;
-    padding-left: 0.5%;
-}
-
-.metric > p {
-    color: white;
-    margin: 0.8em 0;
-}
-
-.metric-name {
-    font-size: 16px;
-}
-
-.metric-value {
-    font-size: 24px;
-}
-
-.van-cell {
-    font-size: 14px;
-    line-height: 2em;
-}
-
-.codeLeak .van-cell {
-    margin-top: 5px;
-}
-
-.codeLeak .van-cell span {
-    margin: 0;
-    word-break: break-all;
-    color: #999;
 }
 
 .tag {
     display: inline-block;
-    margin: 0 5px 7px 0;
-    padding: 2px 5px;
-    width: 36px;
+    margin-right: 3px;
+    padding: 3px 5px 1px 7px;
+    font-size: 12px;
     line-height: 1.3em;
     letter-spacing: 2px;
     border-radius: 2px;
@@ -80,29 +29,25 @@ body {
     color: #FFF;
 }
 
-.van-pagination {
-    padding-top: 5px;
+.item .van-cell__title {
+    overflow: hidden;
 }
 
-.van-ellipsis {
-    font-size: 14px;
-    letter-spacing: 2px;
+.item .van-cell__label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
 }
 
-/* Scroll Bar */
-::-webkit-scrollbar-track-piece {
-    background: #F5F5F5;
+.van-pagination__item {
+    color: inherit;
 }
 
-::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+.van-pagination__item--active, .van-pagination__item:active {
+    color: #1890FF;
+    background: inherit;
 }
 
-::-webkit-scrollbar-thumb {
-    background: #D5D5D5;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #CDCDCD;
+.van-pagination__item::after {
+    border-width: 0;
 }

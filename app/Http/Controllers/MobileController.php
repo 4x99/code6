@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 class MobileController extends Controller
 {
-
     public function home()
     {
         $data = ['title' => '码小六'];
