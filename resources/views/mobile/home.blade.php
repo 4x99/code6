@@ -106,8 +106,8 @@
         },
         methods: {
             load(page) {
-                let me = this;
-                let params = {page: page ? page : 1, limit: 10};
+                var me = this;
+                var params = {page: page ? page : 1, limit: 10};
                 if (me.tab.current !== 'all') {
                     params.status = me.tab.current;
                 }
@@ -127,7 +127,7 @@
                 this.action.show = true;
             },
             formatStatus(status) {
-                let conf = [
+                var conf = [
                     {color: '#738C99', text: '未审'},
                     {color: '#409EFF', text: '误报'},
                     {color: '#F56C6C', text: '异常'},
@@ -136,7 +136,7 @@
                 return `<div class="tag" style="background:${conf[status].color}">${conf[status].text}</div>`;
             },
             onActionSelect(item) {
-                let me = this;
+                var me = this;
                 me.action.show = false;
                 switch (item.value) {
                     case 0:
@@ -146,15 +146,15 @@
                         me.update({status: item.value});
                         break;
                     case 'view-source':
-                        let s = me.list.selection;
-                        let url = `https://github.com/${s.repo_owner}/${s.repo_name}/blob/${s.html_url_blob}/${s.path}`;
+                        var s = me.list.selection;
+                        var url = `https://github.com/${s.repo_owner}/${s.repo_name}/blob/${s.html_url_blob}/${s.path}`;
                         window.location.href = url;
                         break;
                 }
             },
             update(data) {
-                let me = this;
-                let item = me.list.selection;
+                var me = this;
+                var item = me.list.selection;
                 axios.put('/api/codeLeak/' + item.id, data).then(function (rsp) {
                     if (rsp.data.success) {
                         item = Object.assign(item, data);
