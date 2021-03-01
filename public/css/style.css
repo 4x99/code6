@@ -225,6 +225,10 @@ input::-webkit-input-placeholder {
     background: url(../image/icon/page-wrench.png) no-repeat;
 }
 
+.icon-phone {
+    background: url(../image/icon/phone.png) no-repeat;
+}
+
 .icon-telegram {
     background: url(../image/icon/telegram.png) no-repeat;
 }

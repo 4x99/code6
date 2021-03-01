@@ -31,7 +31,7 @@
                                 src: '{{ URL::asset("image/logo.png") }}',
                                 width: 120,
                                 height: 26,
-                                margin: '0 100 0 20',
+                                margin: '0 20 0 20',
                             },
                             '->',
                             {
@@ -108,7 +108,6 @@
                             {
                                 text: '个人中心',
                                 iconCls: 'icon-user',
-                                margin: '0 25 0 0',
                                 menu: {
                                     xtype: 'menu',
                                     items: {
@@ -152,6 +151,12 @@
                                         ]
                                     }
                                 }
+                            },
+                            {
+                                iconCls: 'icon-phone',
+                                href: '/mobile',
+                                text: '访问移动版',
+                                margin: '0 25 0 32',
                             }
                         ]
                     },
