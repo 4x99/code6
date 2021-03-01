@@ -1,5 +1,5 @@
 body {
-    font-family: Consolas, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+    font-family: Verdana, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
     padding-bottom: 50px;
     color: #666;
 }
@@ -50,4 +50,22 @@ body {
 
 .van-pagination__item::after {
     border-width: 0;
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar-track-piece {
+    background: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D5D5D5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #CDCDCD;
 }
