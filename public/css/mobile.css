@@ -1,0 +1,71 @@
+body {
+    font-family: Verdana, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+    padding-bottom: 50px;
+    color: #666;
+}
+
+.header {
+    padding-top: 20px;
+    width: 100%;
+}
+
+.logo {
+    margin: 0 auto;
+    width: 120px;
+    height: 26px;
+    background: url("../image/logo-mobile.png") no-repeat;
+    background-size: 100%;
+}
+
+.tag {
+    display: inline-block;
+    margin-right: 3px;
+    padding: 3px 5px 1px 7px;
+    font-size: 12px;
+    line-height: 1.3em;
+    letter-spacing: 2px;
+    border-radius: 2px;
+    text-align: center;
+    color: #FFF;
+}
+
+.item .van-cell__title {
+    overflow: hidden;
+}
+
+.item .van-cell__label {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.van-pagination__item {
+    color: inherit;
+}
+
+.van-pagination__item--active, .van-pagination__item:active {
+    color: #1890FF;
+    background: inherit;
+}
+
+.van-pagination__item::after {
+    border-width: 0;
+}
+
+/* Scroll Bar */
+::-webkit-scrollbar-track-piece {
+    background: #F5F5F5;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #D5D5D5;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #CDCDCD;
+}
