@@ -29,10 +29,7 @@ class ConfigNotifyController extends Controller
         try {
             $request->validate([
                 'type' => ['required', Rule::in(ConfigNotify::TYPE)],
-                'enable' => ['required', 'integer'],
-                'interval_min' => ['required', 'integer'],
-                'start_time' => ['required'],
-                'end_time' => ['required'],
+                'enable' => ['required'],
             ]);
             $commonField = ['enable', 'interval_min', 'start_time', 'end_time'];
             $data = $request->only($commonField);
