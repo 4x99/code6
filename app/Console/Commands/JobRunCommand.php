@@ -45,6 +45,13 @@ class JobRunCommand extends Command
     protected $whitelist;
 
     /**
+     * 文件白名单
+     *
+     * @var array
+     */
+    protected $fileWhitelist;
+
+    /**
      * GitHub Service
      *
      * @var GitHubService
@@ -73,6 +80,7 @@ class JobRunCommand extends Command
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
+        $this->fileWhitelist = array_filter(explode("\n", ConfigWhitelist::getFileConfig()));
 
         while ($job = $this->takeJob()) {
             $page = 1;
@@ -183,6 +191,13 @@ class JobRunCommand extends Command
         // 扫描白名单
         if ($this->whitelist->has("$repoOwner/$repoName")) {
             return false;
+        }
+
+        // 文件白名单
+        foreach ($this->fileWhitelist as $fileWhitelist) {
+            if (mb_strpos($item['path'], $fileWhitelist) !== false) {
+                return false;
+            }
         }
 
         // 匹配 BLOB 值
