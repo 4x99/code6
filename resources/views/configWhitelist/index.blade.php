@@ -16,6 +16,8 @@
                 }
             });
 
+            var fileConfig = '{{$fileConfig}}';
+
             // 白名单列表
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
@@ -28,6 +30,12 @@
                             html: '提示：扫描任务将自动忽略白名单内的仓库',
                         },
                         '->',
+                        {
+                            text: '文件白名单',
+                            iconCls: 'icon-folder-page',
+                            margin: '0 13 0 0',
+                            handler: winFormFile,
+                        },
                         {
                             text: '批量删除',
                             margin: '0 13 0 0',
@@ -200,6 +208,56 @@
                                                 win.close();
                                                 tool.toast('操作成功！', 'success');
                                                 grid.store.insert(0, rsp.data);
+                                            } else {
+                                                tool.toast(rsp.message, 'error');
+                                            }
+                                        });
+                                    }
+                                }
+                            ]
+                        }
+                    ]
+                }).show();
+            }
+
+            function winFormFile() {
+                var winFile = Ext.create('Ext.window.Window', {
+                    title: '文件白名单',
+                    iconCls: 'icon-page-wrench',
+                    width: 500,
+                    layout: 'fit',
+                    items: [
+                        {
+                            xtype: 'form',
+                            layout: 'form',
+                            bodyPadding: 15,
+                            items: [
+                                {
+                                    xtype: 'textareafield',
+                                    name: 'file_config',
+                                    fieldLabel: '文件后缀',
+                                    value: fileConfig,
+                                    emptyText: '请输入文件名或文件后缀如：[ test.txt ] 或 [ .txt ]\n（一行一个）',
+                                }
+                            ],
+                            buttons: [
+                                {
+                                    text: '重置',
+                                    handler: function () {
+                                        this.up('form').getForm().reset();
+                                    }
+                                },
+                                {
+                                    text: '提交',
+                                    formBind: true,
+                                    handler: function () {
+                                        var values = this.up('form').getValues();
+                                        var params = {};
+                                        params['value'] = fileConfig = values['file_config'];
+                                        tool.ajax('PUT', '/api/configWhitelist/fileConfig', params, function (rsp) {
+                                            if (rsp.success) {
+                                                winFile.close();
+                                                tool.toast('操作成功！', 'success');
                                             } else {
                                                 tool.toast(rsp.message, 'error');
                                             }

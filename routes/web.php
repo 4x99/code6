@@ -45,6 +45,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('/api/configToken', 'ConfigTokenController');
 
     Route::get('/configWhitelist', 'ConfigWhitelistController@view');
+    Route::put('/api/configWhitelist/fileConfig', 'ConfigWhitelistController@updatefileConfig');
     Route::post('/api/configWhitelist/batchStore', 'ConfigWhitelistController@batchStore');
     Route::delete('/api/configWhitelist/batchDestroy', 'ConfigWhitelistController@batchDestroy');
     Route::resource('/api/configWhitelist', 'ConfigWhitelistController');
