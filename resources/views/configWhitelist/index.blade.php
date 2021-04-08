@@ -235,9 +235,8 @@
                                 {
                                     xtype: 'textareafield',
                                     name: 'file_config',
-                                    fieldLabel: '文件后缀',
                                     value: fileConfig,
-                                    emptyText: '请输入文件名或文件后缀如：[ test.txt ] 或 [ .txt ]\n（一行一个）',
+                                    emptyText: '请输入文件名或文件后缀如：[ test.txt ] 或 [ .txt ]（一行一个）',
                                 }
                             ],
                             buttons: [
