@@ -240,12 +240,6 @@
                             text: '保存',
                             iconCls: 'icon-page-edit',
                             handler: function () {
-                                var form = this.up('form');
-                                if (!form.isValid()) {
-                                    tool.toast('配置有误！');
-                                    return false;
-                                }
-
                                 var params = this.up('form').getForm().getValues();
                                 params.type = type;
                                 tool.ajax('POST', '/api/configNotify', params, function (rsp) {
