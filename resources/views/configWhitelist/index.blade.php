@@ -31,7 +31,7 @@
                         },
                         '->',
                         {
-                            text: '文件白名单',
+                            text: '按文件过滤',
                             iconCls: 'icon-folder-page',
                             margin: '0 13 0 0',
                             handler: winFormFile,
@@ -222,7 +222,7 @@
 
             function winFormFile() {
                 var winFile = Ext.create('Ext.window.Window', {
-                    title: '文件白名单',
+                    title: '按文件过滤',
                     iconCls: 'icon-page-wrench',
                     width: 500,
                     layout: 'fit',
@@ -236,7 +236,7 @@
                                     xtype: 'textareafield',
                                     name: 'file_config',
                                     value: fileConfig,
-                                    emptyText: '请输入文件名或文件后缀如：[ test.txt ] 或 [ .txt ]（一行一个）',
+                                    emptyText: '支持 [ 文件名 ] 和 [ 通配符 ] 过滤，格式如：（一行一个）\ntest.txt\ntest*.txt',
                                 }
                             ],
                             buttons: [

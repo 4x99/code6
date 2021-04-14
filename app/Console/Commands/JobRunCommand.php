@@ -45,7 +45,7 @@ class JobRunCommand extends Command
     protected $whitelist;
 
     /**
-     * 文件白名单
+     * 按文件过滤
      *
      * @var array
      */
@@ -193,9 +193,9 @@ class JobRunCommand extends Command
             return false;
         }
 
-        // 文件白名单
+        // 按文件过滤
         foreach ($this->fileWhitelist as $fileWhitelist) {
-            if (mb_strpos($item['path'], $fileWhitelist) !== false) {
+            if (fnmatch($fileWhitelist, basename($item['path']))) {
                 return false;
             }
         }
