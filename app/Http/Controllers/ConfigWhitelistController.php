@@ -112,7 +112,7 @@ class ConfigWhitelistController extends Controller
     public function updateFileConfig(Request $request)
     {
         try {
-            $fp = fopen(storage_path('whitelist.txt'), 'w');
+            $fp = fopen(storage_path(ConfigWhitelist::FILE_CONFIG_PATH), 'w');
             fwrite($fp, $request->input('value'));
             fclose($fp);
             return ['success' => true];
