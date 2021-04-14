@@ -36,6 +36,7 @@
                             margin: '0 13 0 0',
                             handler: winFormFile,
                         },
+                        '|',
                         {
                             text: '批量删除',
                             margin: '0 13 0 0',
