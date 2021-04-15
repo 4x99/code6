@@ -29,6 +29,7 @@
 }
 
 .metric-value {
+    font-family: Verdana, 'Microsoft YaHei', sans-serif !important;
     font-size: 24px;
 }
 

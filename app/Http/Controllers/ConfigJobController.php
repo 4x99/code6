@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 
 class ConfigJobController extends Controller
 {
-
     public function view()
     {
         $data = ['title' => '任务配置'];
