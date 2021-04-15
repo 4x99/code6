@@ -7,6 +7,7 @@ use App\Models\CodeFragment;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
 use App\Models\ConfigWhitelist;
+use App\Models\ConfigWhitelistFile;
 use App\Models\QueueJob;
 use App\Services\GitHubService;
 use Github\HttpClient\Message\ResponseMediator;
@@ -45,11 +46,11 @@ class JobRunCommand extends Command
     protected $whitelist;
 
     /**
-     * 按文件过滤
+     * 按文件名忽略
      *
      * @var array
      */
-    protected $fileWhitelist;
+    protected $whitelistFile;
 
     /**
      * GitHub Service
@@ -80,7 +81,7 @@ class JobRunCommand extends Command
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
-        $this->fileWhitelist = array_filter(explode("\n", ConfigWhitelist::getFileConfig()));
+        $this->whitelistFile = ConfigWhitelistFile::getConfig();
 
         while ($job = $this->takeJob()) {
             $page = 1;
@@ -193,9 +194,9 @@ class JobRunCommand extends Command
             return false;
         }
 
-        // 按文件过滤
-        foreach ($this->fileWhitelist as $fileWhitelist) {
-            if (fnmatch($fileWhitelist, basename($item['path']))) {
+        // 按文件名忽略
+        foreach ($this->whitelistFile as $pattern) {
+            if (fnmatch($pattern, basename($item['path']))) {
                 return false;
             }
         }
