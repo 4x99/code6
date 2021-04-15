@@ -2,7 +2,7 @@
 /public/hot
 /public/storage
 /storage/*.key
-/storage/whitelist-file.txt
+/storage/app/whitelist-file.conf
 /vendor
 .env
 .env.backup

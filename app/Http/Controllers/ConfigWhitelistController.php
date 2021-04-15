@@ -9,10 +9,7 @@ class ConfigWhitelistController extends Controller
 {
     public function view()
     {
-        $data = [
-            'title' => '白名单配置',
-            'fileConfig' => str_replace("\n", '\\n', ConfigWhitelist::getFileConfig()),
-        ];
+        $data = ['title' => '白名单配置'];
         return view('configWhitelist.index', $data);
     }
 
@@ -100,24 +97,6 @@ class ConfigWhitelistController extends Controller
             return ['success' => $success];
         } catch (\Exception $exception) {
             return ['success' => false, 'message' => $exception->getMessage()];
-        }
-    }
-
-    /**
-     * 文件白名单更新
-     *
-     * @param  Request  $request
-     * @return array
-     */
-    public function updateFileConfig(Request $request)
-    {
-        try {
-            $fp = fopen(storage_path(ConfigWhitelist::FILE_CONFIG_PATH), 'w');
-            fwrite($fp, $request->input('value'));
-            fclose($fp);
-            return ['success' => true];
-        } catch (\Exception $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 }
