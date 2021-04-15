@@ -328,19 +328,19 @@
 
             function showHelp() {
                 var msg = [];
-                msg.push('<b class="hl">扫 描 流 程</b>\n');
+                msg.push('<b>扫 描 流 程</b>\n');
                 msg.push('＋－－－－－－－－－－－－－＋　　　　令　牌　　　　＋－－－－－－－－－－－－－－＋');
                 msg.push('｜　　　　　　　　　　　　　｜－－－－－－－－－－＞｜　　　　　　　　　　　　　　｜');
                 msg.push('｜　　　码　　小　　六　　　｜　　　　　　　　　　　｜　　ＧｉｔＨｕｂ　ＡＰＩ　　｜');
                 msg.push('｜　　　　　　　　　　　　　｜＜－－－－－－－－－－｜　　　　　　　　　　　　　　｜');
                 msg.push('＋－－－－－－－－－－－－－＋　　扫　描　结　果　　＋－－－－－－－－－－－－－－＋');
                 msg.push('\n');
-                msg.push('<b class="hl">配 置 说 明</b>\n');
+                msg.push('<b>配 置 说 明</b>\n');
                 msg.push('<p>[ 配置中心 ] - [ 令牌配置 ]：设置从官网申请到的接口令牌</p>');
                 msg.push('<p>[ 配置中心 ] - [ 任务配置 ]：设置需要扫描的关键字及参数</p>');
 
                 Ext.Msg.show({
-                    title: '新手指引',
+                    title: '新手引导',
                     modal: false,
                     iconCls: 'icon-page-star',
                     width: 700,

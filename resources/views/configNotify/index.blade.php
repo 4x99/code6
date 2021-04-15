@@ -63,6 +63,7 @@
                     },
                     {
                         name: 'password',
+                        inputType: 'password',
                         fieldLabel: '密　　码',
                         emptyText: '请填写授权码 ..',
                         value: getConfig('email.value.password'),
@@ -132,6 +133,7 @@
                     },
                     {
                         name: 'token',
+                        inputType: 'password',
                         fieldLabel: '令　　牌',
                         value: getConfig('telegram.value.token'),
                         emptyText: '请填写 token ..',
@@ -238,12 +240,6 @@
                             text: '保存',
                             iconCls: 'icon-page-edit',
                             handler: function () {
-                                var form = this.up('form');
-                                if (!form.isValid()) {
-                                    tool.toast('配置有误！');
-                                    return false;
-                                }
-
                                 var params = this.up('form').getForm().getValues();
                                 params.type = type;
                                 tool.ajax('POST', '/api/configNotify', params, function (rsp) {
