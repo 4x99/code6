@@ -1,0 +1,9 @@
+.tip {
+    margin: 0;
+    letter-spacing: 3px;
+}
+
+.tip b {
+    font-weight: 400;
+    color: #0070D5;
+}

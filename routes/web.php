@@ -49,6 +49,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/api/configWhitelist/batchDestroy', 'ConfigWhitelistController@batchDestroy');
     Route::resource('/api/configWhitelist', 'ConfigWhitelistController');
 
+    Route::resource('/api/configWhitelistFile', 'ConfigWhitelistFileController');
+
     Route::get('/configNotify', 'ConfigNotifyController@view');
     Route::post('/api/test', 'ConfigNotifyController@test');
     Route::resource('/api/configNotify', 'ConfigNotifyController');
