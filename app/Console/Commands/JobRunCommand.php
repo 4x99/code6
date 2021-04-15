@@ -7,6 +7,7 @@ use App\Models\CodeFragment;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
 use App\Models\ConfigWhitelist;
+use App\Models\ConfigWhitelistFile;
 use App\Models\QueueJob;
 use App\Services\GitHubService;
 use Github\HttpClient\Message\ResponseMediator;
@@ -45,6 +46,13 @@ class JobRunCommand extends Command
     protected $whitelist;
 
     /**
+     * 按文件名忽略
+     *
+     * @var array
+     */
+    protected $whitelistFile;
+
+    /**
      * GitHub Service
      *
      * @var GitHubService
@@ -73,6 +81,7 @@ class JobRunCommand extends Command
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
+        $this->whitelistFile = ConfigWhitelistFile::getConfig();
 
         while ($job = $this->takeJob()) {
             $page = 1;
@@ -183,6 +192,13 @@ class JobRunCommand extends Command
         // 扫描白名单
         if ($this->whitelist->has("$repoOwner/$repoName")) {
             return false;
+        }
+
+        // 按文件名忽略
+        foreach ($this->whitelistFile as $pattern) {
+            if (fnmatch($pattern, basename($item['path']))) {
+                return false;
+            }
         }
 
         // 匹配 BLOB 值
