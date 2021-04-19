@@ -8,9 +8,12 @@ use App\Models\CodeLeak;
 use App\Models\ConfigJob;
 use App\Models\ConfigToken;
 use App\Utils\SystemUtil;
+use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
+    const LATEST_VERSION_URL = 'https://raw.githubusercontent.com/4x99/code6/master/version';
+
     public function view()
     {
         $data = [
@@ -129,5 +132,21 @@ class HomeController extends Controller
     public function tokenCount()
     {
         return ['success' => true, 'data' => ConfigToken::count()];
+    }
+
+    /**
+     * 最新版本
+     *
+     * @return array
+     */
+    public function latestVersion()
+    {
+        try {
+            $response = Http::timeout(10)->get(self::LATEST_VERSION_URL);
+            $latestVersion = trim($response->body());
+        } catch (\Exception $e) {
+            $latestVersion = '';
+        }
+        return ['success' => true, 'data' => $latestVersion];
     }
 }
