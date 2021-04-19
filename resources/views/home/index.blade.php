@@ -23,6 +23,7 @@
                         load: ['未知', '未知', '未知'],
                         configToken: 'cross',
                         configJob: 'cross',
+                        latestVersion: '',
                         disk: {
                             used: '未知',
                             total: '未知',
@@ -104,7 +105,6 @@
                                         '    </p>',
                                         '</div>',
                                     ).apply({
-                                        version: '{{ VERSION }}',
                                         token: '{configToken}',
                                         job: '{configJob}',
                                     })
@@ -164,12 +164,15 @@
                                     {
                                         margin: '15 0 0 0',
                                         height: 100,
-                                        html: new Ext.XTemplate(
-                                            '    <p class="title">版本信息</p>',
-                                            '    <p class="content">{version}（GPL v3）</p>',
-                                        ).apply({
-                                            version: '{{ VERSION }}',
-                                        })
+                                        bind: {
+                                            html: new Ext.XTemplate(
+                                                '    <p class="title">版本信息</p>',
+                                                '    <p class="content">{version}{latestVersion}</p>',
+                                            ).apply({
+                                                version: '{{ VERSION }}',
+                                                latestVersion: '{latestVersion}',
+                                            })
+                                        }
                                     }
                                 ]
                             },
@@ -323,6 +326,13 @@
             tool.ajax('GET', '/api/home/jobCount', {}, function (rsp) {
                 if (rsp.data) {
                     viewModel.setData({configJob: 'tick'});
+                }
+            });
+
+            // 检查最新版本
+            tool.ajax('GET', '/api/home/latestVersion', {}, function (rsp) {
+                if (rsp.data && rsp.data != '{{ VERSION }}') {
+                    viewModel.setData({latestVersion: '（发现新版本 <a href="https://github.com/4x99/code6/releases" target="_blank">' + rsp.data + '</a>）'});
                 }
             });
 
