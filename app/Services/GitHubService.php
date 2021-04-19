@@ -25,6 +25,7 @@ class GitHubService
     const GET_CLIENT_TIMEOUT = 1800;
     const HTTP_CODE_UNAUTHORIZED = 401;
     const RATE_LIMIT_UNAUTHENTICATED = 10; // 未授权限制请求频率：10 次 / 分钟
+    const LATEST_RELEASES_API = 'https://api.github.com/repos/4x99/code6/releases/latest';
 
     public $clients = [];
     private $userAgent = 'Code6';

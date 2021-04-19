@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\GitHubService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\QueueJob;
 use App\Models\CodeLeak;
@@ -12,7 +13,6 @@ use Illuminate\Support\Facades\Http;
 
 class HomeController extends Controller
 {
-    const LATEST_VERSION_URL = 'https://raw.githubusercontent.com/4x99/code6/master/version';
 
     public function view()
     {
@@ -142,8 +142,9 @@ class HomeController extends Controller
     public function latestVersion()
     {
         try {
-            $response = Http::timeout(10)->get(self::LATEST_VERSION_URL);
-            $latestVersion = trim($response->body());
+            $token = ConfigToken::where('status', ConfigToken::STATUS_NORMAL)->inRandomOrder()->take(1)->value('token');
+            $response = Http::withHeaders(['Authorization' => "token {$token}"])->timeout(GitHubService::HTTP_TIMEOUT)->get(GitHubService::LATEST_RELEASES_API);
+            $latestVersion = $response['tag_name'];
         } catch (\Exception $e) {
             $latestVersion = '';
         }
