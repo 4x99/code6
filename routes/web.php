@@ -32,7 +32,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/api/home/tokenQuota', 'HomeController@tokenQuota');
     Route::get('/api/home/jobCount', 'HomeController@jobCount');
     Route::get('/api/home/tokenCount', 'HomeController@tokenCount');
-    Route::get('/api/home/latestVersion', 'HomeController@latestVersion');
+    Route::get('/api/home/upgradeCheck', 'HomeController@upgradeCheck');
 
     Route::get('/codeLeak', 'CodeLeakController@view');
     Route::put('/api/codeLeak/batchUpdate', 'CodeLeakController@batchUpdate');

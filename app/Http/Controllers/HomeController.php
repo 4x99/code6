@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Services\GitHubService;
 use Illuminate\Support\Facades\Auth;
 use App\Models\QueueJob;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
 use App\Models\ConfigToken;
+use App\Services\GitHubService;
 use App\Utils\SystemUtil;
 use Illuminate\Support\Facades\Http;
 
@@ -135,19 +135,22 @@ class HomeController extends Controller
     }
 
     /**
-     * 最新版本
+     * 升级检查
      *
      * @return array
      */
-    public function latestVersion()
+    public function upgradeCheck()
     {
         try {
-            $token = ConfigToken::where('status', ConfigToken::STATUS_NORMAL)->inRandomOrder()->take(1)->value('token');
-            $response = Http::withHeaders(['Authorization' => "token {$token}"])->timeout(GitHubService::HTTP_TIMEOUT)->get(GitHubService::LATEST_RELEASES_API);
-            $latestVersion = $response['tag_name'];
+            $query = ConfigToken::where('status', ConfigToken::STATUS_NORMAL);
+            $token = $query->inRandomOrder()->take(1)->value('token');
+            $query = Http::withHeaders(['Authorization' => "token {$token}"]);
+            $response = $query->timeout(15)->get(GitHubService::LATEST_RELEASES_API);
+            $new = version_compare($response['tag_name'], VERSION) === 1;
+            $data = ['new' => $new, 'version' => $response['tag_name']];
         } catch (\Exception $e) {
-            $latestVersion = '';
+            $data = ['new' => false];
         }
-        return ['success' => true, 'data' => $latestVersion];
+        return ['success' => true, 'data' => $data];
     }
 }

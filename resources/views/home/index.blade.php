@@ -23,7 +23,7 @@
                         load: ['未知', '未知', '未知'],
                         configToken: 'cross',
                         configJob: 'cross',
-                        latestVersion: '',
+                        versionTip: '当前已是最新版',
                         disk: {
                             used: '未知',
                             total: '未知',
@@ -167,10 +167,10 @@
                                         bind: {
                                             html: new Ext.XTemplate(
                                                 '    <p class="title">版本信息</p>',
-                                                '    <p class="content">{version}{latestVersion}</p>',
+                                                '    <p class="content">{version}（{versionTip}）</p>',
                                             ).apply({
                                                 version: '{{ VERSION }}',
-                                                latestVersion: '{latestVersion}',
+                                                versionTip: '{versionTip}',
                                             })
                                         }
                                     }
@@ -330,9 +330,12 @@
             });
 
             // 检查最新版本
-            tool.ajax('GET', '/api/home/latestVersion', {}, function (rsp) {
-                if (rsp.data && rsp.data != '{{ VERSION }}') {
-                    viewModel.setData({latestVersion: '（发现新版本 <a href="https://github.com/4x99/code6/releases" target="_blank">' + rsp.data + '</a>）'});
+            tool.ajax('GET', '/api/home/upgradeCheck', {}, function (rsp) {
+                if (rsp.data && rsp.data.new) {
+                    var version = rsp.data.version;
+                    var url = 'https://github.com/4x99/code6/releases';
+                    var text = '发现新版本：<a class="version" href="' + url + '" target="_blank">' + version + '</a>';
+                    viewModel.setData({versionTip: text});
                 }
             });
 

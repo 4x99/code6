@@ -68,3 +68,11 @@
     margin: 0;
     letter-spacing: 3px;
 }
+
+.version {
+    color: #0070D5;
+}
+
+.version:hover {
+    color: #1890FF;
+}
