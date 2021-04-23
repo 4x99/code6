@@ -74,6 +74,7 @@
                                         xtype: 'buttongroup',
                                         columns: 2,
                                         defaults: {
+                                            width: 120,
                                             margin: '0 5 5 0',
                                             hrefTarget: 'frame',
                                             handler: function () {
@@ -97,7 +98,8 @@
                                                 href: '/configNotify',
                                             },
                                             {
-                                                text: '白 名 单',
+                                                text: '白名单配置',
+                                                align: 'left',
                                                 iconCls: 'icon-page-db',
                                                 href: '/configWhitelist',
                                             }
