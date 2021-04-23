@@ -107,6 +107,7 @@ class JobRunCommand extends Command
     private function createGitHubService()
     {
         $this->service = new GitHubService();
+        $this->service->init();
         if (count($this->service->clients) === 0) {
             $this->log->error('No GitHub client available');
             exit;
