@@ -32,6 +32,12 @@ body {
     overflow: hidden;
 }
 
+.title {
+    margin-left: 6px;
+    font-weight: normal;
+    color: #666;
+}
+
 .item .van-cell__label {
     overflow: hidden;
     white-space: nowrap;
