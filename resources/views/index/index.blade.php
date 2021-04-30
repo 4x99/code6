@@ -153,10 +153,19 @@
                                 }
                             },
                             {
+                                id: 'mobile',
                                 iconCls: 'icon-phone',
                                 href: '/mobile',
                                 text: '访问移动版',
                                 margin: '0 25 0 32',
+                                listeners: {
+                                    mouseover: function () {
+                                        qrCode.show();
+                                    },
+                                    mouseout: function () {
+                                        qrCode.hide();
+                                    }
+                                }
                             }
                         ]
                     },
@@ -167,6 +176,27 @@
                         html: '<iframe id="frame" name="frame" src="/home" width="100%" height="100%"></iframe>',
                     }
                 ]
+            });
+
+            var qrCode = Ext.create('Ext.window.Window', {
+                header: false,
+                src: '',
+                x: Ext.getCmp('mobile').getX(),
+                y: Ext.getCmp('mobile').getY() + 25,
+                items: [{
+                    xtype: 'image',
+                    src: '',
+                    width: 110,
+                    height: 110,
+                    initComponent: function () {
+                        var me = this
+                        tool.ajax('GET', '/api/home/mobileQrCode', {}, function (rsp) {
+                            if (rsp.success) {
+                                me.src = rsp.data;
+                            }
+                        });
+                    }
+                }],
             });
 
             // 点击菜单
