@@ -8,6 +8,7 @@ use App\Models\CodeLeak;
 use App\Models\ConfigJob;
 use App\Models\ConfigToken;
 use App\Utils\SystemUtil;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class HomeController extends Controller
 {
@@ -129,5 +130,18 @@ class HomeController extends Controller
     public function tokenCount()
     {
         return ['success' => true, 'data' => ConfigToken::count()];
+    }
+
+    /**
+     * 移动端二维码
+     *
+     * @return array
+     */
+    public function mobileQrCode()
+    {
+        $mobileUrl = "{$_SERVER['REQUEST_SCHEME']}://{$_SERVER['HTTP_HOST']}/mobile";
+        $qrCode = QrCode::format('png')->size(110)->margin(0)->generate($mobileUrl);
+        $data = 'data:image/png;base64,'.base64_encode($qrCode);
+        return ['success' => true, 'data' => $data];
     }
 }
