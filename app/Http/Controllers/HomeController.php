@@ -7,11 +7,14 @@ use App\Models\QueueJob;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
 use App\Models\ConfigToken;
+use App\Services\GitHubService;
 use App\Utils\SystemUtil;
+use Illuminate\Support\Facades\Http;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class HomeController extends Controller
 {
+
     public function view()
     {
         $data = [
@@ -130,6 +133,26 @@ class HomeController extends Controller
     public function tokenCount()
     {
         return ['success' => true, 'data' => ConfigToken::count()];
+    }
+
+    /**
+     * 升级检查
+     *
+     * @return array
+     */
+    public function upgradeCheck()
+    {
+        try {
+            $query = ConfigToken::where('status', ConfigToken::STATUS_NORMAL);
+            $token = $query->inRandomOrder()->take(1)->value('token');
+            $client = (new GitHubService())->createClient($token);
+            $release = $client->api('repo')->releases()->latest('4x99', 'code6');
+            $new = version_compare($release['tag_name'], VERSION) === 1;
+            $data = ['new' => $new, 'version' => $release['tag_name']];
+        } catch (\Exception $e) {
+            $data = ['new' => false];
+        }
+        return ['success' => true, 'data' => $data];
     }
 
     /**

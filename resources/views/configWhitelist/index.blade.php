@@ -1,5 +1,7 @@
 @extends('base')
 @section('content')
+    <link rel="stylesheet" href="{{ URL::asset('css/configWhitelist.css?v=') . VERSION }}">
+
     <script>
         Ext.onReady(function () {
             Ext.create('Ext.data.Store', {
@@ -25,12 +27,19 @@
                     items: [
                         {
                             xtype: 'tbtext',
-                            html: '提示：扫描任务将自动忽略白名单内的仓库',
+                            html: '提示：扫描时将自动忽略白名单内的仓库',
                         },
                         '->',
                         {
-                            text: '批量删除',
+                            text: '按文件名忽略',
+                            iconCls: 'icon-folder-page',
                             margin: '0 13 0 0',
+                            handler: winFormFile,
+                        },
+                        '-',
+                        {
+                            text: '批量删除',
+                            margin: '0 13 0 5',
                             iconCls: 'icon-cross',
                             handler: function () {
                                 Ext.Msg.show({
@@ -67,7 +76,7 @@
                             }
                         },
                         {
-                            text: '新增白名单',
+                            text: '新增仓库',
                             iconCls: 'icon-add',
                             margin: '0 13 0 0',
                             handler: winForm,
@@ -102,7 +111,7 @@
                     {
                         text: '操作',
                         sortable: false,
-                        width: 250,
+                        flex: 1,
                         align: 'center',
                         xtype: 'widgetcolumn',
                         widget: {
@@ -116,7 +125,7 @@
                                 {
                                     text: '访问',
                                     iconCls: 'icon-bullet-green',
-                                    margin: '0 20 0 0',
+                                    margin: '0 30 0 0',
                                     handler: function (obj) {
                                         var record = obj.up().getWidgetRecord();
                                         var url = 'https://github.com/';
@@ -158,7 +167,7 @@
 
             function winForm() {
                 var win = Ext.create('Ext.window.Window', {
-                    title: '白名单信息',
+                    title: '将仓库加入白名单',
                     iconCls: 'icon-page-wrench',
                     width: 350,
                     layout: 'fit',
@@ -210,6 +219,67 @@
                         }
                     ]
                 }).show();
+            }
+
+            function winFormFile() {
+                tool.ajax('GET', '/api/configWhitelistFile', {}, function (rsp) {
+                    if (!rsp.success) {
+                        tool.toast('读取配置错误！');
+                        return false;
+                    }
+
+                    var winFile = Ext.create('Ext.window.Window', {
+                        title: '按文件名忽略',
+                        iconCls: 'icon-folder-page',
+                        width: 500,
+                        layout: 'fit',
+                        items: [
+                            {
+                                xtype: 'form',
+                                layout: 'form',
+                                bodyPadding: '5 15 15 8',
+                                tbar: [
+                                    {
+                                        xtype: 'tbtext',
+                                        padding: '15 0 0 10',
+                                        html: '<div class="tip">提示：一行一个，支持通配符，如 <b>nginx.conf</b>、<b>*.css</b></div>',
+                                    }
+                                ],
+                                items: [
+                                    {
+                                        xtype: 'textareafield',
+                                        name: 'value',
+                                        value: rsp.data,
+                                        fieldStyle: 'min-height:300px',
+                                    }
+                                ],
+                                buttons: [
+                                    {
+                                        text: '重置',
+                                        handler: function () {
+                                            this.up('form').getForm().reset();
+                                        }
+                                    },
+                                    {
+                                        text: '保存',
+                                        formBind: true,
+                                        handler: function () {
+                                            var params = this.up('form').getValues();
+                                            tool.ajax('POST', '/api/configWhitelistFile', params, function (rsp) {
+                                                if (rsp.success) {
+                                                    winFile.close();
+                                                    tool.toast('保存成功！', 'success');
+                                                } else {
+                                                    tool.toast(rsp.message, 'error');
+                                                }
+                                            });
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }).show();
+                });
             }
 
             Ext.create('Ext.container.Container', {
