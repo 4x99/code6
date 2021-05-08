@@ -1,6 +1,6 @@
 <div align="center">
 
-![码小六](https://raw.githubusercontent.com/4x99/snapshot/master/code6/logo.png)
+![码小六](https://4x99.github.io/snapshot/code6/logo.png)
 
 ![license](https://img.shields.io/github/license/4x99/code6?color=%231890FF&style=flat-square)
 ![release](https://img.shields.io/github/v/release/4x99/code6?color=%231890FF&sort=semver&style=flat-square)
@@ -20,7 +20,7 @@
 - 支持 GitHub 令牌管理及智能调度
 - 扫描结果信息丰富，支持批量操作
 - 任务配置灵活，可单独配置任务扫描参数
-- 支持白名单模式，主动忽略白名单仓库
+- 支持白名单模式，可按仓库和文件名过滤
 - 支持邮件、钉钉、WebHook、Telegram、企业微信通知
 
 ---
@@ -42,8 +42,8 @@
 ## 系统界面
 请点击浏览大图 :P
 
-![登录页面](https://raw.githubusercontent.com/4x99/snapshot/master/code6/login.png)
+![登录页面](https://4x99.github.io/snapshot/code6/login.png)
 
-![应用概况](https://raw.githubusercontent.com/4x99/snapshot/master/code6/home.png)
+![应用概况](https://4x99.github.io/snapshot/code6/home.png)
 
-![扫描结果](https://raw.githubusercontent.com/4x99/snapshot/master/code6/code-leak.png)
+![扫描结果](https://4x99.github.io/snapshot/code6/code-leak.png)

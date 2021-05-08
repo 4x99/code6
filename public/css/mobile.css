@@ -1,5 +1,5 @@
 body {
-    font-family: Verdana, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
+    font-family: Consolas, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Helvetica, Segoe UI, Arial, Roboto, 'PingFang SC', 'Hiragino Sans GB', 'Microsoft Yahei', sans-serif;
     padding-bottom: 50px;
     color: #666;
 }
@@ -19,7 +19,6 @@ body {
 
 .tag {
     display: inline-block;
-    margin-right: 3px;
     padding: 3px 5px 1px 7px;
     font-size: 12px;
     line-height: 1.3em;
@@ -31,6 +30,12 @@ body {
 
 .item .van-cell__title {
     overflow: hidden;
+}
+
+.title {
+    margin-left: 6px;
+    font-weight: normal;
+    color: #666;
 }
 
 .item .van-cell__label {

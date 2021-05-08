@@ -32,6 +32,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('/api/home/tokenQuota', 'HomeController@tokenQuota');
     Route::get('/api/home/jobCount', 'HomeController@jobCount');
     Route::get('/api/home/tokenCount', 'HomeController@tokenCount');
+    Route::get('/api/home/upgradeCheck', 'HomeController@upgradeCheck');
     Route::get('/api/home/mobileQrCode', 'HomeController@mobileQrCode');
 
     Route::get('/codeLeak', 'CodeLeakController@view');
@@ -49,6 +50,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('/api/configWhitelist/batchStore', 'ConfigWhitelistController@batchStore');
     Route::delete('/api/configWhitelist/batchDestroy', 'ConfigWhitelistController@batchDestroy');
     Route::resource('/api/configWhitelist', 'ConfigWhitelistController');
+
+    Route::resource('/api/configWhitelistFile', 'ConfigWhitelistFileController');
 
     Route::get('/configNotify', 'ConfigNotifyController@view');
     Route::post('/api/test', 'ConfigNotifyController@test');

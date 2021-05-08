@@ -23,6 +23,7 @@
                         load: ['未知', '未知', '未知'],
                         configToken: 'cross',
                         configJob: 'cross',
+                        versionTip: '当前已是最新版',
                         disk: {
                             used: '未知',
                             total: '未知',
@@ -104,7 +105,6 @@
                                         '    </p>',
                                         '</div>',
                                     ).apply({
-                                        version: '{{ VERSION }}',
                                         token: '{configToken}',
                                         job: '{configJob}',
                                     })
@@ -164,12 +164,15 @@
                                     {
                                         margin: '15 0 0 0',
                                         height: 100,
-                                        html: new Ext.XTemplate(
-                                            '    <p class="title">版本信息</p>',
-                                            '    <p class="content">{version}（GPL v3）</p>',
-                                        ).apply({
-                                            version: '{{ VERSION }}',
-                                        })
+                                        bind: {
+                                            html: new Ext.XTemplate(
+                                                '    <p class="title">版本信息</p>',
+                                                '    <p class="content">{version}（{versionTip}）</p>',
+                                            ).apply({
+                                                version: '{{ VERSION }}',
+                                                versionTip: '{versionTip}',
+                                            })
+                                        }
                                     }
                                 ]
                             },
@@ -326,21 +329,31 @@
                 }
             });
 
+            // 检查最新版本
+            tool.ajax('GET', '/api/home/upgradeCheck', {}, function (rsp) {
+                if (rsp.data && rsp.data.new) {
+                    var version = rsp.data.version;
+                    var url = 'https://github.com/4x99/code6/releases';
+                    var text = '发现新版本：<a class="version" href="' + url + '" target="_blank">' + version + '</a>';
+                    viewModel.setData({versionTip: text});
+                }
+            });
+
             function showHelp() {
                 var msg = [];
-                msg.push('<b class="hl">扫 描 流 程</b>\n');
+                msg.push('<b>扫 描 流 程</b>\n');
                 msg.push('＋－－－－－－－－－－－－－＋　　　　令　牌　　　　＋－－－－－－－－－－－－－－＋');
                 msg.push('｜　　　　　　　　　　　　　｜－－－－－－－－－－＞｜　　　　　　　　　　　　　　｜');
                 msg.push('｜　　　码　　小　　六　　　｜　　　　　　　　　　　｜　　ＧｉｔＨｕｂ　ＡＰＩ　　｜');
                 msg.push('｜　　　　　　　　　　　　　｜＜－－－－－－－－－－｜　　　　　　　　　　　　　　｜');
                 msg.push('＋－－－－－－－－－－－－－＋　　扫　描　结　果　　＋－－－－－－－－－－－－－－＋');
                 msg.push('\n');
-                msg.push('<b class="hl">配 置 说 明</b>\n');
+                msg.push('<b>配 置 说 明</b>\n');
                 msg.push('<p>[ 配置中心 ] - [ 令牌配置 ]：设置从官网申请到的接口令牌</p>');
                 msg.push('<p>[ 配置中心 ] - [ 任务配置 ]：设置需要扫描的关键字及参数</p>');
 
                 Ext.Msg.show({
-                    title: '新手指引',
+                    title: '新手引导',
                     modal: false,
                     iconCls: 'icon-page-star',
                     width: 700,
