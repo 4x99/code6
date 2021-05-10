@@ -30,8 +30,8 @@ class LoginController extends Controller
                 throw new \Exception('邮箱或密码错误！');
             }
             return ['success' => true, 'data' => Auth::user()];
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
@@ -45,8 +45,8 @@ class LoginController extends Controller
         try {
             Auth::logout();
             return ['success' => true];
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 }
