@@ -33,9 +33,9 @@ class ConfigWhitelistFileController extends Controller
             $data = [];
             $values = array_filter(array_unique(explode("\n", $request->input('value'))));
             foreach ($values as $value) {
-                array_push($data, compact('value'));
+                $data[] = ['value' => $value];
             }
-            ConfigWhitelistFile::query()->delete();
+            ConfigWhitelistFile::truncate();
             ConfigWhitelistFile::insert($data);
             return ['success' => true];
         } catch (\Exception $e) {

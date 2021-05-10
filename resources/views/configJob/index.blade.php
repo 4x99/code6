@@ -224,7 +224,7 @@
                                     fieldLabel: '说　　明',
                                     allowBlank: true,
                                     value: data.description,
-                                    emptyText : '备注信息（选填）..',
+                                    emptyText: '备注信息（选填）..',
                                 }
                             ],
                             buttons: [
