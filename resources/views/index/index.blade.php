@@ -192,7 +192,8 @@
                     height: 110,
                     initComponent: function () {
                         var me = this
-                        tool.ajax('GET', '/api/home/mobileQrCode', {}, function (rsp) {
+                        var url = window.location.protocol + '//' + window.location.host + '/mobile';
+                        tool.ajax('GET', '/api/home/mobileQrCode', {url: url}, function (rsp) {
                             if (rsp.success) {
                                 me.src = rsp.data;
                             }
