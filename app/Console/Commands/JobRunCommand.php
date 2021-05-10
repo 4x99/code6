@@ -81,7 +81,7 @@ class JobRunCommand extends Command
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
-        $this->whitelistFile = ConfigWhitelistFile::getConfig();
+        $this->whitelistFile = ConfigWhitelistFile::pluck('value');
 
         while ($job = $this->takeJob()) {
             $page = 1;
