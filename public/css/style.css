@@ -84,6 +84,14 @@ input::-webkit-input-placeholder {
     color: #666;
 }
 
+.x-datepicker-today {
+    border-color: transparent;
+}
+
+.x-datepicker-selected {
+    border-color: #3892d4 !important;
+}
+
 /* Remove ExtJS focused style */
 .x-focus {
     box-shadow: none !important;
