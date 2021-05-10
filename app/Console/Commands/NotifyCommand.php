@@ -8,6 +8,7 @@ use App\Services\NotifyService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
+use Psr\Log\LoggerInterface;
 
 class NotifyCommand extends Command
 {
@@ -24,6 +25,13 @@ class NotifyCommand extends Command
      * @var string
      */
     protected $description = 'Send message notification';
+
+    /**
+     * 日志实例
+     *
+     * @var LoggerInterface
+     */
+    protected $log;
 
     /**
      * Create a new command instance.
