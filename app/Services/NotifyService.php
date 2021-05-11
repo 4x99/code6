@@ -107,9 +107,7 @@ class NotifyService
     {
         $data = [
             'msgtype' => 'text',
-            'text' => [
-                'content' => $content,
-            ],
+            'text' => ['content' => $content],
         ];
 
         try {
@@ -136,9 +134,7 @@ class NotifyService
     {
         $data = [
             'msgtype' => 'text',
-            'text' => [
-                'content' => $content,
-            ],
+            'text' => ['content' => $content],
         ];
 
         try {
