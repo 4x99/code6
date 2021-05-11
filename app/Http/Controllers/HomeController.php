@@ -163,7 +163,8 @@ class HomeController extends Controller
      */
     public function mobileQrCode(Request $request)
     {
-        $qrCode = QrCode::format('png')->size(110)->margin(0)->generate($request->input('url'));
+        $mobileUrl = $request->getSchemeAndHttpHost().'/mobile';
+        $qrCode = QrCode::format('png')->size(110)->margin(0)->generate($mobileUrl);
         $data = 'data:image/png;base64,'.base64_encode($qrCode);
         return ['success' => true, 'data' => $data];
     }
