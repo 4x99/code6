@@ -15,7 +15,7 @@ class ConfigWhitelistFileController extends Controller
     public function index()
     {
         try {
-            return ['success' => true, 'data' => ConfigWhitelistFile::get()];
+            return ['success' => true, 'data' => ConfigWhitelistFile::all()->implode('value', "\n")];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
@@ -30,7 +30,13 @@ class ConfigWhitelistFileController extends Controller
     public function store(Request $request)
     {
         try {
-            ConfigWhitelistFile::put($request->input('value'));
+            $data = [];
+            $values = array_filter(array_unique(explode("\n", $request->input('value'))));
+            foreach ($values as $value) {
+                $data[] = ['value' => $value];
+            }
+            ConfigWhitelistFile::truncate();
+            ConfigWhitelistFile::insert($data);
             return ['success' => true];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
