@@ -32,20 +32,20 @@ class ConfigJobController extends Controller
     public function store(Request $request)
     {
         try {
+            $success = $fail = 0;
             $request->validate(['keyword' => ['required', 'string', 'max:255']]);
-            $data = ConfigJob::firstOrCreate(
-                ['keyword' => $request->input('keyword')],
-                [
-                    'scan_page' => $request->input('scan_page', 100),
-                    'scan_interval_min' => $request->input('scan_interval_min', 60),
-                    'store_type' => $request->input('store_type', 0),
-                    'description' => $request->input('description') ?? ''
-                ]
-            );
-            if (!$data->wasRecentlyCreated) {
-                throw new \Exception('操作失败，可能已存在此任务！');
+            $keyword = array_filter(array_unique(explode("\n", $request->input('keyword'))));
+            $data = [
+                'scan_page' => $request->input('scan_page', 100),
+                'scan_interval_min' => $request->input('scan_interval_min', 60),
+                'store_type' => $request->input('store_type', 0),
+                'description' => $request->input('description') ?? ''
+            ];
+            foreach ($keyword as $item) {
+                $result = ConfigJob::firstOrCreate(['keyword' => $item], $data);
+                $result->wasRecentlyCreated ? $success++ : $fail++;
             }
-            return ['success' => true, 'data' => $data];
+            return ['success' => true, 'data' => "添加成功：$success 个，添加失败：$fail 个"];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }

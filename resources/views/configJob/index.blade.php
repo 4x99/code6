@@ -171,23 +171,11 @@
                             },
                             items: [
                                 {
+                                    xtype: data.id ? 'textfield' : 'textareafield',
                                     name: 'keyword',
                                     fieldLabel: '扫描关键字',
                                     value: data.keyword,
-                                    triggers: {
-                                        search: {
-                                            cls: 'icon-zoom',
-                                            tooltip: '查看关键字搜索结果',
-                                            handler: function () {
-                                                var keyword = this.up('form').getValues().keyword;
-                                                if (!keyword) {
-                                                    tool.toast('还未设置关键字！');
-                                                    return;
-                                                }
-                                                tool.winOpen(GitHub + 'search?o=desc&q=' + keyword + '&s=indexed&type=Code');
-                                            }
-                                        }
-                                    }
+                                    emptyText: data.id ? '' : '支持多个，一行一个',
                                 },
                                 {
                                     xtype: 'numberfield',
@@ -224,7 +212,7 @@
                                     fieldLabel: '说　　明',
                                     allowBlank: true,
                                     value: data.description,
-                                    emptyText : '备注信息（选填）..',
+                                    emptyText: '备注信息（选填）..',
                                 }
                             ],
                             buttons: [
@@ -244,9 +232,14 @@
                                         tool.ajax(method, url, params, function (rsp) {
                                             if (rsp.success) {
                                                 win.close();
-                                                tool.toast('操作成功', 'success');
-                                                var index = data.id ? grid.store.indexOfId(data.id) : 0;
-                                                grid.store.insert(Math.max(0, index), rsp.data);
+                                                if (data.id) {
+                                                    tool.toast('操作成功', 'success');
+                                                    var index = data.id ? grid.store.indexOfId(data.id) : 0;
+                                                    grid.store.insert(Math.max(0, index), rsp.data);
+                                                } else {
+                                                    grid.store.reload();
+                                                    tool.toast(rsp.data, 'success');
+                                                }
                                             } else {
                                                 tool.toast(rsp.message, 'warning');
                                             }
