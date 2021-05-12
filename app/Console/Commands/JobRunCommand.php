@@ -208,15 +208,11 @@ class JobRunCommand extends Command
             return false;
         }
 
-        // 匹配代码片段
-        if (preg_match('/^[a-zA-Z0-9.@]+$/u', $item['keyword'])) {
-            $isMatch = false;
-            foreach ($item['text_matches'] as $match) {
-                if (preg_match("/{$item['keyword']}/", $match['fragment'])) {
-                    $isMatch = true;
-                }
-            }
-            if (!$isMatch) {
+        // 匹配代码片段（仅检查单个精确关键字）
+        if (preg_match('/^[\w.@]+$/', $item['keyword'])) {
+            $fragments = array_column($item['text_matches'], 'fragment');
+            $fragments = implode(' ', $fragments);
+            if (strpos($fragments, $item['keyword']) === false) {
                 return false;
             }
         }
