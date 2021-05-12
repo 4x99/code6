@@ -91,10 +91,20 @@
                                     width: 130,
                                 },
                                 {
-                                    xtype: 'textfield',
-                                    name: 'keyword',
-                                    emptyText: '匹配关键字',
+                                    xtype: 'combo',
                                     width: 130,
+                                    name: 'keyword',
+                                    displayField: 'keyword',
+                                    valueField: 'keyword',
+                                    emptyText: '匹配关键字',
+                                    listeners: {
+                                        beforerender: function () {
+                                            var me = this
+                                            tool.ajax('GET', '/api/configJob', {}, function (rsp) {
+                                                me.setStore({data: rsp})
+                                            });
+                                        }
+                                    },
                                 },
                                 {
                                     xtype: 'buttongroup',

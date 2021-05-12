@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\QueueJob;
 use App\Models\CodeLeak;
@@ -9,7 +10,7 @@ use App\Models\ConfigJob;
 use App\Models\ConfigToken;
 use App\Services\GitHubService;
 use App\Utils\SystemUtil;
-use Illuminate\Support\Facades\Http;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class HomeController extends Controller
 {
@@ -152,5 +153,18 @@ class HomeController extends Controller
             $data = ['new' => false];
         }
         return ['success' => true, 'data' => $data];
+    }
+
+    /**
+     * 移动端二维码
+     *
+     * @param  Request  $request
+     * @return string
+     */
+    public function mobileQrCode(Request $request)
+    {
+        $url = $request->getSchemeAndHttpHost().'/mobile';
+        $qrCode = QrCode::format('png')->size(300)->generate($url);
+        return sprintf('<img src="data:image/png;base64,%s"/>', base64_encode($qrCode));
     }
 }
