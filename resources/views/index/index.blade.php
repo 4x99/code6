@@ -155,6 +155,7 @@
                                 }
                             },
                             {
+                                id: 'mobile',
                                 iconCls: 'icon-phone',
                                 href: '/mobile',
                                 text: '访问移动版',
@@ -250,6 +251,17 @@
                     ]
                 }).show();
             }
+
+            // 移动版二维码
+            Ext.create('Ext.tip.ToolTip', {
+                target: 'mobile',
+                width: 300,
+                height: 300,
+                loader: {
+                    url: '/api/home/mobileQrCode',
+                    loadOnRender: true,
+                },
+            });
 
             // 关闭动画
             Ext.getDom('frame').onload = function () {

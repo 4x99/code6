@@ -20,6 +20,12 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 RUN sed -ri -e "s!/var/www/html!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/sites-available/*.conf
 RUN sed -ri -e "s!/var/www/!${APACHE_DOCUMENT_ROOT}!g" /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
+# Vim 编码配置
+RUN mkdir /etc/vim
+RUN echo 'set fileencodings=utf-8' >> /etc/vim/vimrc
+RUN echo 'set termencoding=utf-8' >> /etc/vim/vimrc
+RUN echo 'set encoding=utf-8' >> /etc/vim/vimrc
+
 # 使用阿里镜像并安装包
 RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak
 RUN echo 'deb http://mirrors.aliyun.com/debian buster main' >> /etc/apt/sources.list
