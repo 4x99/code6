@@ -159,13 +159,12 @@ class HomeController extends Controller
      * 移动端二维码
      *
      * @param  Request  $request
-     * @return array
+     * @return string
      */
     public function mobileQrCode(Request $request)
     {
-        $mobileUrl = $request->getSchemeAndHttpHost().'/mobile';
-        $qrCode = QrCode::format('png')->size(110)->margin(0)->generate($mobileUrl);
-        $data = 'data:image/png;base64,'.base64_encode($qrCode);
-        return ['success' => true, 'data' => $data];
+        $url = $request->getSchemeAndHttpHost().'/mobile';
+        $qrCode = QrCode::format('png')->size(300)->generate($url);
+        return sprintf('<img src="data:image/png;base64,%s"/>', base64_encode($qrCode));
     }
 }
