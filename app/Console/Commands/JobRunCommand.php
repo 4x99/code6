@@ -208,6 +208,15 @@ class JobRunCommand extends Command
             return false;
         }
 
+        // 匹配代码片段（仅检查单个精确关键字）
+        if (preg_match('/^[\w.@]+$/', $item['keyword'])) {
+            $fragments = array_column($item['text_matches'], 'fragment');
+            $fragments = implode(' ', $fragments);
+            if (strpos($fragments, $item['keyword']) === false) {
+                return false;
+            }
+        }
+
         // 数据入库
         $where = [];
         $uuid = md5("$repoOwner/$repoName/$blob/{$item['path']}");
