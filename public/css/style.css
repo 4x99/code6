@@ -20,7 +20,7 @@ a {
     text-decoration: none;
 }
 
-input::-webkit-input-placeholder {
+textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
     color: #AAA;
 }
 
