@@ -33,12 +33,12 @@ class ConfigJobController extends Controller
     {
         try {
             $success = $fail = 0;
-            $request->validate(['keyword' => ['required', 'string', 'max:255']]);
+            $request->validate(['keyword' => ['required', 'string']]);
             $keyword = array_filter(array_unique(explode("\n", $request->input('keyword'))));
             $data = [
-                'scan_page' => $request->input('scan_page', 100),
+                'scan_page' => $request->input('scan_page', 3),
                 'scan_interval_min' => $request->input('scan_interval_min', 60),
-                'store_type' => $request->input('store_type', 0),
+                'store_type' => $request->input('store_type', ConfigJob::STORE_TYPE_ALL),
                 'description' => $request->input('description') ?? ''
             ];
             foreach ($keyword as $item) {
