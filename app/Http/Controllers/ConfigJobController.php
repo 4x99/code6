@@ -32,20 +32,21 @@ class ConfigJobController extends Controller
     public function store(Request $request)
     {
         try {
-            $success = $fail = 0;
+            $fail = 0;
             $request->validate(['keyword' => ['required', 'string']]);
-            $keyword = array_filter(array_unique(explode("\n", $request->input('keyword'))));
+            $keywords = explode("\n", $request->input('keyword'));
+            $keywords = array_filter(array_unique($keywords));
             $data = [
                 'scan_page' => $request->input('scan_page', 3),
                 'scan_interval_min' => $request->input('scan_interval_min', 60),
                 'store_type' => $request->input('store_type', ConfigJob::STORE_TYPE_ALL),
-                'description' => $request->input('description') ?? ''
+                'description' => $request->input('description') ?? '',
             ];
-            foreach ($keyword as $item) {
-                $result = ConfigJob::firstOrCreate(['keyword' => $item], $data);
-                $result->wasRecentlyCreated ? $success++ : $fail++;
+            foreach ($keywords as $keyword) {
+                $result = ConfigJob::firstOrCreate(['keyword' => $keyword], $data);
+                !$result->wasRecentlyCreated && $fail++;
             }
-            return ['success' => true, 'data' => "添加成功：$success 个，添加失败：$fail 个"];
+            return ['success' => true, 'message' => '操作成功！'.($fail ? "（失败：$fail 个）" : '')];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }

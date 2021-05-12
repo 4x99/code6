@@ -238,7 +238,7 @@
                                                     grid.store.insert(Math.max(0, index), rsp.data);
                                                 } else {
                                                     grid.store.reload();
-                                                    tool.toast(rsp.data, 'success');
+                                                    tool.toast(rsp.message, 'success');
                                                 }
                                             } else {
                                                 tool.toast(rsp.message, 'warning');
@@ -258,7 +258,7 @@
                 content += '<p>2. 关键字有空格或其他符号（引号）：<span>"hello world"</span></p>';
                 content += '<p>3. 匹配多个关键字（AND）：<span>mysql AND password</span>（同时匹配 mysql 和 password）</p>';
                 content += '<p>4. 排除特定关键字（NOT）：<span>mysql NOT localhost</span>（匹配 mysql 但不含 localhost）</p>';
-                content += '<p>6. 扫描时 GitHub 会忽略以下符号：<span>@ . , : ; / \\ ` \' " = * ! ? # $ & + ^ | ~ < > ( ) { } [ ]</span></pre>';
+                content += '<p>5. 扫描时 GitHub 会忽略以下符号：<span>@ . , : ; / \\ ` \' " = * ! ? # $ & + ^ | ~ < > ( ) { } [ ]</span></pre>';
                 content += '<p>6. 可通过 <span>https://github.com/search?o=desc&s=indexed&type=code&q=关键字</span> 预览扫描结果</pre>';
                 content += '</div>';
 
