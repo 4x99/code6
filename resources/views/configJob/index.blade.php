@@ -175,7 +175,7 @@
                                     name: 'keyword',
                                     fieldLabel: '扫描关键字',
                                     value: data.keyword,
-                                    emptyText: data.id ? '' : '支持多个，一行一个',
+                                    emptyText: data.id ? '' : '支持批量添加（一行一个关键字）',
                                 },
                                 {
                                     xtype: 'numberfield',
@@ -259,6 +259,7 @@
                 content += '<p>3. 匹配多个关键字（AND）：<span>mysql AND password</span>（同时匹配 mysql 和 password）</p>';
                 content += '<p>4. 排除特定关键字（NOT）：<span>mysql NOT localhost</span>（匹配 mysql 但不含 localhost）</p>';
                 content += '<p>6. 扫描时 GitHub 会忽略以下符号：<span>@ . , : ; / \\ ` \' " = * ! ? # $ & + ^ | ~ < > ( ) { } [ ]</span></pre>';
+                content += '<p>6. 可通过 <span>https://github.com/search?o=desc&s=indexed&type=code&q=关键字</span> 预览扫描结果</pre>';
                 content += '</div>';
 
                 Ext.Msg.show({
