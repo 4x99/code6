@@ -97,13 +97,6 @@ class CodeLeakController extends Controller
     public function batchUpdate(Request $request)
     {
         try {
-            file_put_contents('/var/www/html/storage/logs/test.log', $request->input('uuid')."\n", FILE_APPEND);
-            file_put_contents('/var/www/html/storage/logs/test.log', json_encode($_POST)."\n", FILE_APPEND);
-            file_put_contents('/var/www/html/storage/logs/test.log', json_encode(file_get_contents('php://input'))."\n",
-                FILE_APPEND);
-            file_put_contents('/var/www/html/storage/logs/test.log', json_encode($request->all())."\n", FILE_APPEND);
-            file_put_contents('/var/www/html/storage/logs/test.log', json_encode($request->getContent())."\n",
-                FILE_APPEND);
             $uuid = json_decode($request->input('uuid'), true);
             $data = $request->only('status', 'description');
             $data['handle_user'] = Auth::user()->email;
