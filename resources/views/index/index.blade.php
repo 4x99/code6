@@ -74,6 +74,7 @@
                                         xtype: 'buttongroup',
                                         columns: 2,
                                         defaults: {
+                                            width: 120,
                                             margin: '0 5 5 0',
                                             hrefTarget: 'frame',
                                             handler: function () {
@@ -97,7 +98,8 @@
                                                 href: '/configNotify',
                                             },
                                             {
-                                                text: '白 名 单',
+                                                text: '白名单配置',
+                                                align: 'left',
                                                 iconCls: 'icon-page-db',
                                                 href: '/configWhitelist',
                                             }
@@ -153,6 +155,7 @@
                                 }
                             },
                             {
+                                id: 'mobile',
                                 iconCls: 'icon-phone',
                                 href: '/mobile',
                                 text: '访问移动版',
@@ -248,6 +251,17 @@
                     ]
                 }).show();
             }
+
+            // 移动版二维码
+            Ext.create('Ext.tip.ToolTip', {
+                target: 'mobile',
+                width: 300,
+                height: 300,
+                loader: {
+                    url: '/api/home/mobileQrCode',
+                    loadOnRender: true,
+                },
+            });
 
             // 关闭动画
             Ext.getDom('frame').onload = function () {

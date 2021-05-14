@@ -102,8 +102,8 @@ class CodeLeakController extends Controller
             $data['handle_user'] = Auth::user()->email;
             $success = CodeLeak::whereIn('uuid', $uuid)->update($data);
             return ['success' => $success];
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
@@ -121,8 +121,8 @@ class CodeLeakController extends Controller
                 CodeFragment::whereIn('uuid', $uuid)->delete();
             }
             return ['success' => $success];
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 }

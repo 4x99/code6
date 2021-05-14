@@ -33,7 +33,44 @@ class GitHubService
     public function __construct()
     {
         $this->userAgent = config('app.name');
-        $this->createClients();
+    }
+
+    /**
+     * 服务初始化
+     */
+    public function init()
+    {
+        $tokens = ConfigToken::inRandomOrder()->get()->pluck('token');
+        foreach ($tokens as $token) {
+            $client = ['token' => $token];
+            $client['client'] = $this->createClient($token);
+            if ($this->updateClient($client)) {
+                $this->clients[] = $client;
+            }
+        }
+    }
+
+    /**
+     * 创建客户端
+     *
+     * @param $token
+     * @return Client
+     */
+    public function createClient($token)
+    {
+        $handlerStack = HandlerStack::create(new CurlHandler());
+        $handlerStack->push(Middleware::retry($this->retryDecider()));
+        $builder = new Builder(GuzzleClient::createWithConfig([
+            'timeout' => self::HTTP_TIMEOUT,
+            'delay' => self::HTTP_DELAY,
+            'headers' => ['User-Agent' => $this->userAgent],
+            'handler' => $handlerStack,
+        ]));
+        $client = new Client($builder, 'v3.text-match');
+        if ($token) {
+            $client->authenticate($token, null, Client::AUTH_HTTP_TOKEN);
+        }
+        return $client;
     }
 
     /**
@@ -70,30 +107,6 @@ class GitHubService
             $client['api_remaining']--;
             $this->updateConfigToken($client);
             return $client['client'];
-        }
-    }
-
-    /**
-     * 创建客户端
-     */
-    private function createClients()
-    {
-        $tokens = ConfigToken::inRandomOrder()->get()->pluck('token');
-        foreach ($tokens as $token) {
-            $handlerStack = HandlerStack::create(new CurlHandler());
-            $handlerStack->push(Middleware::retry($this->retryDecider()));
-            $builder = new Builder(GuzzleClient::createWithConfig([
-                'timeout' => self::HTTP_TIMEOUT,
-                'delay' => self::HTTP_DELAY,
-                'headers' => ['User-Agent' => $this->userAgent],
-                'handler' => $handlerStack,
-            ]));
-            $client = ['token' => $token];
-            $client['client'] = new Client($builder, 'v3.text-match');
-            $client['client']->authenticate($token, null, Client::AUTH_HTTP_TOKEN);
-            if ($this->updateClient($client)) {
-                $this->clients[] = $client;
-            }
         }
     }
 
@@ -146,15 +159,15 @@ class GitHubService
      */
     protected function retryDecider()
     {
-        return function ($retries, Request $request, Response $response = null, RequestException $exception = null) {
+        return function ($retries, Request $request, Response $response = null, RequestException $e = null) {
             // 最大次数
             if ($retries >= self::HTTP_MAX_RETRIES) {
                 return false;
             }
 
             // 请求失败
-            if (!is_null($exception)) {
-                Log::debug('Retry request', ['exception' => $exception->getMessage()]);
+            if (!is_null($e)) {
+                Log::debug('Retry request', ['exception' => $e->getMessage()]);
                 return true;
             }
 
