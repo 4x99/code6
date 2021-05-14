@@ -44,6 +44,10 @@ body {
     text-overflow: ellipsis;
 }
 
+.van-action-sheet__cancel, .van-action-sheet__item {
+    font-size: 14px;
+}
+
 .van-pagination__item {
     color: inherit;
 }
