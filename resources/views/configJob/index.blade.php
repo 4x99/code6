@@ -117,7 +117,7 @@
                                     margin: '0 20 0 0',
                                     handler: function (obj) {
                                         var record = obj.up().getWidgetRecord();
-                                        winForm(record.data)
+                                        winForm(record.data);
                                     }
                                 },
                                 {
