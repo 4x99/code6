@@ -282,7 +282,7 @@
             chart.annotation().text({
                 position: ['50%', '50%'],
                 offsetY: 15,
-                content: '接 口 请 求 统 计',
+                content: '接 口 请 求 配 额',
                 style: {
                     fill: '#999',
                     textAlign: 'center',

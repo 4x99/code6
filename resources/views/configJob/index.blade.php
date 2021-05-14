@@ -61,19 +61,19 @@
                     {
                         text: '扫描页数',
                         dataIndex: 'scan_page',
-                        width: 180,
+                        width: 170,
                         align: 'center',
                     },
                     {
                         text: '扫描间隔（分钟）',
                         dataIndex: 'scan_interval_min',
-                        width: 180,
+                        width: 170,
                         align: 'center',
                     },
                     {
                         text: '扫描结果',
                         dataIndex: 'store_type',
-                        width: 180,
+                        width: 170,
                         align: 'center',
                         renderer: function (value) {
                             return storeType[value].text;
@@ -82,7 +82,7 @@
                     {
                         text: '最后扫描时间',
                         dataIndex: 'last_scan_at',
-                        width: 180,
+                        width: 170,
                         align: 'center',
                         renderer: function (value) {
                             return value ? value : '-';
