@@ -134,7 +134,7 @@
                                         height: 200,
                                         bind: {
                                             html: new Ext.XTemplate(
-                                                '<p class="title">主机监控</p>',
+                                                '<p class="title">主机状态</p>',
                                                 '<p class="content">系统负载：{load1} / {load5} / {load15}</p>',
                                                 '<p class="content">内存信息：{memoryUsed} / {memoryTotal}</p>',
                                                 '<p>',
