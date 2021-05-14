@@ -104,7 +104,7 @@
                         name: 'headers',
                         fieldLabel: '请求头部',
                         allowBlank: true,
-                        emptyText: '示例：\nUser-Agent: Code6\nContent-Type: application/json;charset=utf8',
+                        emptyText: '示例：\nUser-Agent: Code6\nHost: 192.168.0.1',
                         value: getConfig('webhook.value.headers'),
                     },
                     createIntervalField('webhook'),
