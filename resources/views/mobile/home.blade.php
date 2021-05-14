@@ -24,13 +24,12 @@
     <van-divider></van-divider>
 
     <!-- 列表开始 -->
-    <van-pull-refresh v-model="loading" success-text="刷新成功" @refresh="load(page.current)">
+    <van-pull-refresh v-model="loading" success-text="加载成功" @refresh="load(page.current)">
         <van-list>
             <template v-if="list.data && list.data.length > 0">
                 <van-cell class="item" v-for="item in list.data" @click="showAction(item)">
                     <template #title>
-                        <span v-html="formatStatus(item.status)"></span>
-                        [[item.created_at]]
+                        <span v-html="formatStatus(item.status)"></span><b class="title">[[item.created_at]]</b>
                     </template>
 
                     <template #label>
@@ -107,6 +106,8 @@
         methods: {
             load(page) {
                 var me = this;
+                scrollTo(0, 0);
+                me.loading = true;
                 var params = {page: page ? page : 1, limit: 10};
                 if (me.tab.current !== 'all') {
                     params.status = me.tab.current;
@@ -115,7 +116,6 @@
                     me.page.current = page;
                     me.page.count = rsp.data.last_page ? rsp.data.last_page : 0;
                     me.list.data = rsp.data.data;
-                    scrollTo(0, 0);
                     me.loading = false;
                 }).catch(function (rsp) {
                     me.$toast.fail(rsp.message);

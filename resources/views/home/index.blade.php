@@ -23,6 +23,7 @@
                         load: ['未知', '未知', '未知'],
                         configToken: 'cross',
                         configJob: 'cross',
+                        versionTip: '当前已是最新版',
                         disk: {
                             used: '未知',
                             total: '未知',
@@ -104,7 +105,6 @@
                                         '    </p>',
                                         '</div>',
                                     ).apply({
-                                        version: '{{ VERSION }}',
                                         token: '{configToken}',
                                         job: '{configJob}',
                                     })
@@ -134,7 +134,7 @@
                                         height: 200,
                                         bind: {
                                             html: new Ext.XTemplate(
-                                                '<p class="title">主机监控</p>',
+                                                '<p class="title">主机状态</p>',
                                                 '<p class="content">系统负载：{load1} / {load5} / {load15}</p>',
                                                 '<p class="content">内存信息：{memoryUsed} / {memoryTotal}</p>',
                                                 '<p>',
@@ -164,12 +164,15 @@
                                     {
                                         margin: '15 0 0 0',
                                         height: 100,
-                                        html: new Ext.XTemplate(
-                                            '    <p class="title">版本信息</p>',
-                                            '    <p class="content">{version}（GPL v3）</p>',
-                                        ).apply({
-                                            version: '{{ VERSION }}',
-                                        })
+                                        bind: {
+                                            html: new Ext.XTemplate(
+                                                '    <p class="title">版本信息</p>',
+                                                '    <p class="content">{version}（{versionTip}）</p>',
+                                            ).apply({
+                                                version: '{{ VERSION }}',
+                                                versionTip: '{versionTip}',
+                                            })
+                                        }
                                     }
                                 ]
                             },
@@ -279,7 +282,7 @@
             chart.annotation().text({
                 position: ['50%', '50%'],
                 offsetY: 15,
-                content: '接 口 请 求 统 计',
+                content: '接 口 请 求 配 额',
                 style: {
                     fill: '#999',
                     textAlign: 'center',
@@ -323,6 +326,16 @@
             tool.ajax('GET', '/api/home/jobCount', {}, function (rsp) {
                 if (rsp.data) {
                     viewModel.setData({configJob: 'tick'});
+                }
+            });
+
+            // 检查最新版本
+            tool.ajax('GET', '/api/home/upgradeCheck', {}, function (rsp) {
+                if (rsp.data && rsp.data.new) {
+                    var version = rsp.data.version;
+                    var url = 'https://github.com/4x99/code6/releases';
+                    var text = '发现新版本：<a class="version" href="' + url + '" target="_blank">' + version + '</a>';
+                    viewModel.setData({versionTip: text});
                 }
             });
 

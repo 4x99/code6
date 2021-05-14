@@ -50,7 +50,7 @@
                                     format: 'Y-m-d',
                                     maxValue: new Date(),
                                     emptyText: '开始日期',
-                                    width: 115,
+                                    width: 110,
                                 },
                                 {
                                     xtype: 'datefield',
@@ -58,7 +58,7 @@
                                     format: 'Y-m-d',
                                     maxValue: new Date(),
                                     emptyText: '结束日期',
-                                    width: 115,
+                                    width: 110,
                                 },
                                 {
                                     xtype: 'combo',
@@ -91,10 +91,24 @@
                                     width: 130,
                                 },
                                 {
-                                    xtype: 'textfield',
+                                    xtype: 'combo',
+                                    width: 150,
                                     name: 'keyword',
+                                    displayField: 'keyword',
+                                    valueField: 'keyword',
                                     emptyText: '匹配关键字',
-                                    width: 130,
+                                    queryMode: 'local',
+                                    listConfig: {
+                                        minWidth: 318,
+                                    },
+                                    store: {
+                                        autoLoad: true,
+                                        pageSize: 1000,
+                                        proxy: {
+                                            type: 'ajax',
+                                            url: '/api/configJob',
+                                        },
+                                    },
                                 },
                                 {
                                     xtype: 'buttongroup',
@@ -259,6 +273,15 @@
                         dataIndex: 'keyword',
                         flex: 1,
                         align: 'center',
+                    },
+                    {
+                        text: '处理人',
+                        dataIndex: 'handle_user',
+                        width: 120,
+                        align: 'center',
+                        renderer: function (value) {
+                            return value ? value.substring(0, value.indexOf('@')) : '-';
+                        }
                     },
                     {
                         text: '说明',

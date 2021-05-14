@@ -61,19 +61,19 @@
                     {
                         text: '扫描页数',
                         dataIndex: 'scan_page',
-                        width: 180,
+                        width: 170,
                         align: 'center',
                     },
                     {
                         text: '扫描间隔（分钟）',
                         dataIndex: 'scan_interval_min',
-                        width: 180,
+                        width: 170,
                         align: 'center',
                     },
                     {
                         text: '扫描结果',
                         dataIndex: 'store_type',
-                        width: 180,
+                        width: 170,
                         align: 'center',
                         renderer: function (value) {
                             return storeType[value].text;
@@ -82,7 +82,7 @@
                     {
                         text: '最后扫描时间',
                         dataIndex: 'last_scan_at',
-                        width: 180,
+                        width: 170,
                         align: 'center',
                         renderer: function (value) {
                             return value ? value : '-';
@@ -117,7 +117,7 @@
                                     margin: '0 20 0 0',
                                     handler: function (obj) {
                                         var record = obj.up().getWidgetRecord();
-                                        winForm(record.data)
+                                        winForm(record.data);
                                     }
                                 },
                                 {
@@ -171,23 +171,11 @@
                             },
                             items: [
                                 {
+                                    xtype: data.id ? 'textfield' : 'textareafield',
                                     name: 'keyword',
                                     fieldLabel: '扫描关键字',
                                     value: data.keyword,
-                                    triggers: {
-                                        search: {
-                                            cls: 'icon-zoom',
-                                            tooltip: '查看关键字搜索结果',
-                                            handler: function () {
-                                                var keyword = this.up('form').getValues().keyword;
-                                                if (!keyword) {
-                                                    tool.toast('还未设置关键字！');
-                                                    return;
-                                                }
-                                                tool.winOpen(GitHub + 'search?o=desc&q=' + keyword + '&s=indexed&type=Code');
-                                            }
-                                        }
-                                    }
+                                    emptyText: data.id ? '' : '支持批量添加（一行一个关键字）',
                                 },
                                 {
                                     xtype: 'numberfield',
@@ -224,7 +212,7 @@
                                     fieldLabel: '说　　明',
                                     allowBlank: true,
                                     value: data.description,
-                                    emptyText : '备注信息（选填）..',
+                                    emptyText: '备注信息（选填）..',
                                 }
                             ],
                             buttons: [
@@ -244,9 +232,14 @@
                                         tool.ajax(method, url, params, function (rsp) {
                                             if (rsp.success) {
                                                 win.close();
-                                                tool.toast('操作成功', 'success');
-                                                var index = data.id ? grid.store.indexOfId(data.id) : 0;
-                                                grid.store.insert(Math.max(0, index), rsp.data);
+                                                if (data.id) {
+                                                    tool.toast('操作成功', 'success');
+                                                    var index = data.id ? grid.store.indexOfId(data.id) : 0;
+                                                    grid.store.insert(Math.max(0, index), rsp.data);
+                                                } else {
+                                                    grid.store.reload();
+                                                    tool.toast(rsp.message, 'success');
+                                                }
                                             } else {
                                                 tool.toast(rsp.message, 'warning');
                                             }
@@ -265,7 +258,8 @@
                 content += '<p>2. 关键字有空格或其他符号（引号）：<span>"hello world"</span></p>';
                 content += '<p>3. 匹配多个关键字（AND）：<span>mysql AND password</span>（同时匹配 mysql 和 password）</p>';
                 content += '<p>4. 排除特定关键字（NOT）：<span>mysql NOT localhost</span>（匹配 mysql 但不含 localhost）</p>';
-                content += '<p>6. 扫描时 GitHub 会忽略以下符号：<span>@ . , : ; / \\ ` \' " = * ! ? # $ & + ^ | ~ < > ( ) { } [ ]</span></pre>';
+                content += '<p>5. 扫描时 GitHub 会忽略以下符号：<span>@ . , : ; / \\ ` \' " = * ! ? # $ & + ^ | ~ < > ( ) { } [ ]</span></pre>';
+                content += '<p>6. 可通过 <span>https://github.com/search?o=desc&s=indexed&type=code&q=关键字</span> 预览扫描结果</pre>';
                 content += '</div>';
 
                 Ext.Msg.show({

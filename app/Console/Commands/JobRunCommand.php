@@ -81,7 +81,7 @@ class JobRunCommand extends Command
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
-        $this->whitelistFile = ConfigWhitelistFile::getConfig();
+        $this->whitelistFile = ConfigWhitelistFile::pluck('value');
 
         while ($job = $this->takeJob()) {
             $page = 1;
@@ -107,6 +107,7 @@ class JobRunCommand extends Command
     private function createGitHubService()
     {
         $this->service = new GitHubService();
+        $this->service->init();
         if (count($this->service->clients) === 0) {
             $this->log->error('No GitHub client available');
             exit;
@@ -205,6 +206,15 @@ class JobRunCommand extends Command
         preg_match('/\/blob\/(\w{40})\//', $item['html_url'], $matches);
         if (!$blob = $matches[1]) {
             return false;
+        }
+
+        // 匹配代码片段（仅检查单个精确关键字）
+        if (preg_match('/^[\w.@]+$/', $item['keyword'])) {
+            $fragments = array_column($item['text_matches'], 'fragment');
+            $fragments = implode(' ', $fragments);
+            if (strpos($fragments, $item['keyword']) === false) {
+                return false;
+            }
         }
 
         // 数据入库

@@ -27,8 +27,8 @@ class UserController extends Controller
             }
             $success = $user->update(['password' => Hash::make($request->password_new)]);
             return ['success' => $success];
-        } catch (\Exception $exception) {
-            return ['success' => false, 'message' => $exception->getMessage()];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 }

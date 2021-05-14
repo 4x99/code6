@@ -20,7 +20,7 @@ a {
     text-decoration: none;
 }
 
-input::-webkit-input-placeholder {
+textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
     color: #AAA;
 }
 
@@ -82,6 +82,14 @@ input::-webkit-input-placeholder {
 
 .x-boundlist-item {
     color: #666;
+}
+
+.x-datepicker-today {
+    border-color: transparent;
+}
+
+.x-datepicker-selected {
+    border-color: #3892d4 !important;
 }
 
 /* Remove ExtJS focused style */

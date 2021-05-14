@@ -2,15 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\QueueJob;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
 use App\Models\ConfigToken;
+use App\Services\GitHubService;
 use App\Utils\SystemUtil;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 class HomeController extends Controller
 {
+
     public function view()
     {
         $data = [
@@ -129,5 +133,38 @@ class HomeController extends Controller
     public function tokenCount()
     {
         return ['success' => true, 'data' => ConfigToken::count()];
+    }
+
+    /**
+     * 升级检查
+     *
+     * @return array
+     */
+    public function upgradeCheck()
+    {
+        try {
+            $query = ConfigToken::where('status', ConfigToken::STATUS_NORMAL);
+            $token = $query->inRandomOrder()->take(1)->value('token');
+            $client = (new GitHubService())->createClient($token);
+            $release = $client->api('repo')->releases()->latest('4x99', 'code6');
+            $new = version_compare($release['tag_name'], VERSION) === 1;
+            $data = ['new' => $new, 'version' => $release['tag_name']];
+        } catch (\Exception $e) {
+            $data = ['new' => false];
+        }
+        return ['success' => true, 'data' => $data];
+    }
+
+    /**
+     * 移动端二维码
+     *
+     * @param  Request  $request
+     * @return string
+     */
+    public function mobileQrCode(Request $request)
+    {
+        $url = $request->getSchemeAndHttpHost().'/mobile';
+        $qrCode = QrCode::format('png')->size(300)->generate($url);
+        return sprintf('<img src="data:image/png;base64,%s"/>', base64_encode($qrCode));
     }
 }
