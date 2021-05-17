@@ -31,11 +31,12 @@ class ConfigWhitelistFileController extends Controller
     {
         try {
             $data = [];
-            $values = array_filter(array_unique(explode("\n", $request->input('value'))));
-            foreach ($values as $value) {
-                $data[] = ['value' => $value];
+            $values = explode("\n", $request->input('value'));
+            $values = array_filter(array_unique($values));
+            foreach ($values as $key => $value) {
+                $data[] = ['id' => $key + 1, 'value' => $value];
             }
-            ConfigWhitelistFile::truncate();
+            ConfigWhitelistFile::query()->delete();
             ConfigWhitelistFile::insert($data);
             return ['success' => true];
         } catch (\Exception $e) {
