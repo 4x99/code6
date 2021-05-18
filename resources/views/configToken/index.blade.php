@@ -260,6 +260,13 @@
                                     text: '提交',
                                     formBind: true,
                                     handler: function () {
+                                        Ext.MessageBox.show({
+                                            msg: '令牌状态同步中...',
+                                            progressText: '',
+                                            width: 300,
+                                            wait: {interval: 200},
+                                        });
+
                                         var params = this.up('form').getValues();
                                         var method = data.id ? 'PUT' : 'POST';
                                         var url = data.id ? '/api/configToken/' + data.id : '/api/configToken';
@@ -272,6 +279,7 @@
                                             } else {
                                                 tool.toast(rsp.message, 'warning');
                                             }
+                                            Ext.MessageBox.hide();
                                         });
                                     }
                                 }
