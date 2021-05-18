@@ -116,7 +116,7 @@ class GitHubService
      * @param $client
      * @return bool
      */
-    private function updateClient(&$client)
+    public function updateClient(&$client)
     {
         $code = $resource = null;
         try {
