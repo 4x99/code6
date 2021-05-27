@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConfigJob;
+use Cron\CronExpression;
 use Illuminate\Http\Request;
 
 class ConfigJobController extends Controller
@@ -20,7 +21,12 @@ class ConfigJobController extends Controller
      */
     public function index()
     {
-        return ConfigJob::orderByDesc('id')->get();
+        $data = ConfigJob::orderByDesc('id')->get();
+        foreach ($data as &$item) {
+            $cronExpression = CronExpression::factory("*/{$item['scan_interval_min']} * * * *");
+            $item['next_scan_at'] = $cronExpression->getNextRunDate()->format('Y-m-d H:i:s');
+        }
+        return $data;
     }
 
     /**

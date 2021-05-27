@@ -89,6 +89,15 @@
                         }
                     },
                     {
+                        text: '下次扫描时间',
+                        dataIndex: 'next_scan_at',
+                        width: 170,
+                        align: 'center',
+                        renderer: function (value) {
+                            return value ? value : '-';
+                        }
+                    },
+                    {
                         text: '说明',
                         dataIndex: 'description',
                         flex: 1,
