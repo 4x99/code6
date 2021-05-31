@@ -39,10 +39,10 @@ class ConfigTokenController extends Controller
                 ['description' => $request->input('description') ?? '']
             );
             if ($data->wasRecentlyCreated) {
-                $gitHubService = new GitHubService();
+                $service = new GitHubService();
                 $client['token'] = $data->token;
-                $client['client'] = $gitHubService->createClient($client['token']);
-                $gitHubService->updateClient($client);
+                $client['client'] = $service->createClient($client['token']);
+                $service->updateClient($client);
             } else {
                 throw new \Exception('操作失败，可能已存在此令牌！');
             }
