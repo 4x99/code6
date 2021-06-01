@@ -102,6 +102,14 @@
                                                 align: 'left',
                                                 iconCls: 'icon-page-db',
                                                 href: '/configWhitelist',
+                                            },
+                                            {
+                                                text: '代理配置',
+                                                align: 'left',
+                                                iconCls: 'icon-page-wrench',
+                                                handler: function () {
+                                                    winForm([]);
+                                                }
                                             }
                                         ]
                                     }
@@ -267,6 +275,76 @@
             Ext.getDom('frame').onload = function () {
                 Ext.get('loading').setStyle('display', 'none');
             };
+
+            function winForm() {
+                tool.ajax('GET', '/api/configProxy', {}, function (rsp) {
+                    if (!rsp.success) {
+                        tool.toast('读取配置错误！');
+                        return false;
+                    }
+
+                    var winProxy = Ext.create('Ext.window.Window', {
+                        title: '代理配置',
+                        iconCls: 'icon-folder-page',
+                        width: 300,
+                        layout: 'fit',
+                        items: [
+                            {
+                                xtype: 'form',
+                                layout: 'form',
+                                bodyPadding: '5 15 15 8',
+                                items: [
+                                    {
+                                        xtype: 'textfield',
+                                        name: 'value',
+                                        value: rsp.data,
+                                    }
+                                ],
+                                buttons: [
+                                    {
+                                        text: '代理测试',
+                                        handler: function () {
+                                            var params = this.up('form').getValues();
+                                            if (!params['value']) {
+                                                tool.toast('代理不能为空！', 'error');
+                                                return;
+                                            }
+                                            tool.ajax('POST', '/api/configProxy/test', params, function (rsp) {
+                                                if (rsp.success) {
+                                                    tool.toast('测试成功！', 'success');
+                                                } else {
+                                                    tool.toast(rsp.message, 'error');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    {
+                                        text: '重置',
+                                        handler: function () {
+                                            this.up('form').getForm().reset();
+                                        }
+                                    },
+                                    {
+                                        text: '保存',
+                                        formBind: true,
+                                        handler: function () {
+                                            var params = this.up('form').getValues();
+                                            tool.ajax('POST', '/api/configProxy', params, function (rsp) {
+                                                if (rsp.success) {
+                                                    winProxy.close();
+                                                    tool.toast('保存成功！', 'success');
+                                                } else {
+                                                    tool.toast(rsp.message, 'error');
+                                                }
+                                            });
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }).show();
+                });
+            }
         })
     </script>
 @endsection
