@@ -23,8 +23,8 @@ class ConfigJobController extends Controller
     {
         $data = ConfigJob::orderByDesc('id')->get();
         foreach ($data as &$item) {
-            $cronExpression = CronExpression::factory("*/{$item['scan_interval_min']} * * * *");
-            $item['next_scan_at'] = $cronExpression->getNextRunDate()->format('Y-m-d H:i:s');
+            $expression = "*/{$item['scan_interval_min']} * * * *";
+            $item['next_scan_at'] = CronExpression::factory($expression)->getNextRunDate()->format('Y-m-d H:i:s');
         }
         return $data;
     }
@@ -72,6 +72,9 @@ class ConfigJobController extends Controller
             $fields = ['keyword', 'scan_page', 'scan_interval_min', 'store_type', 'description'];
             $configJob = ConfigJob::find($id);
             $success = $configJob->update($request->all($fields));
+
+            $expression = "*/{$configJob['scan_interval_min']} * * * *";
+            $configJob['next_scan_at'] = CronExpression::factory($expression)->getNextRunDate()->format('Y-m-d H:i:s');
             return ['success' => $success, 'data' => $configJob];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
