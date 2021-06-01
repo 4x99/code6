@@ -285,7 +285,7 @@
 
                     var winProxy = Ext.create('Ext.window.Window', {
                         title: '代理配置',
-                        iconCls: 'icon-folder-page',
+                        iconCls: 'icon-page-wrench',
                         width: 300,
                         layout: 'fit',
                         items: [
