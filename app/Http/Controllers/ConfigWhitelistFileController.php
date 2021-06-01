@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\ConfigWhitelistFile;
+use App\Models\ConfigCommon;
 use Illuminate\Http\Request;
 
 class ConfigWhitelistFileController extends Controller
@@ -15,7 +15,10 @@ class ConfigWhitelistFileController extends Controller
     public function index()
     {
         try {
-            return ['success' => true, 'data' => ConfigWhitelistFile::all()->implode('value', "\n")];
+            return [
+                'success' => true,
+                'data' => ConfigCommon::where('key', ConfigCommon::KEY_WHITELIST_FILE)->get()->implode('value', "\n"),
+            ];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
@@ -33,11 +36,14 @@ class ConfigWhitelistFileController extends Controller
             $data = [];
             $values = explode("\n", $request->input('value'));
             $values = array_filter(array_unique($values));
-            foreach ($values as $key => $value) {
-                $data[] = ['id' => $key + 1, 'value' => $value];
+            foreach ($values as $value) {
+                $data[] = [
+                    'value' => $value,
+                    'key' => ConfigCommon::KEY_WHITELIST_FILE,
+                ];
             }
-            ConfigWhitelistFile::query()->delete();
-            ConfigWhitelistFile::insert($data);
+            ConfigCommon::where('key', ConfigCommon::KEY_WHITELIST_FILE)->delete();
+            ConfigCommon::insert($data);
             return ['success' => true];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
