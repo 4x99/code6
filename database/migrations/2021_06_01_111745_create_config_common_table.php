@@ -19,7 +19,7 @@ class CreateConfigCommonTable extends Migration
             $table->id();
             $table->string('key', 255);
             $table->string('value', 255);
-            $table->unique(['key', 'value']);
+            $table->unique(['key']);
         });
         $this->migrate();
     }
@@ -29,14 +29,11 @@ class CreateConfigCommonTable extends Migration
      */
     private function migrate()
     {
-        $whitelistFile = DB::table('config_whitelist_file')->select('value')->get();
-        $whitelistFile = json_decode(json_encode($whitelistFile), true);
-        foreach ($whitelistFile as &$item) {
-            $item['key'] = ConfigCommon::KEY_WHITELIST_FILE;
+        if (Schema::hasTable('config_whitelist_file')) {
+            $whitelistFile = DB::table('config_whitelist_file')->pluck('value');
+            ConfigCommon::create(['key' => ConfigCommon::KEY_WHITELIST_FILE, 'value' => json_encode($whitelistFile)]);
+            Schema::dropIfExists('config_whitelist_file');
         }
-        ConfigCommon::insert($whitelistFile);
-
-        Schema::dropIfExists('config_whitelist_file');
     }
 
     /**

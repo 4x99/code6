@@ -35,7 +35,7 @@ class GitHubService
     public function __construct()
     {
         $this->userAgent = config('app.name');
-        $this->proxy = ConfigCommon::where('key', ConfigCommon::KEY_PROXY)->value('value');
+        $this->proxy = ConfigCommon::getValue(ConfigCommon::KEY_PROXY);
     }
 
     /**
