@@ -15,8 +15,10 @@ class ConfigWhitelistFileController extends Controller
     public function index()
     {
         try {
-            $data = ConfigCommon::where('key', ConfigCommon::KEY_WHITELIST_FILE)->orderBy('id')->get();
-            return ['success' => true, 'data' => $data->implode('value', "\n")];
+            return [
+                'success' => true,
+                'data' => implode("\n", json_decode(ConfigCommon::getValue(ConfigCommon::KEY_WHITELIST_FILE))),
+            ];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
@@ -31,17 +33,9 @@ class ConfigWhitelistFileController extends Controller
     public function store(Request $request)
     {
         try {
-            $data = [];
-            $values = explode("\n", $request->input('value'));
-            $values = array_filter(array_unique($values));
-            foreach ($values as $value) {
-                $data[] = [
-                    'value' => $value,
-                    'key' => ConfigCommon::KEY_WHITELIST_FILE,
-                ];
-            }
-            ConfigCommon::where('key', ConfigCommon::KEY_WHITELIST_FILE)->delete();
-            ConfigCommon::insert($data);
+            $value = explode("\n", $request->input('value'));
+            $value = json_encode(array_values(array_filter(array_unique($value))));
+            ConfigCommon::updateOrCreate(['key' => ConfigCommon::KEY_WHITELIST_FILE], ['value' => $value]);
             return ['success' => true];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];

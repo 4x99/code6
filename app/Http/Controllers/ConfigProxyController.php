@@ -19,7 +19,7 @@ class ConfigProxyController extends Controller
     public function index()
     {
         try {
-            return ['success' => true, 'data' => ConfigCommon::where('key', ConfigCommon::KEY_PROXY)->value('value')];
+            return ['success' => true, 'data' => ConfigCommon::getValue(ConfigCommon::KEY_PROXY)];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }

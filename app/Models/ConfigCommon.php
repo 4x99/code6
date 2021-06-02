@@ -10,4 +10,13 @@ class ConfigCommon extends ModelBase
     const UPDATED_AT = null;
     protected $table = 'config_common';
     protected $fillable = ['key', 'value'];
+
+    /**
+     * @param $key
+     * @return mixed
+     */
+    public static function getValue($key)
+    {
+        return self::where('key', $key)->value('value');
+    }
 }
