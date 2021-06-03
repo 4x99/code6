@@ -55,7 +55,7 @@ class NotifyCommand extends Command
     public function handle()
     {
         $this->log = Log::channel($this->signature);
-        $this->log->info('Start the task of notify');
+        $this->log->info('Start notifying user');
 
         $timestamp = floor(LARAVEL_START - LARAVEL_START % 60);
         $service = new NotifyService();
@@ -88,7 +88,7 @@ class NotifyCommand extends Command
             $this->log->info('Send complete', array_merge(['type' => $type], $result));
         }
 
-        $this->log->info('End task');
+        $this->log->info('Work done');
     }
 
     /**
