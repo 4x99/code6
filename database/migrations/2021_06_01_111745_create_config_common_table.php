@@ -18,7 +18,7 @@ class CreateConfigCommonTable extends Migration
         Schema::create('config_common', function (Blueprint $table) {
             $table->id();
             $table->string('key', 255);
-            $table->string('value', 255);
+            $table->text('value');
             $table->unique(['key']);
         });
         $this->migrate();
@@ -30,8 +30,9 @@ class CreateConfigCommonTable extends Migration
     private function migrate()
     {
         if (Schema::hasTable('config_whitelist_file')) {
-            $whitelistFile = DB::table('config_whitelist_file')->pluck('value');
-            ConfigCommon::create(['key' => ConfigCommon::KEY_WHITELIST_FILE, 'value' => json_encode($whitelistFile)]);
+            $values = DB::table('config_whitelist_file')->pluck('value');
+            $values = json_encode($values);
+            ConfigCommon::create(['key' => ConfigCommon::KEY_WHITELIST_FILE, 'value' => $values]);
             Schema::dropIfExists('config_whitelist_file');
         }
     }

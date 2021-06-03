@@ -15,10 +15,9 @@ class ConfigWhitelistFileController extends Controller
     public function index()
     {
         try {
-            return [
-                'success' => true,
-                'data' => implode("\n", json_decode(ConfigCommon::getValue(ConfigCommon::KEY_WHITELIST_FILE))),
-            ];
+            $data = ConfigCommon::getValue(ConfigCommon::KEY_WHITELIST_FILE);
+            $data = implode("\n", json_decode($data));
+            return ['success' => true, 'data' => $data];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
