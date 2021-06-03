@@ -16,7 +16,7 @@ class ConfigWhitelistFileController extends Controller
     {
         try {
             $data = ConfigCommon::getValue(ConfigCommon::KEY_WHITELIST_FILE);
-            $data = implode("\n", json_decode($data));
+            $data = implode(PHP_EOL, json_decode($data));
             return ['success' => true, 'data' => $data];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
@@ -32,7 +32,7 @@ class ConfigWhitelistFileController extends Controller
     public function store(Request $request)
     {
         try {
-            $value = explode("\n", $request->input('value'));
+            $value = explode(PHP_EOL, $request->input('value'));
             $value = json_encode(array_values(array_filter(array_unique($value))));
             ConfigCommon::updateOrCreate(['key' => ConfigCommon::KEY_WHITELIST_FILE], ['value' => $value]);
             return ['success' => true];
