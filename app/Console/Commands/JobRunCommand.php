@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Models\ConfigCommon;
 use Exception;
 use App\Models\CodeFragment;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
 use App\Models\ConfigWhitelist;
-use App\Models\ConfigWhitelistFile;
 use App\Models\QueueJob;
 use App\Services\GitHubService;
 use Github\HttpClient\Message\ResponseMediator;
@@ -81,7 +81,7 @@ class JobRunCommand extends Command
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
-        $this->whitelistFile = ConfigWhitelistFile::pluck('value');
+        $this->whitelistFile = json_decode(ConfigCommon::getValue(ConfigCommon::KEY_WHITELIST_FILE));
 
         while ($job = $this->takeJob()) {
             $page = 1;
