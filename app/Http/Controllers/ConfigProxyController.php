@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConfigCommon;
-use App\Services\GitHubService;
 use Illuminate\Http\Request;
 use Github\Client;
 use Github\HttpClient\Builder;
@@ -51,7 +50,7 @@ class ConfigProxyController extends Controller
     {
         try {
             $builder = new Builder(GuzzleClient::createWithConfig([
-                'timeout' => GitHubService::HTTP_TIMEOUT,
+                'timeout' => 5,
                 'proxy' => $request->input('value'),
             ]));
             $client = new Client($builder, 'v3.text-match');

@@ -98,18 +98,16 @@
                                                 href: '/configNotify',
                                             },
                                             {
+                                                text: '代理配置',
+                                                align: 'left',
+                                                iconCls: 'icon-page-lightning',
+                                                handler: winProxy,
+                                            },
+                                            {
                                                 text: '白名单配置',
                                                 align: 'left',
                                                 iconCls: 'icon-page-db',
                                                 href: '/configWhitelist',
-                                            },
-                                            {
-                                                text: '代理配置',
-                                                align: 'left',
-                                                iconCls: 'icon-page-wrench',
-                                                handler: function () {
-                                                    winForm([]);
-                                                }
                                             }
                                         ]
                                     }
@@ -276,16 +274,17 @@
                 Ext.get('loading').setStyle('display', 'none');
             };
 
-            function winForm() {
-                tool.ajax('GET', '/api/configProxy', {}, function (rsp) {
+            // 代理配置
+            function winProxy() {
+                tool.ajax('GET', '/api/configProxy', null, function (rsp) {
                     if (!rsp.success) {
-                        tool.toast('读取配置错误！');
+                        tool.toast('读取代理配置失败！');
                         return false;
                     }
 
-                    var winProxy = Ext.create('Ext.window.Window', {
+                    var win = Ext.create('Ext.window.Window', {
                         title: '代理配置',
-                        iconCls: 'icon-page-wrench',
+                        iconCls: 'icon-page-lightning',
                         width: 300,
                         layout: 'fit',
                         items: [
@@ -298,30 +297,25 @@
                                         xtype: 'textfield',
                                         name: 'value',
                                         value: rsp.data,
+                                        emptyText: '示例：127.0.0.1:1080',
                                     }
                                 ],
                                 buttons: [
                                     {
-                                        text: '代理测试',
+                                        text: '测试',
                                         handler: function () {
                                             var params = this.up('form').getValues();
                                             if (!params['value']) {
-                                                tool.toast('代理不能为空！', 'error');
+                                                tool.toast('请先配置代理！', 'error');
                                                 return;
                                             }
                                             tool.ajax('POST', '/api/configProxy/test', params, function (rsp) {
                                                 if (rsp.success) {
-                                                    tool.toast('测试成功！', 'success');
+                                                    tool.toast('代理测试可用！', 'success');
                                                 } else {
-                                                    tool.toast(rsp.message, 'error');
+                                                    tool.toast('代理不可用：' + rsp.message, 'error');
                                                 }
                                             });
-                                        }
-                                    },
-                                    {
-                                        text: '重置',
-                                        handler: function () {
-                                            this.up('form').getForm().reset();
                                         }
                                     },
                                     {
@@ -331,7 +325,7 @@
                                             var params = this.up('form').getValues();
                                             tool.ajax('POST', '/api/configProxy', params, function (rsp) {
                                                 if (rsp.success) {
-                                                    winProxy.close();
+                                                    win.close();
                                                     tool.toast('保存成功！', 'success');
                                                 } else {
                                                     tool.toast(rsp.message, 'error');
