@@ -77,29 +77,30 @@ class JobRunCommand extends Command
     public function handle()
     {
         $this->log = Log::channel($this->signature);
-        $this->log->info('Start the task of search keyword');
+        $this->log->info('Start running scan job');
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
         $this->whitelistFile = ConfigWhitelistFile::pluck('value');
+        $this->log->info('Get whitelist success');
 
         while ($job = $this->takeJob()) {
-            $page = 1;
             $keyword = $job->keyword;
+            $this->log->info('Get a job from the queue', ['keyword' => $keyword]);
             $configJob = ConfigJob::where('keyword', $keyword)->first();
             $configJob->last_scan_at = date('Y-m-d H:i:s');
+            $page = 1;
             do {
                 $client = $this->service->getClient();
                 $data = $this->searchCode($client, $keyword, $page);
                 $count = $this->store($data, $configJob);
-                $this->log->info('Store leak into database',
-                    ['keyword' => $keyword, 'page' => $page, 'count' => $count]);
+                $this->log->info('Store record', ['count' => $count]);
                 $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
             } while ($lastResponse['next'] && (++$page <= $configJob->scan_page));
             $configJob->save();
         }
 
-        $this->log->info('End task');
+        $this->log->info('Work done');
     }
 
     /**
@@ -141,6 +142,7 @@ class JobRunCommand extends Command
     private function searchCode($client, $keyword, $page = 1)
     {
         try {
+            $this->log->info('Search code', ['keyword' => $keyword, 'page' => $page]);
             return $client->api('search')->setPage($page)->code($keyword, 'indexed');
         } catch (Exception $e) {
             $this->log->warning($e->getMessage());
