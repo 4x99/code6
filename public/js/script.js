@@ -79,7 +79,7 @@ tool.ajax = function (method, url, params, callback) {
 tool.winOpen = function (url, width, height) {
     width = width ? width : 1200;
     height = height ? height : 800;
-    var left = (screen.width - width) / 2 + screenLeft;
+    var left = (screen.width - width) / 2;
     var top = (screen.height - height) / 2;
     window.open(url, '', 'width=' + width + ', height=' + height + ', left=' + left + ', top=' + top);
 }
