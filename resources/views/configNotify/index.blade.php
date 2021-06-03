@@ -47,6 +47,7 @@
                         fieldLabel: '端　　口',
                         value: getConfig('email.value.port', 465),
                         allowBlank: true,
+                        allowDecimals: false,
                         listeners: {
                             render: function (c) {
                                 Ext.QuickTips.register({
@@ -280,6 +281,7 @@
                     fieldLabel: '通知间隔',
                     step: 5,
                     value: getConfig(type + '.interval_min', 5),
+                    allowDecimals: false,
                     listeners: {
                         render: function (c) {
                             Ext.QuickTips.register({
