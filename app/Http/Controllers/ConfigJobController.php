@@ -23,8 +23,7 @@ class ConfigJobController extends Controller
     {
         $data = ConfigJob::orderByDesc('id')->get();
         foreach ($data as &$item) {
-            $expression = "*/{$item['scan_interval_min']} * * * *";
-            $item['next_scan_at'] = CronExpression::factory($expression)->getNextRunDate()->format('Y-m-d H:i:s');
+            $item['next_scan_at'] = $this->getNextScanAt($item['scan_interval_min']);
         }
         return $data;
     }
@@ -72,9 +71,7 @@ class ConfigJobController extends Controller
             $fields = ['keyword', 'scan_page', 'scan_interval_min', 'store_type', 'description'];
             $configJob = ConfigJob::find($id);
             $success = $configJob->update($request->all($fields));
-
-            $expression = "*/{$configJob['scan_interval_min']} * * * *";
-            $configJob['next_scan_at'] = CronExpression::factory($expression)->getNextRunDate()->format('Y-m-d H:i:s');
+            $configJob['next_scan_at'] = $this->getNextScanAt($configJob['scan_interval_min']);
             return ['success' => $success, 'data' => $configJob];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
@@ -95,5 +92,18 @@ class ConfigJobController extends Controller
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
+    }
+
+    /**
+     * 下次扫描时间
+     *
+     * @param $interval
+     * @return string
+     */
+    private function getNextScanAt($interval)
+    {
+        $expression = "*/$interval * * * *";
+        $cron = CronExpression::factory($expression);
+        return $cron->getNextRunDate()->format('Y-m-d H:i:s');
     }
 }
