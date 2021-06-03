@@ -26,6 +26,7 @@
 
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
+                bufferedRenderer: false,
                 tbar: {
                     margin: '5 12 15 18',
                     items: [
@@ -61,37 +62,40 @@
                     {
                         text: '扫描页数',
                         dataIndex: 'scan_page',
-                        width: 170,
+                        width: 110,
                         align: 'center',
                     },
                     {
-                        text: '扫描间隔（分钟）',
+                        text: '扫描间隔',
                         dataIndex: 'scan_interval_min',
-                        width: 170,
+                        width: 110,
                         align: 'center',
+                        renderer: function (value) {
+                            return value + ' 分钟';
+                        }
                     },
                     {
                         text: '扫描结果',
                         dataIndex: 'store_type',
-                        width: 170,
+                        width: 160,
                         align: 'center',
                         renderer: function (value) {
                             return storeType[value].text;
                         }
                     },
                     {
-                        text: '最后扫描时间',
-                        dataIndex: 'last_scan_at',
-                        width: 170,
+                        text: '下次扫描时间',
+                        dataIndex: 'next_scan_at',
+                        width: 160,
                         align: 'center',
                         renderer: function (value) {
                             return value ? value : '-';
                         }
                     },
                     {
-                        text: '下次扫描时间',
-                        dataIndex: 'next_scan_at',
-                        width: 170,
+                        text: '最近扫描时间',
+                        dataIndex: 'last_scan_at',
+                        width: 160,
                         align: 'center',
                         renderer: function (value) {
                             return value ? value : '-';
@@ -109,7 +113,7 @@
                     {
                         text: '操作',
                         sortable: false,
-                        width: 250,
+                        width: 220,
                         align: 'center',
                         xtype: 'widgetcolumn',
                         widget: {
@@ -191,6 +195,7 @@
                                     name: 'scan_page',
                                     fieldLabel: '扫描页数（每页 30 条）',
                                     minValue: 1,
+                                    allowDecimals: false,
                                     value: data.scan_page ? data.scan_page : 3,
                                 },
                                 {
@@ -198,6 +203,7 @@
                                     name: 'scan_interval_min',
                                     fieldLabel: '扫描间隔（分钟）',
                                     minValue: 1,
+                                    allowDecimals: false,
                                     value: data.scan_interval_min ? data.scan_interval_min : 60,
                                 },
                                 {
