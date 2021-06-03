@@ -33,7 +33,7 @@ class NotifyService
             Mail::send('email.index', compact('content'), function ($message) use ($config) {
                 $message->from($config['username']);
                 $message->subject(self::EMAIL_TITLE);
-                foreach (explode("\n", $config['to']) as $email) {
+                foreach (explode(PHP_EOL, $config['to']) as $email) {
                     if ($email = trim($email)) {
                         $message->to($email);
                     }
@@ -59,7 +59,7 @@ class NotifyService
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, compact('content'));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, explode("\n", $config['headers']));
+            curl_setopt($ch, CURLOPT_HTTPHEADER, explode(PHP_EOL, $config['headers']));
             curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);

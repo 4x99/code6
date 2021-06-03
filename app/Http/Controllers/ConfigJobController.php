@@ -39,7 +39,7 @@ class ConfigJobController extends Controller
         try {
             $fail = 0;
             $request->validate(['keyword' => ['required', 'string']]);
-            $keywords = explode("\n", $request->input('keyword'));
+            $keywords = explode(PHP_EOL, $request->input('keyword'));
             $keywords = array_filter(array_unique($keywords));
             $data = [
                 'scan_page' => $request->input('scan_page', 3),
