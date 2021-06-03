@@ -49,11 +49,11 @@ class JobAddCommand extends Command
     public function handle()
     {
         $this->log = Log::channel($this->signature);
-        $this->log->info('Start job');
+        $this->log->info('Start the task of add job to queue');
 
         $configJobs = ConfigJob::all();
         $time = floor(LARAVEL_START - LARAVEL_START % 60); // 启动时间（整点）
-        $this->log->info('Get config success', ['count' => $configJobs->count()]);
+        $this->log->info('Get job config success', ['count' => $configJobs->count()]);
         foreach ($configJobs as $configJob) {
             if (!$configJob->scan_interval_min) {
                 continue; // 尚未配置参数
@@ -66,13 +66,13 @@ class JobAddCommand extends Command
             $job = ['keyword' => $configJob->keyword];
             $queueJob = QueueJob::firstOrCreate($job);
             if (!$queueJob->wasRecentlyCreated) {
-                $this->log->Debug('Job already exists', $job);
+                $this->log->Debug('Job already in the queue', $job);
                 continue; // 存在相同任务
             }
 
-            $this->log->info('Add job', $job);
+            $this->log->info('Add job to queue', $job);
         }
 
-        $this->log->info('Close job');
+        $this->log->info('End task');
     }
 }

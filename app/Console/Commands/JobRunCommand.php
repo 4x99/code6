@@ -77,7 +77,7 @@ class JobRunCommand extends Command
     public function handle()
     {
         $this->log = Log::channel($this->signature);
-        $this->log->info('Start job');
+        $this->log->info('Start the task of search keyword');
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
@@ -92,13 +92,14 @@ class JobRunCommand extends Command
                 $client = $this->service->getClient();
                 $data = $this->searchCode($client, $keyword, $page);
                 $count = $this->store($data, $configJob);
-                $this->log->info('Stored', ['keyword' => $keyword, 'page' => $page, 'count' => $count]);
+                $this->log->info('Store leak into database',
+                    ['keyword' => $keyword, 'page' => $page, 'count' => $count]);
                 $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
             } while ($lastResponse['next'] && (++$page <= $configJob->scan_page));
             $configJob->save();
         }
 
-        $this->log->info('Close job');
+        $this->log->info('End task');
     }
 
     /**
