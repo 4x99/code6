@@ -98,6 +98,12 @@
                                                 href: '/configNotify',
                                             },
                                             {
+                                                text: '代理配置',
+                                                align: 'left',
+                                                iconCls: 'icon-page-lightning',
+                                                handler: winProxy,
+                                            },
+                                            {
                                                 text: '白名单配置',
                                                 align: 'left',
                                                 iconCls: 'icon-page-db',
@@ -267,6 +273,72 @@
             Ext.getDom('frame').onload = function () {
                 Ext.get('loading').setStyle('display', 'none');
             };
+
+            // 代理配置
+            function winProxy() {
+                tool.ajax('GET', '/api/configProxy', null, function (rsp) {
+                    if (!rsp.success) {
+                        tool.toast('读取代理配置失败！');
+                        return false;
+                    }
+
+                    var win = Ext.create('Ext.window.Window', {
+                        title: '代理配置',
+                        iconCls: 'icon-page-lightning',
+                        width: 300,
+                        layout: 'fit',
+                        items: [
+                            {
+                                xtype: 'form',
+                                layout: 'form',
+                                bodyPadding: '5 15 15 8',
+                                items: [
+                                    {
+                                        xtype: 'textfield',
+                                        name: 'value',
+                                        value: rsp.data,
+                                        emptyText: '示例：127.0.0.1:1080',
+                                    }
+                                ],
+                                buttons: [
+                                    {
+                                        text: '测试',
+                                        handler: function () {
+                                            var params = this.up('form').getValues();
+                                            if (!params['value']) {
+                                                tool.toast('请先配置代理！', 'error');
+                                                return;
+                                            }
+                                            tool.ajax('POST', '/api/configProxy/test', params, function (rsp) {
+                                                if (rsp.success) {
+                                                    tool.toast('代理测试可用！', 'success');
+                                                } else {
+                                                    tool.toast('代理不可用：' + rsp.message, 'error');
+                                                }
+                                            });
+                                        }
+                                    },
+                                    {
+                                        text: '保存',
+                                        formBind: true,
+                                        handler: function () {
+                                            var params = this.up('form').getValues();
+                                            tool.ajax('POST', '/api/configProxy', params, function (rsp) {
+                                                if (rsp.success) {
+                                                    win.close();
+                                                    tool.toast('保存成功！', 'success');
+                                                } else {
+                                                    tool.toast(rsp.message, 'error');
+                                                }
+                                            });
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }).show();
+                });
+            }
         })
     </script>
 @endsection

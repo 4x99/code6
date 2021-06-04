@@ -1,3 +1,9 @@
+.x-grid-cell-inner {
+    white-space: pre-wrap;
+    word-break: break-all;
+    line-height: 20px;
+}
+
 .x-window-text a, .x-window-text span {
     color: #0070D5;
 }

@@ -39,14 +39,14 @@
                 },
             }
 
-            var urlGenToken = 'https://github.com/settings/tokens/new';
+            var urlNewToken = 'https://github.com/settings/tokens/new';
 
             var content = '';
             content += '<p class="tip-title">1. 令牌是什么？<span></p>';
             content += '<p>用来请求 GitHub API 的 Token（即 GitHub personal access token）</p><br/>';
             content += '<p class="tip-title">2. 如何申请令牌？</p>';
             content += '<p>GitHub - Settings - Developer settings - Personal access tokens - Generate new token';
-            content += '（<a target="_blank" href="' + urlGenToken + '">直达</a>）</p>';
+            content += '（<a target="_blank" href="' + urlNewToken + '">直达</a>）</p>';
             content += '<p>提示：填写 Note 信息后直接点击 Generate token 按钮生成，无需设置其他选项。</p><br/>';
             content += '<p class="tip-title">3. 为何需要配置多个令牌？</p>';
             content += '<p>GitHub 限制了 API 的请求速率';
@@ -120,13 +120,14 @@
                         text: 'GitHub接口请求配额',
                         columns: [
                             {
-                                text: '接口请求量/上限',
+                                text: '已用配额/上限',
                                 width: 200,
                                 renderer: function (value, cellmeta, record) {
                                     var item = [], data = record.data;
                                     item.limit = data.api_limit;
                                     item.used = Math.max(0, item.limit - data.api_remaining);
-                                    item.percent = parseFloat(item.used / item.limit * 100);
+                                    item.percent = parseFloat((1 - item.used / item.limit) * 100);
+                                    item.percent = item.limit > 0 ? item.percent : 0;
                                     return new Ext.XTemplate(
                                         '<div class="progress">',
                                         '    <div style="width:{percent}%">',
@@ -230,13 +231,13 @@
                                     fieldLabel: '令牌',
                                     allowBlank: false,
                                     value: data.token,
-                                    emptyText: '点击右边图标申请..',
+                                    emptyText: '点击右侧图标申请..',
                                     triggers: {
                                         search: {
-                                            cls: 'icon-page-get',
+                                            cls: 'icon-page-key',
                                             tooltip: '前往 GitHub 申请令牌',
                                             handler: function () {
-                                                tool.winOpen(urlGenToken);
+                                                tool.winOpen(urlNewToken);
                                             }
                                         }
                                     }
@@ -260,6 +261,12 @@
                                     text: '提交',
                                     formBind: true,
                                     handler: function () {
+                                        Ext.MessageBox.show({
+                                            msg: '令牌状态同步中..',
+                                            width: 300,
+                                            wait: {interval: 200},
+                                        });
+
                                         var params = this.up('form').getValues();
                                         var method = data.id ? 'PUT' : 'POST';
                                         var url = data.id ? '/api/configToken/' + data.id : '/api/configToken';
@@ -272,6 +279,7 @@
                                             } else {
                                                 tool.toast(rsp.message, 'warning');
                                             }
+                                            Ext.MessageBox.hide();
                                         });
                                     }
                                 }
