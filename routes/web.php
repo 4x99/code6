@@ -53,8 +53,8 @@ Route::group(['middleware' => ['auth']], function () {
 
     Route::resource('/api/configWhitelistFile', 'ConfigWhitelistFileController');
 
-    Route::post('/api/configProxy/test', 'configProxyController@test');
-    Route::resource('/api/configProxy', 'configProxyController');
+    Route::post('/api/configProxy/test', 'ConfigProxyController@test');
+    Route::resource('/api/configProxy', 'ConfigProxyController');
 
     Route::get('/configNotify', 'ConfigNotifyController@view');
     Route::post('/api/test', 'ConfigNotifyController@test');
