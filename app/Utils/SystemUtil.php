@@ -13,7 +13,7 @@ class SystemUtil
     {
         $data = [];
         $info = file_get_contents('/proc/meminfo');
-        foreach (explode("\n", $info) as $item) {
+        foreach (explode(PHP_EOL, $info) as $item) {
             if (preg_match('/^(\w+):\s+(\d+)\skB$/', $item, $matches)) {
                 $data[$matches[1]] = $matches[2] * 1024;
             }

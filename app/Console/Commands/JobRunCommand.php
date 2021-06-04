@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Models\ConfigCommon;
 use Exception;
 use App\Models\CodeFragment;
 use App\Models\CodeLeak;
 use App\Models\ConfigJob;
 use App\Models\ConfigWhitelist;
-use App\Models\ConfigWhitelistFile;
 use App\Models\QueueJob;
 use App\Services\GitHubService;
 use Github\HttpClient\Message\ResponseMediator;
@@ -77,28 +77,30 @@ class JobRunCommand extends Command
     public function handle()
     {
         $this->log = Log::channel($this->signature);
-        $this->log->info('Start job');
+        $this->log->info('Start running scan job');
 
         $this->createGitHubService();
         $this->whitelist = ConfigWhitelist::all()->keyBy('value');
-        $this->whitelistFile = ConfigWhitelistFile::pluck('value');
+        $this->whitelistFile = json_decode(ConfigCommon::getValue(ConfigCommon::KEY_WHITELIST_FILE));
+        $this->log->info('Get whitelist success');
 
         while ($job = $this->takeJob()) {
-            $page = 1;
             $keyword = $job->keyword;
+            $this->log->info('Get a job from the queue', ['keyword' => $keyword]);
             $configJob = ConfigJob::where('keyword', $keyword)->first();
             $configJob->last_scan_at = date('Y-m-d H:i:s');
+            $page = 1;
             do {
                 $client = $this->service->getClient();
                 $data = $this->searchCode($client, $keyword, $page);
                 $count = $this->store($data, $configJob);
-                $this->log->info('Stored', ['keyword' => $keyword, 'page' => $page, 'count' => $count]);
+                $this->log->info('Store record', ['count' => $count]);
                 $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
             } while ($lastResponse['next'] && (++$page <= $configJob->scan_page));
             $configJob->save();
         }
 
-        $this->log->info('Close job');
+        $this->log->info('Work done');
     }
 
     /**
@@ -140,6 +142,7 @@ class JobRunCommand extends Command
     private function searchCode($client, $keyword, $page = 1)
     {
         try {
+            $this->log->info('Search code', ['keyword' => $keyword, 'page' => $page]);
             return $client->api('search')->setPage($page)->code($keyword, 'indexed');
         } catch (Exception $e) {
             $this->log->warning($e->getMessage());

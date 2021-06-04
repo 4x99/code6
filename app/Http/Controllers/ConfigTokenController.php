@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConfigToken;
+use App\Services\GitHubService;
 use Illuminate\Http\Request;
 
 class ConfigTokenController extends Controller
@@ -37,7 +38,12 @@ class ConfigTokenController extends Controller
                 ['token' => $request->input('token')],
                 ['description' => $request->input('description') ?? '']
             );
-            if (!$data->wasRecentlyCreated) {
+            if ($data->wasRecentlyCreated) {
+                $service = new GitHubService();
+                $client['token'] = $data->token;
+                $client['client'] = $service->createClient($client['token']);
+                $service->updateClient($client);
+            } else {
                 throw new \Exception('操作失败，可能已存在此令牌！');
             }
             return ['success' => true, 'data' => ConfigToken::find($data->id)];

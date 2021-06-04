@@ -7,6 +7,7 @@ use Exception;
 use Github\Client;
 use App\Models\ConfigToken;
 use Illuminate\Support\Arr;
+use App\Models\ConfigCommon;
 use Github\HttpClient\Builder;
 use Illuminate\Support\Facades\Log;
 use Http\Adapter\Guzzle6\Client as GuzzleClient;
@@ -27,12 +28,14 @@ class GitHubService
     const RATE_LIMIT_UNAUTHENTICATED = 10; // 未授权限制请求频率：10 次 / 分钟
 
     public $clients = [];
+    private $proxy;
     private $userAgent = 'Code6';
     private $currentKey = -1;
 
     public function __construct()
     {
         $this->userAgent = config('app.name');
+        $this->proxy = ConfigCommon::getValue(ConfigCommon::KEY_PROXY);
     }
 
     /**
@@ -65,6 +68,7 @@ class GitHubService
             'delay' => self::HTTP_DELAY,
             'headers' => ['User-Agent' => $this->userAgent],
             'handler' => $handlerStack,
+            'proxy' => $this->proxy,
         ]));
         $client = new Client($builder, 'v3.text-match');
         if ($token) {
@@ -116,7 +120,7 @@ class GitHubService
      * @param $client
      * @return bool
      */
-    private function updateClient(&$client)
+    public function updateClient(&$client)
     {
         $code = $resource = null;
         try {
