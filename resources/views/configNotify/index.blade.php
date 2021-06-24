@@ -176,15 +176,15 @@
 
             var feishu = Ext.create('panel', {
                 title: '飞书',
-                iconCls: 'icon-page-star',
+                iconCls: 'icon-feishu',
                 height: 280,
                 tools: [{
                     type: 'help',
                     tooltip: '飞书文档',
                     handler: function () {
-                        var url = 'https://www.feishu.cn/hc/zh-CN/articles/360024984973#magicdomid-2_92';
+                        var url = 'https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN';
                         var message = '官方文档：<a target="_blank" href="' + url + '">查看</a><br/><br/>';
-                        message += '安全设置（二选一）：<br/>1. 白名单IP 地址（段）<br/>2. 自定义关键词（填写：<span>码小六</span>）';
+                        message += '安全设置（二选一）：<br/>1. IP 白名单<br/>2. 自定义关键词（填写：<span>码小六</span>）';
 
                         Ext.Msg.show({
                             title: '飞书文档',
