@@ -174,6 +174,35 @@
                 ]
             });
 
+            var feishu = Ext.create('panel', {
+                title: '飞书',
+                iconCls: 'icon-page-star',
+                height: 280,
+                tools: [{
+                    type: 'help',
+                    tooltip: '飞书文档',
+                    handler: function () {
+                        var url = 'https://www.feishu.cn/hc/zh-CN/articles/360024984973#magicdomid-2_92';
+                        var message = '官方文档：<a target="_blank" href="' + url + '">查看</a><br/><br/>';
+                        message += '安全设置（二选一）：<br/>1. 白名单IP 地址（段）<br/>2. 自定义关键词（填写：<span>码小六</span>）';
+
+                        Ext.Msg.show({
+                            title: '飞书文档',
+                            iconCls: 'icon-page',
+                            modal: false,
+                            message: message,
+                        });
+                    }
+                }],
+                items: [
+                    createEnableField('feishu'),
+                    createWebhookField('feishu'),
+                    createIntervalField('feishu'),
+                    createTimeField('feishu'),
+                    createBtn('feishu'),
+                ]
+            });
+
             var workWechat = Ext.create('panel', {
                 title: '企业微信',
                 iconCls: 'icon-work-wechat',
@@ -371,7 +400,7 @@
                     bodyPadding: 20,
                     bodyStyle: 'background:#FAFAFA',
                 },
-                items: [email, webhook, telegram, dingTalk, workWechat],
+                items: [email, webhook, telegram, feishu, dingTalk, workWechat],
             });
         });
     </script>
