@@ -49,6 +49,7 @@ class NotifyCommand extends Command
      * @uses NotifyService::email()
      * @uses NotifyService::webhook()
      * @uses NotifyService::telegram()
+     * @uses NotifyService::feishu()
      * @uses NotifyService::dingTalk()
      * @uses NotifyService::workWechat()
      */
