@@ -1,10 +1,4 @@
 <?php
-/*
- * @Author: Byc4i
- * @Description: 
- * @Date: 2021-06-24 09:56:06
- * @LastEditTime: 2021-06-24 10:01:00
- */
 
 namespace App\Models;
 
