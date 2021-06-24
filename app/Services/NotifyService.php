@@ -114,8 +114,8 @@ class NotifyService
             $url = $config['webhook'];
             $response = $this->post($url, ['json' => $data]);
             $response = json_decode($response, true);
-            if ($response['errcode'] != 0) {
-                throw new \Exception($response['errmsg']);
+            if ($response['code'] > 0) {
+                throw new \Exception($response['msg']);
             }
             return ['success' => true, 'data' => $response];
         } catch (\Exception $e) {
