@@ -97,6 +97,33 @@ class NotifyService
     }
 
     /**
+     * 飞书
+     *
+     * @param $content
+     * @param $config
+     * @return array
+     */
+    public function feishu($content, $config)
+    {
+        $data = [
+            'msg_type' => 'text',
+            'content' => ['text' => $content],
+        ];
+
+        try {
+            $url = $config['webhook'];
+            $response = $this->post($url, ['json' => $data]);
+            $response = json_decode($response, true);
+            if ($response['errcode'] != 0) {
+                throw new \Exception($response['errmsg']);
+            }
+            return ['success' => true, 'data' => $response];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
      * 钉钉
      *
      * @param $content
