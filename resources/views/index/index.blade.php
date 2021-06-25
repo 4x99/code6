@@ -58,7 +58,7 @@
                                 tpl: [
                                     '<ul class="nav">',
                                     '    <tpl for=".">',
-                                    '    <li><a href="{url}" onclick="Ext.clickMenu({#})"',
+                                    '    <li><a href="{url}" onclick="Ext.clickMenu(\'{url}\')"',
                                     '     target="frame"<tpl if="active"> class="active"</tpl>>{text}</a></li>',
                                     '    </tpl>',
                                     '</ul>',
@@ -77,8 +77,8 @@
                                             width: 120,
                                             margin: '0 5 5 0',
                                             hrefTarget: 'frame',
-                                            handler: function () {
-                                                Ext.clickMenu(-1);
+                                            handler: function (item) {
+                                                Ext.clickMenu(item.href);
                                             }
                                         },
                                         items: [
@@ -173,20 +173,21 @@
                         region: 'center',
                         border: false,
                         bodyPadding: '10 0 0 0',
-                        html: '<iframe id="frame" name="frame" src="/home" width="100%" height="100%"></iframe>',
+                        html: '<iframe id="frame" name="frame" width="100%" height="100%"></iframe>',
                     }
                 ]
             });
 
             // 点击菜单
-            Ext.clickMenu = function (index) {
+            Ext.clickMenu = function (url) {
                 var nav = [];
                 var navViewModel = Ext.getCmp('nav').getViewModel();
-                Ext.each(navViewModel.get('nav'), function (item, i) {
-                    item.active = (index === i + 1);
+                Ext.each(navViewModel.get('nav'), function (item) {
+                    item.active = url === item.url;
                     nav.push(item);
                 });
                 navViewModel.set('nav', nav);
+                window.history.pushState({}, '', '#' + url.substr(1));
                 Ext.get('loading').setStyle('display', 'block');
             }
 
@@ -339,6 +340,12 @@
                     }).show();
                 });
             }
+
+            // 打开页面
+            var url = location.hash;
+            url = (url ? url : '#home').replace('#', '/');
+            Ext.clickMenu(url);
+            document.getElementById('frame').src = url;
         })
     </script>
 @endsection
