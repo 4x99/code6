@@ -55,10 +55,17 @@ class NotifyService
     public function webhook($content, $config)
     {
         try {
+            $data = compact('content');
+            $params = $config['params'] ?? [];
+            foreach (explode(PHP_EOL, $params) as $param) {
+                list($k, $v) = explode(':', $param);
+                $data[trim($k)] = trim($v);
+            }
+
             $ch = curl_init($config['webhook']);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, compact('content'));
+            curl_setopt($ch, CURLOPT_POSTFIELDS, array_filter($data));
             curl_setopt($ch, CURLOPT_HTTPHEADER, explode(PHP_EOL, $config['headers']));
             curl_setopt($ch, CURLOPT_TIMEOUT, 10);
             curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
