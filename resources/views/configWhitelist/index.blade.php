@@ -171,11 +171,18 @@
                     iconCls: 'icon-page-wrench',
                     width: 350,
                     layout: 'fit',
+                    tbar: [
+                        {
+                            xtype: 'tbtext',
+                            padding: '10 0 0 15',
+                            html: '<div class="tip">提示：支持通配符，如<b>4x99/*</b></div>',
+                        }
+                    ],
                     items: [
                         {
                             xtype: 'form',
                             layout: 'form',
-                            bodyPadding: 15,
+                            bodyPadding: '10 15 15 15',
                             defaults: {
                                 xtype: 'textfield',
                                 allowBlank: false,

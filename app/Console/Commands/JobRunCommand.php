@@ -80,7 +80,7 @@ class JobRunCommand extends Command
         $this->log->info('Start running scan job');
 
         $this->createGitHubService();
-        $this->whitelist = ConfigWhitelist::all()->keyBy('value');
+        $this->whitelist = ConfigWhitelist::pluck('value');
         $this->whitelistFile = json_decode(ConfigCommon::getValue(ConfigCommon::KEY_WHITELIST_FILE));
         $this->log->info('Get whitelist success');
 
@@ -194,8 +194,10 @@ class JobRunCommand extends Command
         $repoName = $item['repository']['name'];
 
         // 扫描白名单
-        if ($this->whitelist->has("$repoOwner/$repoName")) {
-            return false;
+        foreach ($this->whitelist as $pattern) {
+            if (fnmatch($pattern, "$repoOwner/$repoName")) {
+                return false;
+            }
         }
 
         // 按文件名忽略
