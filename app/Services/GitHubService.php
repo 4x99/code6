@@ -21,6 +21,7 @@ use GuzzleHttp\Exception\RequestException;
 class GitHubService
 {
     const HTTP_TIMEOUT = 30;
+    const HTTP_TIMEOUT_TEST = 5; // 代理测试超时时间
     const HTTP_DELAY = 2000;
     const HTTP_MAX_RETRIES = 5;
     const GET_CLIENT_TIMEOUT = 1800;
@@ -43,6 +44,7 @@ class GitHubService
      */
     public function init()
     {
+        $this->proxy = $this->testProxy($this->proxy) ? $this->proxy : null;
         $tokens = ConfigToken::inRandomOrder()->get()->pluck('token');
         foreach ($tokens as $token) {
             $client = ['token' => $token];
@@ -141,6 +143,28 @@ class GitHubService
 
         $this->updateConfigToken($client);
         return $client['status'] == ConfigToken::STATUS_NORMAL;
+    }
+
+    /**
+     * 代理测试
+     *
+     * @param $proxy
+     * @return bool
+     */
+    public function testProxy($proxy)
+    {
+        try {
+            $builder = new Builder(GuzzleClient::createWithConfig([
+                'proxy' => $proxy,
+                'timeout' => self::HTTP_TIMEOUT_TEST,
+            ]));
+            $client = new Client($builder, 'v3.text-match');
+            $client->api('repo')->releases()->latest('4x99', 'code6');
+            return true;
+        } catch (\Exception $e) {
+            Log::error("Proxy $proxy not available", [$e->getMessage()]);
+            return false;
+        }
     }
 
     /**

@@ -314,7 +314,7 @@
                                                 if (rsp.success) {
                                                     tool.toast('代理测试可用！', 'success');
                                                 } else {
-                                                    tool.toast('代理不可用：' + rsp.message, 'error');
+                                                    tool.toast('代理不可用！');
                                                 }
                                             });
                                         }
