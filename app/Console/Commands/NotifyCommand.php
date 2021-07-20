@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\CodeLeak;
+use App\Models\ConfigCommon;
 use App\Models\ConfigNotify;
 use App\Services\NotifyService;
 use Carbon\Carbon;
@@ -82,8 +83,7 @@ class NotifyCommand extends Command
                 continue;
             }
 
-            $content = $this->getContent($data);
-            $content = implode($type === ConfigNotify::TYPE_EMAIL ? '<br/><br/>' : "\n\n", $content);
+            $content = $this->getContent($type, $data);
             $config = $config = json_decode($config->value, true);
             $result = $service->$type($content, $config);
             $this->log->info('Send complete', array_merge(['type' => $type], $result));
@@ -109,16 +109,23 @@ class NotifyCommand extends Command
     }
 
     /**
+     * @param $type
      * @param $data
-     * @return array
+     * @return string
      */
-    private function getContent($data)
+    private function getContent($type, $data)
     {
-        $content = [];
-        $content[] = "码小六消息通知";
-        $content[] = "开始时间：{$data['stime']}";
-        $content[] = "结束时间：{$data['etime']}";
-        $content[] = "本时段共有 {$data['count']} 条未审记录";
+        $template = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
+        $template = json_decode($template, true);
+        $templateTitle = $template['title'] ?? NotifyService::TEMPLATE_DEFAULT_TITLE;
+        $templateContent = $template['content'] ?? NotifyService::TEMPLATE_DEFAULT_CONTENT;
+        $content = $templateTitle.PHP_EOL.$templateContent;
+        $content = str_replace(PHP_EOL, $type === ConfigNotify::TYPE_EMAIL ? '<br/><br/>' : "\n\n", $content);
+
+        $content = str_replace('{{stime}}', $data['stime'], $content);
+        $content = str_replace('{{etime}}', $data['etime'], $content);
+        $content = str_replace('{{count}}', $data['count'], $content);
+
         return $content;
     }
 }

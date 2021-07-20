@@ -2,13 +2,15 @@
 
 namespace App\Services;
 
+use App\Models\ConfigCommon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 
 class NotifyService
 {
-    const EMAIL_TITLE = '码小六消息通知';
+    const TEMPLATE_DEFAULT_TITLE = '码小六消息通知';
+    const TEMPLATE_DEFAULT_CONTENT = "开始时间：{{stime}}\n结束时间：{{etime}}\n本时段共有 {{count}} 条未审记录";
     const URL_TELEGRAM = 'https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s';
 
     /**
@@ -29,10 +31,13 @@ class NotifyService
             'password' => $config['password'],
         ]);
 
+        $template = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
+        $title = json_decode($template, true)['title'] ?? self::TEMPLATE_DEFAULT_TITLE;
+
         try {
-            Mail::send('email.index', compact('content'), function ($message) use ($config) {
+            Mail::send('email.index', compact('content'), function ($message) use ($config, $title) {
                 $message->from($config['username']);
-                $message->subject(self::EMAIL_TITLE);
+                $message->subject($title);
                 foreach (explode(PHP_EOL, $config['to']) as $email) {
                     if ($email = trim($email)) {
                         $message->to($email);
