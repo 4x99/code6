@@ -93,7 +93,12 @@
                             title: 'Webhook文档',
                             iconCls: 'icon-page',
                             modal: false,
-                            message: '请求方式：post<br/>请求参数：content',
+                            message: "请求方式：post<br/><br/>" +
+                                "请求参数：<br/>1. 支持点语法表示多维数组，例：<br/>" +
+                                "&nbsp;&nbsp;&nbsp;data.desk.price: 100<br/><br/>" +
+                                "2. 支持通知模板的变量 <b>title、content</b>，例：<br/>" +
+                                "&nbsp;&nbsp;&nbsp;title: \{\{title\}\}<br/>" +
+                                "&nbsp;&nbsp;&nbsp;content: \{\{content\}\}",
                         });
                     }
                 }],
@@ -113,7 +118,8 @@
                         name: 'params',
                         fieldLabel: '请求参数',
                         allowBlank: true,
-                        emptyText: '示例：\nusername: code6\npassword: password',
+                        fieldStyle: 'min-height:100px',
+                        emptyText: '示例：\ntitle: \{\{title\}\}\ncontent: \{\{content\}\}\napi.token: xxxxx',
                         value: getConfig('webhook.value.params'),
                     },
                     createIntervalField('webhook'),

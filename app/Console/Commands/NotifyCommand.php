@@ -83,9 +83,13 @@ class NotifyCommand extends Command
                 continue;
             }
 
-            $content = $this->getContent($type, $data);
-            $config = $config = json_decode($config->value, true);
-            $result = $service->$type($content, $config);
+            $config = json_decode($config->value, true);
+            $notification = $service->getTemplateNotification($type, $data['stime'], $data['etime'], $data['count']);
+            if ($type === ConfigNotify::TYPE_EMAIL || $type === ConfigNotify::TYPE_WEBHOOK) {
+                $result = $service->$type($notification['title'], $notification['content'], $config);
+            } else {
+                $result = $service->$type($notification['content'], $config);
+            }
             $this->log->info('Send complete', array_merge(['type' => $type], $result));
         }
 
@@ -106,26 +110,5 @@ class NotifyCommand extends Command
         $query = $query->whereBetween('created_at', $data);
         $data['count'] = $query->count();
         return $data;
-    }
-
-    /**
-     * @param $type
-     * @param $data
-     * @return string
-     */
-    private function getContent($type, $data)
-    {
-        $template = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
-        $template = json_decode($template, true);
-        $templateTitle = $template['title'] ?? NotifyService::TEMPLATE_DEFAULT_TITLE;
-        $templateContent = $template['content'] ?? NotifyService::TEMPLATE_DEFAULT_CONTENT;
-        $content = $templateTitle.PHP_EOL.$templateContent;
-        $content = str_replace(PHP_EOL, $type === ConfigNotify::TYPE_EMAIL ? '<br/><br/>' : "\n\n", $content);
-
-        $content = str_replace('{{stime}}', $data['stime'], $content);
-        $content = str_replace('{{etime}}', $data['etime'], $content);
-        $content = str_replace('{{count}}', $data['count'], $content);
-
-        return $content;
     }
 }
