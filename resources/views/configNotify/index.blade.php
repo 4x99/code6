@@ -387,6 +387,80 @@
                 return data;
             }
 
+            function winForm(data) {
+                tool.ajax('GET', '/api/configNotifyTemplate', {}, function (rsp) {
+                    if (!rsp.success) {
+                        tool.toast('读取配置错误！');
+                        return false;
+                    }
+                    var win = Ext.create('Ext.window.Window', {
+                        title: '通知模板',
+                        width: 450,
+                        iconCls: 'icon-email',
+                        layout: 'fit',
+                        tbar: [
+                            {
+                                xtype: 'tbtext',
+                                padding: '10 0 0 10',
+                                html: '<div class="tip">通知模板内容支持的变量：<br>stime：开始时间<br>etime：结束时间<br>count：未审数量</div>',
+                            }
+                        ],
+                        items: [
+                            {
+                                xtype: 'form',
+                                layout: 'form',
+                                bodyPadding: '0 15 15 15',
+                                defaults: {
+                                    xtype: 'textfield',
+                                    allowBlank: false,
+                                    labelAlign: 'right',
+                                },
+                                items: [
+                                    {
+                                        name: 'title',
+                                        fieldLabel: '标题',
+                                        value: rsp.data.title,
+                                        emptyText: '标题',
+                                    },
+                                    {
+                                        xtype: 'textareafield',
+                                        name: 'content',
+                                        fieldLabel: '内容',
+                                        allowBlank: true,
+                                        value: rsp.data.content,
+                                        fieldStyle: 'min-height:120px',
+                                        emptyText: '内容',
+                                    }
+                                ],
+                                buttons: [
+                                    {
+                                        text: '重置',
+                                        handler: function () {
+                                            this.up('form').getForm().reset();
+                                        }
+                                    },
+                                    {
+                                        text: '保存',
+                                        formBind: true,
+                                        handler: function () {
+                                            var params = this.up('form').getValues();
+                                            tool.ajax('POST', '/api/configNotifyTemplate', params, function (rsp) {
+                                                if (rsp.success) {
+                                                    win.close();
+                                                    tool.toast('保存成功！', 'success');
+                                                } else {
+                                                    tool.toast(rsp.message, 'error');
+                                                }
+                                            });
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }).show();
+                });
+            }
+
             Ext.create('Ext.panel.Panel', {
                 renderTo: Ext.getBody(),
                 layout: 'column',
@@ -397,6 +471,15 @@
                         {
                             xtype: 'tbtext',
                             html: '提示：扫描到新结果时将根据本页配置进行通知（无配置则不通知）',
+                        },
+                        '->',
+                        {
+                            text: '通知模板',
+                            iconCls: 'icon-email',
+                            margin: '0 13 0 0',
+                            handler: function () {
+                                winForm([]);
+                            }
                         }
                     ]
                 },
