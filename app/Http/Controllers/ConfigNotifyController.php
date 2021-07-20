@@ -51,8 +51,18 @@ class ConfigNotifyController extends Controller
     {
         $config = $request->all();
         $type = $config['type'];
+
+        $count = 100;
+        $etime = now()->toDateTimeString();
+        $stiem = now()->subHour()->toDateTimeString();
+
         $service = new NotifyService();
-        return $service->$type('码小六消息通知测试', $config);
+        $notification = $service->getTemplateNotification($type, $stiem, $etime, $count);
+        if ($type === ConfigNotify::TYPE_EMAIL || $type === ConfigNotify::TYPE_WEBHOOK) {
+            return $service->$type($notification['title'], $notification['content'], $config);
+        } else {
+            return $service->$type($notification['content'], $config);
+        }
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\ConfigCommon;
+use App\Models\ConfigNotify;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
@@ -16,11 +17,12 @@ class NotifyService
     /**
      * 邮件
      *
+     * @param $title
      * @param $content
      * @param $config
      * @return array|bool[]
      */
-    public function email($content, $config)
+    public function email($title, $content, $config)
     {
         Config::set('mail', [
             'driver' => 'smtp',
@@ -30,9 +32,6 @@ class NotifyService
             'username' => $config['username'],
             'password' => $config['password'],
         ]);
-
-        $template = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
-        $title = json_decode($template, true)['title'] ?? self::TEMPLATE_DEFAULT_TITLE;
 
         try {
             Mail::send('email.index', compact('content'), function ($message) use ($config, $title) {
@@ -53,33 +52,33 @@ class NotifyService
     /**
      * Webhook
      *
+     * @param $title
      * @param $content
      * @param $config
      * @return array
      */
-    public function webhook($content, $config)
+    public function webhook($title, $content, $config)
     {
         try {
-            $data = compact('content');
-            $params = $config['params'] ?? [];
-            foreach (explode(PHP_EOL, $params) as $param) {
-                list($k, $v) = explode(':', $param);
-                $data[trim($k)] = trim($v);
+            $headers = $formParams = [];
+            $config['headers'] = $config['headers'] ?? '';
+            $config['params'] = $config['params'] ?? '';
+
+            // 请求头部转数组
+            foreach (explode(PHP_EOL, $config['headers']) as $header) {
+                list($key, $val) = explode(':', $header);
+                $headers[trim($key)] = trim($val);
             }
 
-            $ch = curl_init($config['webhook']);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-            curl_setopt($ch, CURLOPT_POST, true);
-            curl_setopt($ch, CURLOPT_POSTFIELDS, array_filter($data));
-            curl_setopt($ch, CURLOPT_HTTPHEADER, explode(PHP_EOL, $config['headers']));
-            curl_setopt($ch, CURLOPT_TIMEOUT, 10);
-            curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-            $response = curl_exec($ch);
-            if (curl_errno($ch)) {
-                throw new \Exception(curl_error($ch));
+            // 请求参数转数组
+            foreach (explode(PHP_EOL, $config['params']) as $param) {
+                list($key, $val) = explode(':', $param);
+                $val = trim($val);
+                $val = $val == '{{title}}' ? $title : ($val == '{{content}}' ? $content : trim($val));
+                $this->nestedVarToArr($formParams, trim($key), trim($val));
             }
+
+            $response = $this->post($config['webhook'], ['headers' => $headers, 'form_params' => $formParams]);
             return ['success' => true, 'data' => $response];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
@@ -187,6 +186,49 @@ class NotifyService
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
+    }
+
+    /**
+     * 获取通知模板消息
+     *
+     * @param $type
+     * @param $stiem
+     * @param $etime
+     * @param $count
+     * @return array
+     */
+    public function getTemplateNotification($type, $stiem, $etime, $count)
+    {
+        $template = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
+        $template = json_decode($template, true);
+        $title = $template['title'] ?? self::TEMPLATE_DEFAULT_TITLE;
+        $content = $template['content'] ?? self::TEMPLATE_DEFAULT_CONTENT;
+
+        $content = $title.PHP_EOL.$content;
+        $content = str_replace(PHP_EOL, $type === ConfigNotify::TYPE_EMAIL ? '<br/><br/>' : "\n\n", $content);
+
+        $content = str_replace('{{stime}}', $stiem, $content);
+        $content = str_replace('{{etime}}', $etime, $content);
+        $content = str_replace('{{count}}', $count, $content);
+
+        return compact('title', 'content');
+    }
+
+    /**
+     * 嵌套变量转数组
+     *
+     * @param $arr
+     * @param $key
+     * @param $val
+     * @param  string  $separator
+     */
+    private function nestedVarToArr(&$arr, $key, $val, $separator = '.')
+    {
+        $pieces = explode($separator, $key);
+        foreach ($pieces as $piece) {
+            $arr = &$arr[$piece];
+        }
+        $arr = $val;
     }
 
     /**
