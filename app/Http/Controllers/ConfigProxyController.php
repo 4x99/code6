@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConfigCommon;
+use App\Services\GitHubService;
 use Illuminate\Http\Request;
-use Github\Client;
-use Github\HttpClient\Builder;
-use Http\Adapter\Guzzle6\Client as GuzzleClient;
 
 class ConfigProxyController extends Controller
 {
@@ -48,16 +46,11 @@ class ConfigProxyController extends Controller
      */
     public function test(Request $request)
     {
-        try {
-            $builder = new Builder(GuzzleClient::createWithConfig([
-                'timeout' => 5,
-                'proxy' => $request->input('value'),
-            ]));
-            $client = new Client($builder, 'v3.text-match');
-            $client->api('repo')->releases()->latest('4x99', 'code6');
+        $service = new GitHubService();
+        if ($service->testProxy($request->input('value'))) {
             return ['success' => true];
-        } catch (\Exception $e) {
-            return ['success' => false, 'message' => $e->getMessage()];
+        } else {
+            return ['success' => false];
         }
     }
 }
