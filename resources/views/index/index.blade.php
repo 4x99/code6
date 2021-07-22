@@ -142,7 +142,7 @@
                                                         modal: false,
                                                         fn: function (btn) {
                                                             if (btn !== 'yes') {
-                                                                return
+                                                                return;
                                                             }
 
                                                             tool.ajax('POST', '/api/logout', {}, function (rsp) {
@@ -310,11 +310,12 @@
                                                 tool.toast('请先配置代理！', 'error');
                                                 return;
                                             }
+                                            tool.toast('测试中..', 'info');
                                             tool.ajax('POST', '/api/configProxy/test', params, function (rsp) {
                                                 if (rsp.success) {
-                                                    tool.toast('代理测试可用！', 'success');
+                                                    tool.toast('代理正常！', 'success');
                                                 } else {
-                                                    tool.toast('代理不可用！');
+                                                    tool.toast('代理不可用！', 'error');
                                                 }
                                             });
                                         }

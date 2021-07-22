@@ -161,7 +161,7 @@ class GitHubService
             $client = new Client($builder, 'v3.text-match');
             $client->api('repo')->releases()->latest('4x99', 'code6');
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error("Proxy $proxy not available", [$e->getMessage()]);
             return false;
         }
