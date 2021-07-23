@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\ConfigCommon;
 use App\Models\ConfigNotify;
 use GuzzleHttp\Client;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Mail;
 
@@ -75,7 +76,7 @@ class NotifyService
                 list($key, $val) = explode(':', $param);
                 $val = trim($val);
                 $val = $val == '{{title}}' ? $title : ($val == '{{content}}' ? $content : trim($val));
-                $this->nestedVarToArr($formParams, trim($key), trim($val));
+                Arr::set($formParams, trim($key), trim($val));
             }
 
             $response = $this->post($config['webhook'], ['headers' => $headers, 'form_params' => $formParams]);
@@ -212,23 +213,6 @@ class NotifyService
         $content = str_replace('{{count}}', $count, $content);
 
         return compact('title', 'content');
-    }
-
-    /**
-     * 嵌套变量转数组
-     *
-     * @param $arr
-     * @param $key
-     * @param $val
-     * @param  string  $separator
-     */
-    private function nestedVarToArr(&$arr, $key, $val, $separator = '.')
-    {
-        $pieces = explode($separator, $key);
-        foreach ($pieces as $piece) {
-            $arr = &$arr[$piece];
-        }
-        $arr = $val;
     }
 
     /**

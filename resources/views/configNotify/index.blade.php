@@ -408,7 +408,7 @@
                             {
                                 xtype: 'tbtext',
                                 padding: '10 0 0 10',
-                                html: '<div class="tip">通知模板内容支持的变量：<br>stime：开始时间<br>etime：结束时间<br>count：未审数量</div>',
+                                html: '<div class="tip">通知模板内容支持的变量：<br>\{\{stime\}\}：开始时间<br>\{\{etime\}\}：结束时间<br>\{\{count\}\}：未审数量</div>',
                             }
                         ],
                         items: [

@@ -18,7 +18,7 @@ class ConfigNotifyTemplateController extends Controller
         try {
             $default = [
                 'title' => NotifyService::TEMPLATE_DEFAULT_TITLE,
-                'content' => implode(PHP_EOL, NotifyService::TEMPLATE_DEFAULT_CONTENT),
+                'content' => NotifyService::TEMPLATE_DEFAULT_CONTENT,
             ];
             $data = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
             $data = $data ? json_decode($data, true) : $default;
