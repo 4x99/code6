@@ -169,13 +169,20 @@
                 var win = Ext.create('Ext.window.Window', {
                     title: '将仓库加入白名单',
                     iconCls: 'icon-page-wrench',
-                    width: 350,
+                    width: 370,
                     layout: 'fit',
+                    tbar: [
+                        {
+                            xtype: 'tbtext',
+                            padding: '15 0 0 12',
+                            html: '<div class="tip">提示：下列字段均支持通配符，如 <b>*</b> 或 <b>a*c</b></div>',
+                        }
+                    ],
                     items: [
                         {
                             xtype: 'form',
                             layout: 'form',
-                            bodyPadding: 15,
+                            bodyPadding: '10 15 15 15',
                             defaults: {
                                 xtype: 'textfield',
                                 allowBlank: false,
