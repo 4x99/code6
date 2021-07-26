@@ -49,6 +49,7 @@ class NotifyCommand extends Command
      * @uses NotifyService::email()
      * @uses NotifyService::webhook()
      * @uses NotifyService::telegram()
+     * @uses NotifyService::feishu()
      * @uses NotifyService::dingTalk()
      * @uses NotifyService::workWechat()
      */
@@ -81,10 +82,9 @@ class NotifyCommand extends Command
                 continue;
             }
 
-            $content = $this->getContent($data);
-            $content = implode($type === ConfigNotify::TYPE_EMAIL ? '<br/><br/>' : "\n\n", $content);
-            $config = $config = json_decode($config->value, true);
-            $result = $service->$type($content, $config);
+            $config = json_decode($config->value, true);
+            $tpl = $service->getTemplate($type, $data['stime'], $data['etime'], $data['count']);
+            $result = $service->$type($tpl['title'], $tpl['content'], $config);
             $this->log->info('Send complete', array_merge(['type' => $type], $result));
         }
 
@@ -105,19 +105,5 @@ class NotifyCommand extends Command
         $query = $query->whereBetween('created_at', $data);
         $data['count'] = $query->count();
         return $data;
-    }
-
-    /**
-     * @param $data
-     * @return array
-     */
-    private function getContent($data)
-    {
-        $content = [];
-        $content[] = "码小六消息通知";
-        $content[] = "开始时间：{$data['stime']}";
-        $content[] = "结束时间：{$data['etime']}";
-        $content[] = "本时段共有 {$data['count']} 条未审记录";
-        return $content;
     }
 }
