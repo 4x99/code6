@@ -5,3 +5,12 @@
 .x-window-text a:hover {
     color: #F44336;
 }
+
+.tip {
+    font-size: 13px;
+}
+
+b {
+    font-weight: 400;
+    color: #0070D5;
+}

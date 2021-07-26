@@ -93,7 +93,12 @@
                             title: 'Webhook文档',
                             iconCls: 'icon-page',
                             modal: false,
-                            message: '请求方式：post<br/>请求参数：content',
+                            message: "<b>请求方式</b>：POST<br/><br/>" +
+                                "<b>请求参数</b>：<br/>1. 支持点语法表示多维数组：<br/>" +
+                                "<b>text.content: 消息内容</b> 等效于 <b>['text' => ['content' => '消息内容']]</b><br/><br/>" +
+                                "2. 支持使用 <b>[ 通知模板 ]</b> 的变量 <b>\{\{title\}\}</b>、<b>\{\{content\}\}</b>：<br/>" +
+                                "title: \{\{title\}\}<br/>" +
+                                "content: \{\{content\}\}",
                         });
                     }
                 }],
@@ -107,6 +112,15 @@
                         allowBlank: true,
                         emptyText: '示例：\nUser-Agent: Code6\nHost: 192.168.0.1',
                         value: getConfig('webhook.value.headers'),
+                    },
+                    {
+                        xtype: 'textareafield',
+                        name: 'params',
+                        fieldLabel: '请求参数',
+                        allowBlank: true,
+                        fieldStyle: 'min-height:100px',
+                        emptyText: '示例：\ntitle: \{\{title\}\}\ncontent: \{\{content\}\}\napi.token: xxxxx',
+                        value: getConfig('webhook.value.params'),
                     },
                     createIntervalField('webhook'),
                     createTimeField('webhook'),
@@ -155,7 +169,7 @@
                     handler: function () {
                         var url = 'https://developers.dingtalk.com/document/app/custom-robot-access';
                         var message = '官方文档：<a target="_blank" href="' + url + '">查看</a><br/><br/>';
-                        message += '安全设置（二选一）：<br/>1. IP 地址（段）<br/>2. 自定义关键词（填写：<span>码小六</span>）';
+                        message += '安全设置（二选一）：<br/>1. IP 地址（段）<br/>2. 自定义关键词';
 
                         Ext.Msg.show({
                             title: '钉钉文档',
@@ -184,7 +198,7 @@
                     handler: function () {
                         var url = 'https://open.feishu.cn/document/ukTMukTMukTM/ucTM5YjL3ETO24yNxkjN';
                         var message = '官方文档：<a target="_blank" href="' + url + '">查看</a><br/><br/>';
-                        message += '安全设置（二选一）：<br/>1. IP 白名单<br/>2. 自定义关键词（填写：<span>码小六</span>）';
+                        message += '安全设置（二选一）：<br/>1. IP 白名单<br/>2. 自定义关键词';
 
                         Ext.Msg.show({
                             title: '飞书文档',
@@ -211,7 +225,7 @@
                     type: 'help',
                     tooltip: '企业微信文档',
                     handler: function () {
-                        tool.winOpen('https://work.weixin.qq.com/help?doc_id=13376');
+                        tool.winOpen('https://work.weixin.qq.com/api/doc/90000/90136/91770');
                     }
                 }],
                 items: [
@@ -379,6 +393,87 @@
                 return data;
             }
 
+            // 通知模板
+            function winFormTemplate() {
+                tool.ajax('GET', '/api/configNotifyTemplate', {}, function (rsp) {
+                    if (!rsp.success) {
+                        tool.toast('读取配置错误！');
+                        return false;
+                    }
+
+                    var tip = '<div class="tip">';
+                    tip += '<p>通知模板内容支持的变量：</p>';
+                    tip += '<p><b>\{\{stime\}\}</b>:开始时间　<b>\{\{etime\}\}</b>:结束时间　<b>\{\{count\}\}</b>:未审数量</p>';
+                    tip += '</div>';
+
+                    var win = Ext.create('Ext.window.Window', {
+                        title: '通知模板',
+                        width: 600,
+                        iconCls: 'icon-page-edit',
+                        layout: 'fit',
+                        tbar: [
+                            {
+                                xtype: 'tbtext',
+                                padding: '10 0 0 10',
+                                html: tip,
+                            }
+                        ],
+                        items: [
+                            {
+                                xtype: 'form',
+                                layout: 'form',
+                                bodyPadding: '0 15 15 15',
+                                defaults: {
+                                    xtype: 'textfield',
+                                    allowBlank: false,
+                                    labelAlign: 'right',
+                                },
+                                items: [
+                                    {
+                                        name: 'title',
+                                        fieldLabel: '标题',
+                                        value: rsp.data.title,
+                                        emptyText: '标题',
+                                    },
+                                    {
+                                        xtype: 'textareafield',
+                                        name: 'content',
+                                        fieldLabel: '内容',
+                                        allowBlank: true,
+                                        value: rsp.data.content,
+                                        fieldStyle: 'min-height:120px',
+                                        emptyText: '内容',
+                                    }
+                                ],
+                                buttons: [
+                                    {
+                                        text: '重置',
+                                        handler: function () {
+                                            this.up('form').getForm().reset();
+                                        }
+                                    },
+                                    {
+                                        text: '保存',
+                                        formBind: true,
+                                        handler: function () {
+                                            var params = this.up('form').getValues();
+                                            tool.ajax('POST', '/api/configNotifyTemplate', params, function (rsp) {
+                                                if (rsp.success) {
+                                                    win.close();
+                                                    tool.toast('保存成功！', 'success');
+                                                } else {
+                                                    tool.toast(rsp.message, 'error');
+                                                }
+                                            });
+                                        }
+                                    }
+                                ]
+                            }
+                        ]
+                    }).show();
+                });
+            }
+
             Ext.create('Ext.panel.Panel', {
                 renderTo: Ext.getBody(),
                 layout: 'column',
@@ -389,6 +484,13 @@
                         {
                             xtype: 'tbtext',
                             html: '提示：扫描到新结果时将根据本页配置进行通知（无配置则不通知）',
+                        },
+                        '->',
+                        {
+                            text: '通知模板',
+                            iconCls: 'icon-page-edit',
+                            margin: 0,
+                            handler: winFormTemplate,
                         }
                     ]
                 },
