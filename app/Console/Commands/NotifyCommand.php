@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Models\CodeLeak;
-use App\Models\ConfigCommon;
 use App\Models\ConfigNotify;
 use App\Services\NotifyService;
 use Carbon\Carbon;
