@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
-
-class ConfigNotify extends Model
+class ConfigNotify extends ModelBase
 {
     const TYPE = [
         self::TYPE_EMAIL,
