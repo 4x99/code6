@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\ConfigCommon;
 use App\Models\ConfigNotify;
+use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
@@ -45,7 +46,7 @@ class NotifyService
                 }
             });
             return ['success' => true];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
@@ -65,23 +66,22 @@ class NotifyService
             $config['headers'] = $config['headers'] ?? '';
             $config['params'] = $config['params'] ?? '';
 
-            // 请求头部转数组
+            // 设置头部信息
             foreach (explode(PHP_EOL, $config['headers']) as $header) {
                 list($key, $val) = explode(':', $header);
                 $headers[trim($key)] = trim($val);
             }
 
-            // 请求参数转数组
+            // 设置请求参数
             foreach (explode(PHP_EOL, $config['params']) as $param) {
                 list($key, $val) = explode(':', $param);
-                $val = trim($val);
-                $val = $val == '{{title}}' ? $title : ($val == '{{content}}' ? $content : trim($val));
+                $val = str_replace(['{{title}}', '{{content}}'], [$title, $content], trim($val));
                 Arr::set($formParams, trim($key), trim($val));
             }
 
             $response = $this->post($config['webhook'], ['headers' => $headers, 'form_params' => $formParams]);
             return ['success' => true, 'data' => $response];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
@@ -89,21 +89,23 @@ class NotifyService
     /**
      * Telegram
      *
+     * @param $title
      * @param $content
      * @param $config
      * @return array
      */
-    public function telegram($content, $config)
+    public function telegram($title, $content, $config)
     {
         try {
+            $content = $title.PHP_EOL.$content;
             $url = sprintf(self::URL_TELEGRAM, $config['token'], $config['chat_id'], urlencode($content));
             $response = $this->post($url);
             $response = json_decode($response, true);
             if ($response['ok'] != true) {
-                throw new \Exception($response['description']);
+                throw new Exception($response['description']);
             }
             return ['success' => true, 'data' => $response];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
@@ -111,15 +113,16 @@ class NotifyService
     /**
      * 飞书
      *
+     * @param $title
      * @param $content
      * @param $config
      * @return array
      */
-    public function feishu($content, $config)
+    public function feishu($title, $content, $config)
     {
         $data = [
             'msg_type' => 'text',
-            'content' => ['text' => $content],
+            'content' => ['text' => $title.PHP_EOL.$content],
         ];
 
         try {
@@ -127,10 +130,10 @@ class NotifyService
             $response = $this->post($url, ['json' => $data]);
             $response = json_decode($response, true);
             if ($response['code'] > 0) {
-                throw new \Exception($response['msg']);
+                throw new Exception($response['msg']);
             }
             return ['success' => true, 'data' => $response];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
@@ -138,15 +141,16 @@ class NotifyService
     /**
      * 钉钉
      *
+     * @param $title
      * @param $content
      * @param $config
      * @return array
      */
-    public function dingTalk($content, $config)
+    public function dingTalk($title, $content, $config)
     {
         $data = [
             'msgtype' => 'text',
-            'text' => ['content' => $content],
+            'text' => ['content' => $title.PHP_EOL.$content],
         ];
 
         try {
@@ -154,10 +158,10 @@ class NotifyService
             $response = $this->post($url, ['json' => $data]);
             $response = json_decode($response, true);
             if ($response['errcode'] != 0) {
-                throw new \Exception($response['errmsg']);
+                throw new Exception($response['errmsg']);
             }
             return ['success' => true, 'data' => $response];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
@@ -165,15 +169,16 @@ class NotifyService
     /**
      * 企业微信
      *
+     * @param $title
      * @param $content
      * @param $config
      * @return array
      */
-    public function workWechat($content, $config)
+    public function workWechat($title, $content, $config)
     {
         $data = [
             'msgtype' => 'text',
-            'text' => ['content' => $content],
+            'text' => ['content' => $title.PHP_EOL.$content],
         ];
 
         try {
@@ -181,10 +186,10 @@ class NotifyService
             $response = $this->post($url, ['json' => $data]);
             $response = json_decode($response, true);
             if ($response['errcode'] != 0) {
-                throw new \Exception($response['errmsg']);
+                throw new Exception($response['errmsg']);
             }
             return ['success' => true, 'data' => $response];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
@@ -193,25 +198,21 @@ class NotifyService
      * 获取通知模板消息
      *
      * @param $type
-     * @param $stiem
+     * @param $stime
      * @param $etime
      * @param $count
      * @return array
      */
-    public function getTemplateNotification($type, $stiem, $etime, $count)
+    public function getTemplate($type, $stime, $etime, $count)
     {
-        $template = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
-        $template = json_decode($template, true);
-        $title = $template['title'] ?? self::TEMPLATE_DEFAULT_TITLE;
-        $content = $template['content'] ?? self::TEMPLATE_DEFAULT_CONTENT;
-
-        $content = $title.PHP_EOL.$content;
-        $content = str_replace(PHP_EOL, $type === ConfigNotify::TYPE_EMAIL ? '<br/><br/>' : "\n\n", $content);
-
-        $content = str_replace('{{stime}}', $stiem, $content);
-        $content = str_replace('{{etime}}', $etime, $content);
-        $content = str_replace('{{count}}', $count, $content);
-
+        $config = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
+        $config = json_decode($config, true);
+        $title = $config['title'] ?? self::TEMPLATE_DEFAULT_TITLE;
+        $content = $config['content'] ?? self::TEMPLATE_DEFAULT_CONTENT;
+        if ($type === ConfigNotify::TYPE_EMAIL) {
+            $content = str_replace(PHP_EOL, '<br/>', $content);
+        }
+        $content = str_replace(['{{stime}}', '{{etime}}', '{{count}}'], [$stime, $etime, $count], $content);
         return compact('title', 'content');
     }
 

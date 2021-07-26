@@ -84,12 +84,8 @@ class NotifyCommand extends Command
             }
 
             $config = json_decode($config->value, true);
-            $notification = $service->getTemplateNotification($type, $data['stime'], $data['etime'], $data['count']);
-            if ($type === ConfigNotify::TYPE_EMAIL || $type === ConfigNotify::TYPE_WEBHOOK) {
-                $result = $service->$type($notification['title'], $notification['content'], $config);
-            } else {
-                $result = $service->$type($notification['content'], $config);
-            }
+            $tpl = $service->getTemplate($type, $data['stime'], $data['etime'], $data['count']);
+            $result = $service->$type($tpl['title'], $tpl['content'], $config);
             $this->log->info('Send complete', array_merge(['type' => $type], $result));
         }
 
