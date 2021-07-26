@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ConfigNotify;
 use App\Services\NotifyService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 
 class ConfigNotifyController extends Controller
@@ -52,17 +53,13 @@ class ConfigNotifyController extends Controller
         $config = $request->all();
         $type = $config['type'];
 
-        $count = 100;
+        $count = 'xxx';
         $etime = now()->toDateTimeString();
         $stiem = now()->subHour()->toDateTimeString();
 
         $service = new NotifyService();
-        $notification = $service->getTemplateNotification($type, $stiem, $etime, $count);
-        if ($type === ConfigNotify::TYPE_EMAIL || $type === ConfigNotify::TYPE_WEBHOOK) {
-            return $service->$type($notification['title'], $notification['content'], $config);
-        } else {
-            return $service->$type($notification['content'], $config);
-        }
+        $tpl = $service->getTemplate($type, $stiem, $etime, $count);
+        return $service->$type($tpl['title'], $tpl['content'], $config);
     }
 
     /**

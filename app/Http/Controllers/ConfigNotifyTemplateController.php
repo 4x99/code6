@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\ConfigCommon;
 use App\Services\NotifyService;
+use Exception;
 use Illuminate\Http\Request;
 
 class ConfigNotifyTemplateController extends Controller
@@ -16,20 +17,18 @@ class ConfigNotifyTemplateController extends Controller
     public function index()
     {
         try {
-            $default = [
-                'title' => NotifyService::TEMPLATE_DEFAULT_TITLE,
-                'content' => NotifyService::TEMPLATE_DEFAULT_CONTENT,
-            ];
-            $data = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
-            $data = $data ? json_decode($data, true) : $default;
+            $config = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
+            $config = json_decode($config, true);
+            $data['title'] = $config['title'] ?? NotifyService::TEMPLATE_DEFAULT_TITLE;
+            $data['content'] = $config['content'] ?? NotifyService::TEMPLATE_DEFAULT_CONTENT;
             return ['success' => true, 'data' => $data];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 
     /**
-     * 保存通知模板
+     * 更新通知模板
      *
      * @param  Request  $request
      * @return array
@@ -42,7 +41,7 @@ class ConfigNotifyTemplateController extends Controller
             $value = json_encode(compact('title', 'content'));
             ConfigCommon::updateOrCreate(['key' => ConfigCommon::KEY_NOTIFY_TEMPLATE], ['value' => $value]);
             return ['success' => true];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
     }
