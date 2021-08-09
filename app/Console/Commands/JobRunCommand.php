@@ -89,15 +89,19 @@ class JobRunCommand extends Command
             $this->log->info('Get a job from the queue', ['keyword' => $keyword]);
             $configJob = ConfigJob::where('keyword', $keyword)->first();
             $configJob->last_scan_at = date('Y-m-d H:i:s');
+
             $page = 1;
+            $data = [];
             do {
                 $client = $this->service->getClient();
-                $data = $this->searchCode($client, $keyword, $page);
-                $count = $this->store($data, $configJob);
-                $this->log->info('Store record', ['count' => $count]);
+                $code = $this->searchCode($client, $keyword, $page);
+                $data = array_merge($data, $code['items'] ?? []);
                 $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
             } while ($lastResponse['next'] && (++$page <= $configJob->scan_page));
             $configJob->save();
+            krsort($data);
+            $count = $this->store($data, $configJob);
+            $this->log->info('Store record', ['count' => $count]);
         }
 
         $this->log->info('Work done');
@@ -161,11 +165,7 @@ class JobRunCommand extends Command
     {
         $count = ['leak' => 0, 'fragment' => 0];
 
-        if (!isset($data['items'])) {
-            return $count;
-        }
-
-        foreach ($data['items'] as $item) {
+        foreach ($data as $item) {
             $item['keyword'] = $configJob->keyword;
             if (!$uuid = $this->storeLeak($item, $configJob->store_type)) {
                 continue;
