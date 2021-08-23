@@ -16,7 +16,7 @@ WORKDIR /var/www/html
 RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak
 RUN echo 'deb http://mirrors.aliyun.com/debian buster main' >> /etc/apt/sources.list
 RUN echo 'deb http://mirrors.aliyun.com/debian buster-updates main' >> /etc/apt/sources.list
-RUN apt-get update && apt-get install -y zip cron vim zlib1g-dev libpng-dev
+RUN apt-get update && apt-get install -y --allow-downgrades zip cron vim zlib1g=1:1.2.11.dfsg-1 zlib1g-dev libpng-dev
 RUN rm -rf /var/lib/apt/lists/* && apt-get clean
 
 # 安装 PHP 扩展
