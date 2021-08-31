@@ -242,7 +242,7 @@ class JobRunCommand extends Command
                 'keyword' => $item['keyword'],
                 'repo_owner' => $repoOwner,
                 'repo_name' => $repoName,
-                'repo_description' => (string) $item['repository']['description'],
+                'repo_description' => htmlspecialchars((string) $item['repository']['description']),
                 'html_url_blob' => $blob,
                 'path' => $item['path'],
             ]
@@ -261,7 +261,7 @@ class JobRunCommand extends Command
     {
         $fragment = CodeFragment::create([
             'uuid' => $uuid,
-            'content' => $match['fragment'],
+            'content' => htmlspecialchars($match['fragment']),
         ]);
         return $fragment->wasRecentlyCreated;
     }
