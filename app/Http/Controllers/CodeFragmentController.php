@@ -17,6 +17,9 @@ class CodeFragmentController extends Controller
             $request->validate(['uuid' => ['required', 'string', 'max:255']]);
             $uuid = $request->input('uuid');
             $data = CodeFragment::where('uuid', $uuid)->orderByDesc('id')->get();
+            foreach ($data as &$item) {
+                $item->content = htmlspecialchars($item->content);
+            }
             return ['success' => true, 'data' => $data];
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
