@@ -44,7 +44,11 @@ class CodeLeakController extends Controller
         }
 
         $perPage = $request->input('limit', 100);
-        return $query->orderByDesc('id')->paginate($perPage);
+        $data = $query->orderByDesc('id')->paginate($perPage);
+        foreach ($data->items() as &$item){
+            $item->repo_description = htmlspecialchars($item->repo_description);
+        }
+        return $data;
     }
 
     /**
