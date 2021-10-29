@@ -415,7 +415,7 @@
 
                                                         var content = '';
                                                         Ext.each(rsp.data, function (item) {
-                                                            content += '<code>' + Ext.String.htmlEncode(item.content) + '</code>';
+                                                            content += '<code>' + item.content + '</code>';
                                                         })
                                                         winFragment.setHtml('<pre class="code-fragment">' + content + '</pre>');
                                                     });
