@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('code6:notify')->everyMinute()->runInBackground();
+        $schedule->command('code6:notify')->everyMinute()->runInBackground()->withoutOverlapping();
         $schedule->command('code6:job-add')->everyMinute();
         $schedule->command('code6:job-run')->everyMinute()->withoutOverlapping();
     }
