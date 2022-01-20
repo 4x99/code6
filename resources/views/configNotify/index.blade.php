@@ -443,6 +443,44 @@
                                         value: rsp.data.content,
                                         fieldStyle: 'min-height:120px',
                                         emptyText: '内容',
+                                    },
+                                    {
+                                        xtype: 'combo',
+                                        name: 'detail',
+                                        fieldLabel: '是否推送详情',
+                                        store: {
+                                            data: [
+                                                {text: '否', value: 0},
+                                                {text: '是', value: 1},
+                                            ]
+                                        },
+                                        valueField: 'value',
+                                        editable: false,
+                                        value: rsp.data.detail,
+                                        listeners: {
+                                            'select': function (combo, records) {
+                                                var limit = Ext.getCmp('limit');
+                                                records.data.value == 1 ? limit.show() : limit.hide();
+                                            }
+                                        }
+                                    },
+                                    {
+                                        xtype: 'numberfield',
+                                        id: 'limit',
+                                        name: 'limit',
+                                        minValue: 1,
+                                        fieldLabel: '推送条数',
+                                        step: 1,
+                                        value: rsp.data.limit,
+                                        hidden: rsp.data.detail == 0 ? true : false,
+                                        listeners: {
+                                            render: function (c) {
+                                                Ext.QuickTips.register({
+                                                    target: c.getEl(),
+                                                    text: '推送代码泄露显示条数',
+                                                });
+                                            }
+                                        }
                                     }
                                 ],
                                 buttons: [

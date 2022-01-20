@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\CodeLeak;
 use App\Models\ConfigCommon;
 use App\Models\ConfigNotify;
 use Exception;
@@ -15,6 +16,9 @@ class NotifyService
     const TEMPLATE_DEFAULT_TITLE = '码小六消息通知';
     const TEMPLATE_DEFAULT_CONTENT = "开始时间：{{stime}}\n结束时间：{{etime}}\n本时段共有 {{count}} 条未审记录";
     const URL_TELEGRAM = 'https://api.telegram.org/bot%s/sendMessage?chat_id=%s&text=%s';
+    const TEMPLATE_DEFAULT_DETAIL = 0;
+    const TEMPLATE_DEFAULT_LIMIT = 0;
+    const GITHUB_URL = 'https://github.com/';
 
     /**
      * 邮件
@@ -34,7 +38,6 @@ class NotifyService
             'username' => $config['username'],
             'password' => $config['password'],
         ]);
-
         try {
             Mail::send('email.index', compact('content'), function ($message) use ($config, $title) {
                 $message->from($config['username']);
@@ -209,6 +212,17 @@ class NotifyService
         $config = json_decode($config, true);
         $title = $config['title'] ?? self::TEMPLATE_DEFAULT_TITLE;
         $content = $config['content'] ?? self::TEMPLATE_DEFAULT_CONTENT;
+        $detail = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_DETAIL);
+        if ($detail) {
+            $limit = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_DETAIL_LIMIT);
+            $codeLeak = CodeLeak::orderByDesc('id')->limit($limit)->get();
+            $content .= "\n\n";
+            foreach ($codeLeak as $val) {
+                $url = SELF::GITHUB_URL."{$val['repo_owner']}/{$val['repo_name']}/blob/{$val['html_url_blob']}/{$val['path']}";
+                $content .= "关键字：{$val['keyword']}\n";
+                $content .= "文件路径：$url\n\n";
+            }
+        }
         if ($type === ConfigNotify::TYPE_EMAIL) {
             $content = str_replace(PHP_EOL, '<br/>', $content);
         }

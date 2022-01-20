@@ -19,8 +19,13 @@ class ConfigNotifyTemplateController extends Controller
         try {
             $config = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_TEMPLATE);
             $config = json_decode($config, true);
+            $detail = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_DETAIL);
+            $limit = ConfigCommon::getValue(ConfigCommon::KEY_NOTIFY_DETAIL_LIMIT);
+
             $data['title'] = $config['title'] ?? NotifyService::TEMPLATE_DEFAULT_TITLE;
             $data['content'] = $config['content'] ?? NotifyService::TEMPLATE_DEFAULT_CONTENT;
+            $data['detail'] = $detail ?? NotifyService::TEMPLATE_DEFAULT_DETAIL;
+            $data['limit'] = $limit ?? NotifyService::TEMPLATE_DEFAULT_LIMIT;
             return ['success' => true, 'data' => $data];
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
@@ -39,7 +44,18 @@ class ConfigNotifyTemplateController extends Controller
             $title = $request->input('title');
             $content = $request->input('content');
             $value = json_encode(compact('title', 'content'));
-            ConfigCommon::updateOrCreate(['key' => ConfigCommon::KEY_NOTIFY_TEMPLATE], ['value' => $value]);
+            $detail = $request->input('detail');
+            $limit = $request->input('limit');
+            $data = [
+                ConfigCommon::KEY_NOTIFY_TEMPLATE => $value,
+                ConfigCommon::KEY_NOTIFY_DETAIL => $detail,
+                ConfigCommon::KEY_NOTIFY_DETAIL_LIMIT => $limit
+            ];
+            foreach ($data as $key => $value) {
+                ConfigCommon::updateOrCreate(
+                    ['key' => $key], ['value' => $value]
+                );
+            }
             return ['success' => true];
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
