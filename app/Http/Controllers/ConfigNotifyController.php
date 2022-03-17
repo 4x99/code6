@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\ConfigNotify;
 use App\Services\NotifyService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 
 class ConfigNotifyController extends Controller
