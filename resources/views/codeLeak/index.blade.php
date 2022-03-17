@@ -112,7 +112,7 @@
                                 },
                                 {
                                     xtype: 'buttongroup',
-                                    baseCls: 'border:0',
+                                    baseCls: '',
                                     width: 150,
                                     items: [
                                         {
@@ -300,7 +300,7 @@
                         xtype: 'widgetcolumn',
                         widget: {
                             xtype: 'buttongroup',
-                            baseCls: 'border:0',
+                            baseCls: '',
                             layout: {
                                 type: 'hbox',
                                 pack: 'center',
