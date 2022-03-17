@@ -240,7 +240,7 @@
             function createBtn(type) {
                 return {
                     xtype: 'buttongroup',
-                    baseCls: 'border:0',
+                    baseCls: '',
                     layout: {
                         type: 'hbox',
                         pack: 'end',
