@@ -17,7 +17,7 @@ php artisan code6:user-add test@test.com test
 1. 增加docker-compose.yaml code6容器和MySQL容器(arm也可以运行)
 2. 修改Dockerfile 优化docker层，增加MySQL默认的密码，wait-for-it.sh
 3. 增加wait-for-it.sh 用于等待MySQL容器完成启动
-4. 增加init.mysql 用于创建code6数据库
+4. ~~增加init.mysql 用于创建code6数据库~~（php artisan migrate会创建表，这里就不创建了）
 
 
 ## 在部署前修改密码或端口
