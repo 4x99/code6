@@ -20,7 +20,7 @@ php artisan code6:user-add test@test.com test
 4. ~~增加init.mysql 用于创建code6数据库~~（php artisan migrate会创建表，这里就不创建了）
 
 
-## 在部署前修改密码或端口
+## 在部署前修改密码或端口【请务必修改密码】
 1. 修改MySQL的密码
 ```
 修改docker-compose.yaml和Dockerfile中的密码
@@ -40,9 +40,7 @@ ENV MYSQL_PORT="3306" 端口与docker-compose.yaml保持一致
 3. 修改web的端口
 ```
 修改docker-compose.yaml
-41行，修改宿主的端口
+41行，修改宿主的端口，如666:80
       - 80:80
-修改Dockerfile 的80端口
-EXPOSE 80
 ```
 改完再部署即可
