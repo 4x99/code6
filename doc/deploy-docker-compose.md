@@ -2,7 +2,7 @@
 ## 使用docker compose 安装code6
 使用以下进行安装
 1. 手动安装docker和docker compose
-2. 下载项目，如：git clone https://github.com/er10yi/code6.git
+2. 下载项目，如：`git clone https://github.com/4x99/code6.git`
 3. code6目录下执行以下命令
 `docker compose up -d --build`
 2. 进code6容器添加账号（邮箱和密码需要自己修改）
