@@ -32,7 +32,6 @@ code的密码8H5quv2130z96AzQ
 修改docker-compose.yaml
 12行      # 宿主:容器，修改宿主的端口，如3307:3306
       - 3306:3306
-45行 command中的mysql:3306修改
 
 修改Dockerfile 
 ENV MYSQL_PORT="3306" 端口与docker-compose.yaml保持一致
