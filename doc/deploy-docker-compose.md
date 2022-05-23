@@ -1,43 +1,64 @@
+# Docker-compose 部署
+## 克隆代码
+```
+git clone https://github.com/4x99/code6.git
+```
 
-## 使用docker compose 安装code6
-使用以下进行安装
-1. 手动安装docker和docker compose
-2. 下载项目，如：`git clone https://github.com/4x99/code6.git`
-3. code6目录下执行以下命令
-`docker compose up -d --build`
-2. 进code6容器添加账号（邮箱和密码需要自己修改）
-```
-docker exec -it code6 /bin/bash
-php artisan code6:user-add test@test.com test
-```
-3. 访问127.0.0.1（或服务器ip）登录即可
+---
 
+## 修改配置
+```
+vim .env.docker-compose
+```
+根据需要，修改相关配置：
+```
+TZ=Asia/Shanghai
+MYSQL_HOST=mysql
+MYSQL_DATABASE=code6
+# Docker-compose 需要此环境变量
+MYSQL_USER=code6_username
+MYSQL_USERNAME=code6_username
+MYSQL_PASSWORD=code6_password
 
-## 改动或增加的文件
-1. 增加docker-compose.yaml code6容器和MySQL容器(arm也可以运行)
-2. 修改Dockerfile 优化docker层，增加MySQL默认的密码，wait-for-it.sh
-3. 增加wait-for-it.sh 用于等待MySQL容器完成启动
-4. ~~增加init.mysql 用于创建code6数据库~~（php artisan migrate会创建表，这里就不创建了）
+# MySQL 端口映射(宿主机:容器)
+MYSQL_PORT=3306
+MYSQL_PORT_CONTAINER=3306
 
+# 端口映射(宿主机:容器)
+PORT=666
+PORT_CONTAINER=80
+```
 
-## 在部署前修改密码或端口【请务必修改密码】
-1. 修改MySQL的密码
-```
-修改docker-compose.yaml和Dockerfile中的密码
-root的密码5ZXC7BR7m04tJ5Mr（Dockerfile没有这个）
-code的密码8H5quv2130z96AzQ
-```
-2. 修改MySQL的端口
-```
-修改docker-compose.yaml
-12行      # 宿主:容器，修改宿主的端口，如3307:3306
-      - 3306:3306
+---
 
+## 启动容器
+宿主机映射端口 `666` 与 MySQL 连接参数请根据情况修改，容器启动将自动连接 MySQL 并导入数据表：
 ```
-3. 修改web的端口
+docker-compose --env-file .env.docker-compose up -d --build
 ```
-修改docker-compose.yaml
-41行，修改宿主的端口，如666:80
-      - 80:80
+
+---
+
+## 创建用户
 ```
-改完再部署即可
+docker exec -it code6-server /bin/bash
+php artisan code6:user-add <邮箱> <密码>
+```
+
+如需查看用户列表或删除用户请执行：
+```
+php artisan code6:user-list
+php artisan code6:user-delete <邮箱>
+```
+
+---
+
+## 访问系统
+```
+http://<宿主机 IP>:666
+```
+
+---
+
+## 配置令牌与任务
+进入系统后请前往 `[ 令牌配置 ]` 和 `[ 任务配置 ]` 模块进行配置，配置完毕即可使用！
