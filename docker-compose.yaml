@@ -20,7 +20,7 @@ services:
       context: .
       dockerfile: Dockerfile
     image: code6
-    container_name: code6
+    container_name: code6-server
     # 依赖服务启动后才启动
     depends_on:
       - "mysql"
