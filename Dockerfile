@@ -5,17 +5,15 @@ EXPOSE 80
 ENV MYSQL_HOST="mysql"
 ENV MYSQL_PORT="3306"
 ENV MYSQL_DATABASE="code6"
-ENV MYSQL_USERNAME="code6"
-ENV MYSQL_PASSWORD="8H5quv2130z96AzQ"
-
+ENV MYSQL_USERNAME="code6_username"
+ENV MYSQL_PASSWORD="code6_password"
 ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+
 # 复制代码
 COPY . /var/www/html
-# COPY composer.phar composer.phar
-COPY docker-entrypoint.sh docker-entrypoint.sh
 COPY wait-for-it.sh wait-for-it.sh
+COPY docker-entrypoint.sh docker-entrypoint.sh
 WORKDIR /var/www/html
-
 
 # 使用阿里镜像并安装包
 RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak ;\
@@ -23,7 +21,7 @@ RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak ;\
     echo 'deb http://mirrors.aliyun.com/debian buster-updates main' >> /etc/apt/sources.list ;\
     apt-get update ;\
     apt-get install -y --allow-downgrades zip cron vim zlib1g=1:1.2.11.dfsg-1 zlib1g-dev libpng-dev ;\
-    rm -rf /var/lib/apt/lists/* ;\ 
+    rm -rf /var/lib/apt/lists/* ;\
     # 安装 PHP 扩展
     docker-php-ext-install pdo_mysql ;\
     docker-php-ext-install gd ;\
@@ -47,4 +45,5 @@ RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak ;\
     composer install --no-dev --no-progress --optimize-autoloader ;\
     chmod +x docker-entrypoint.sh ;\
     chmod +x wait-for-it.sh
-# ENTRYPOINT /bin/bash docker-entrypoint.sh
+
+ENTRYPOINT ./wait-for-it.sh "${MYSQL_HOST}:${MYSQL_PORT}" -- ./docker-entrypoint.sh
