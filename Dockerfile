@@ -46,4 +46,4 @@ RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak ;\
     chmod +x docker-entrypoint.sh ;\
     chmod +x wait-for-it.sh
 
-ENTRYPOINT ./wait-for-it.sh "${MYSQL_HOST}:${MYSQL_PORT}" -- ./docker-entrypoint.sh
+ENTRYPOINT /bin/bash docker-entrypoint.sh
