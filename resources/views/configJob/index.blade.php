@@ -6,8 +6,6 @@
         Ext.onReady(function () {
             Ext.QuickTips.init(true, {dismissDelay: 0});
 
-            var GitHub = 'https://github.com/';
-
             Ext.create('Ext.data.Store', {
                 storeId: 'store',
                 pageSize: 99999, // 不分页
@@ -27,6 +25,7 @@
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
                 bufferedRenderer: false,
+                selType: 'checkboxmodel',
                 tbar: {
                     margin: '5 12 15 18',
                     items: [
@@ -36,6 +35,47 @@
                             handler: winHelp,
                         },
                         '->',
+                        {
+                            text: '批量删除',
+                            iconCls: 'icon-cross',
+                            handler: function () {
+                                var records = grid.getSelectionModel().getSelection();
+                                if (!records.length) {
+                                    tool.toast('请先勾选任务！');
+                                    return;
+                                }
+
+                                Ext.Msg.show({
+                                    title: '提示',
+                                    iconCls: 'icon-page',
+                                    message: '确定执行此操作？',
+                                    buttons: Ext.Msg.YESNO,
+                                    fn: function (btn) {
+                                        if (btn !== 'yes') {
+                                            return;
+                                        }
+
+
+                                        var id = [];
+                                        for (var record of records) {
+                                            id.push(record.get('id'));
+                                        }
+
+                                        var params = {id: Ext.encode(id)};
+                                        tool.ajax('DELETE', '/api/configJob/batchDestroy', params, function (rsp) {
+                                            if (rsp.success) {
+                                                tool.toast('操作成功！', 'success');
+                                                grid.store.reload();
+                                                grid.getSelectionModel().clearSelections();
+                                            } else {
+                                                tool.toast(rsp.message, 'error');
+                                            }
+                                        });
+                                    }
+                                });
+                            }
+                        },
+                        '-',
                         {
                             text: '新增任务',
                             iconCls: 'icon-add',

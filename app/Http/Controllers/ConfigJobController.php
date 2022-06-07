@@ -95,6 +95,23 @@ class ConfigJobController extends Controller
     }
 
     /**
+     * 批量删除任务
+     *
+     * @param  Request  $request
+     * @return array
+     */
+    public function batchDestroy(Request $request)
+    {
+        try {
+            $id = json_decode($request->input('id'), true);
+            $success = ConfigJob::whereIn('id', $id)->delete();
+            return ['success' => $success];
+        } catch (\Exception $e) {
+            return ['success' => false, 'message' => $e->getMessage()];
+        }
+    }
+
+    /**
      * 下次扫描时间
      *
      * @param $interval
