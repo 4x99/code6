@@ -9,11 +9,10 @@ services:
     env_file:
       - .env.docker-compose
     ports:
-      # MySQL 端口映射 - 宿主:容器
-      - ${MYSQL_PORT}:${MYSQL_PORT_CONTAINER}
+      - ${MYSQL_PORT}:3306
     volumes:
-      - /etc/localtime:/etc/localtime:ro # 设置容器时区与宿主机保持一致
-      - /tmp/mysql:/var/lib/mysql        # 数据持久化
+      - /etc/localtime:/etc/localtime:ro
+      - ${MYSQL_VOLUME_PATH}:/var/lib/mysql
 
   code6:
     build:
@@ -21,10 +20,8 @@ services:
       dockerfile: Dockerfile
     image: code6
     container_name: code6-server
-    # 依赖服务启动后才启动
     depends_on:
       - "mysql"
-    # 直接通过 links 访问数据服务
     links:
       - "mysql"
     restart: always
@@ -33,10 +30,8 @@ services:
     env_file:
       - .env.docker-compose
     ports:
-      # 端口映射 - 宿主:容器
-      - ${PORT}:${PORT_CONTAINER}
+      - ${PORT}:80
 
 networks:
   code6-network:
-    driver: bridge
     name: code6-network

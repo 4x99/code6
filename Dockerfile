@@ -11,7 +11,6 @@ ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
 
 # 复制代码
 COPY . /var/www/html
-COPY wait-for-it.sh wait-for-it.sh
 COPY docker-entrypoint.sh docker-entrypoint.sh
 WORKDIR /var/www/html
 
@@ -43,7 +42,6 @@ RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak ;\
     mv composer.phar /usr/local/bin/composer ;\
     composer config repo.packagist composer https://mirrors.aliyun.com/composer/  ;\
     composer install --no-dev --no-progress --optimize-autoloader ;\
-    chmod +x docker-entrypoint.sh ;\
-    chmod +x wait-for-it.sh
+    chmod +x docker-entrypoint.sh ;
 
 ENTRYPOINT /bin/bash docker-entrypoint.sh
