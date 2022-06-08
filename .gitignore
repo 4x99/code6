@@ -12,3 +12,4 @@ npm-debug.log
 yarn-error.log
 .idea
 .DS_Store
+.env.docker-compose

@@ -8,6 +8,7 @@ git clone https://github.com/4x99/code6.git
 
 ## 修改配置
 ```
+cp .env.docker-compose.example .env.docker-compose
 vim .env.docker-compose
 ```
 根据需要，修改相关配置：
@@ -19,14 +20,15 @@ MYSQL_DATABASE=code6
 MYSQL_USER=code6_username
 MYSQL_USERNAME=code6_username
 MYSQL_PASSWORD=code6_password
+MYSQL_ROOT_PASSWORD=5ZXC7BR7m04tJ5Mr
 
-# MySQL 端口映射(宿主机:容器)
+# MySQL 端口
 MYSQL_PORT=3306
-MYSQL_PORT_CONTAINER=3306
+# MySQL 挂载目录
+MYSQL_VOLUME_PATH=/tmp/mysql
 
-# 端口映射(宿主机:容器)
+# Apache 端口
 PORT=666
-PORT_CONTAINER=80
 ```
 
 ---
