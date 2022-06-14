@@ -2,36 +2,44 @@ version: "3.9"
 services:
   mysql:
     image: mysql/mysql-server
-    container_name: code6_mysql
+    container_name: code6-mysql
     restart: always
-    networks:
-      - code6-network
     env_file:
       - .env.docker-compose
+    networks:
+      - code6-network
     ports:
       - ${MYSQL_PORT}:3306
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - ${MYSQL_VOLUME_PATH}:/var/lib/mysql
-
+    healthcheck:
+      test: mysqladmin ping -u${MYSQL_USER} -p${MYSQL_PASSWORD}
+      interval: 5s
+      retries: 10
+      start_period: 60s
   code6:
+    image: code6
     build:
       context: .
       dockerfile: Dockerfile
-    image: code6
     container_name: code6-server
     depends_on:
-      - "mysql"
-    links:
-      - "mysql"
+      mysql:
+        condition: service_healthy
     restart: always
-    networks:
-      - code6-network
     env_file:
       - .env.docker-compose
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: ${MYSQL_USER}
     ports:
       - ${PORT}:80
-
+    networks:
+      - code6-network
+    links:
+      - mysql
 networks:
   code6-network:
     name: code6-network

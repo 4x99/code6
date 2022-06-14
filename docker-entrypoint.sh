@@ -1,15 +1,5 @@
 #!/bin/bash
 
-# 等待 MySQL 启动
-while :
-do
-    (echo -n > /dev/tcp/$MYSQL_HOST/$MYSQL_PORT) >/dev/null 2>&1
-    if [[ $? -eq 0 ]]; then
-        break
-    fi
-    sleep 1
-done
-
 # 项目配置
 cp .env.example .env
 chmod -R 755 storage
