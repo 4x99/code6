@@ -8,33 +8,36 @@ git clone https://github.com/4x99/code6.git
 
 ## 修改配置
 ```
+cd code6
 cp .env.docker-compose.example .env.docker-compose
 vim .env.docker-compose
 ```
-根据需要，修改相关配置：
+
+请根据实际情况修改配置，这里 Web 端口以 `666` 为例：
 ```
-TZ=Asia/Shanghai
-MYSQL_HOST=mysql
-MYSQL_DATABASE=code6
-# Docker-compose 需要此环境变量
-MYSQL_USER=code6_username
-MYSQL_USERNAME=code6_username
-MYSQL_PASSWORD=code6_password
-MYSQL_ROOT_PASSWORD=5ZXC7BR7m04tJ5Mr
-
-# MySQL 端口
-MYSQL_PORT=3306
-# MySQL 挂载目录
-MYSQL_VOLUME_PATH=/tmp/mysql
-
-# Apache 端口
+# Web 映射到宿主机的端口
 PORT=666
+
+# MySQL 映射到宿主机的端口
+MYSQL_PORT=3306
+
+# MySQL 数据库名
+MYSQL_DATABASE=code6
+
+# MySQL 用户名
+MYSQL_USER=
+
+# MySQL 密码
+MYSQL_PASSWORD=
+
+# MySQL 挂载到宿主机的目录
+MYSQL_VOLUME_PATH=
 ```
 
 ---
 
 ## 启动容器
-宿主机映射端口 `666` 与 MySQL 连接参数请根据情况修改，容器启动将自动连接 MySQL 并导入数据表：
+启动容器，码小六将自动连接 MySQL 并导入数据表：
 ```
 docker-compose --env-file .env.docker-compose up -d --build
 ```
