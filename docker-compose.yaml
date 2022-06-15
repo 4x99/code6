@@ -1,54 +1,45 @@
 version: "3.9"
 services:
-
   mysql:
     image: mysql/mysql-server
-    container_name: code6_mysql
+    container_name: code6-mysql
     restart: always
+    env_file:
+      - .env.docker-compose
     networks:
       - code6-network
     ports:
-      # 宿主:容器
-      - 3306:3306
-    environment:
-      TZ: Asia/Shanghai # 设置容器时区与宿主机保持一致
-      MYSQL_ROOT_PASSWORD: 5ZXC7BR7m04tJ5Mr
-      MYSQL_USER: code6
-      MYSQL_PASSWORD: 8H5quv2130z96AzQ
-      MYSQL_DATABASE: code6
+      - ${MYSQL_PORT}:3306
     volumes:
-      - /etc/localtime:/etc/localtime:ro # 设置容器时区与宿主机保持一致
-      # - ./data/init/mysql:/docker-entrypoint-initdb.d/
+      - /etc/localtime:/etc/localtime:ro
+      - ${MYSQL_VOLUME_PATH}:/var/lib/mysql
     healthcheck:
-      test: mysqladmin ping -h localhost -u code6 --password=8H5quv2130z96AzQ
-
+      test: mysql ${MYSQL_DATABASE} -u${MYSQL_USER} -p${MYSQL_PASSWORD} -e 'SELECT 1'
+      interval: 5s
+      retries: 10
+      start_period: 60s
   code6:
+    image: code6
     build:
       context: .
       dockerfile: Dockerfile
-    image: code6
-    # 依赖服务启动后才启动
-    container_name: code6
+    container_name: code6-server
     depends_on:
-      - "mysql"
-    # 直接通过links访问数据服务
-    links:
-      - "mysql"
+      mysql:
+        condition: service_healthy
     restart: always
+    env_file:
+      - .env.docker-compose
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USERNAME: ${MYSQL_USER}
+    ports:
+      - ${PORT}:80
     networks:
       - code6-network
-    ports:
-      - 80:80
-    command:
-      [
-        "./wait-for-it.sh",
-        "mysql:3306",
-        "--",
-        "/bin/bash",
-        "docker-entrypoint.sh"
-      ]
-
+    links:
+      - mysql
 networks:
   code6-network:
-    driver: bridge
     name: code6-network

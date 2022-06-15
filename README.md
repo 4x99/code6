@@ -36,8 +36,7 @@
 ---
 
 ## 安装部署
-码小六支持 [docker compose部署](doc/deploy-docker-compose.md)、[Docker 部署](doc/deploy-docker.md) 与 [源码部署](doc/deploy-source.md)，请根据情况选择！
-
+码小六支持 [Docker-Compose 部署](doc/deploy-docker-compose.md)（推荐）、[Docker 部署](doc/deploy-docker.md) 与 [源码部署](doc/deploy-source.md)，请根据情况选择！
 
 ---
 
