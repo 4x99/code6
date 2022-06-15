@@ -225,7 +225,7 @@
                     type: 'help',
                     tooltip: '企业微信文档',
                     handler: function () {
-                        tool.winOpen('https://work.weixin.qq.com/api/doc/90000/90136/91770');
+                        tool.winOpen('https://developer.work.weixin.qq.com/document/path/90372');
                     }
                 }],
                 items: [
