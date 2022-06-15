@@ -1,4 +1,4 @@
-# Docker-compose 部署
+# Docker-Compose 部署
 ## 克隆代码
 ```
 git clone https://github.com/4x99/code6.git
