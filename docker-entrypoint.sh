@@ -14,7 +14,7 @@ php artisan migrate --force
 
 # 配置任务调度
 service cron start
-echo "* * * * * cd /var/www/html && /usr/local/bin/php artisan schedule:run >> /dev/null 2>&1" >> /etc/cron.d/code6
+echo "* * * * * cd /var/www/html && /usr/local/bin/php artisan schedule:run >> /dev/null 2>&1" > /etc/cron.d/code6
 crontab /etc/cron.d/code6
 
 # 配置 Apache
