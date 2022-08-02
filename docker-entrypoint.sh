@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 项目配置
-cp .env.example .env
+cp -i .env.example .env
 chmod -R 755 storage
 chown -R www-data:www-data storage
 php artisan key:generate
