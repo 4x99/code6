@@ -17,6 +17,11 @@ Ext.define('plugin.grid', {
             xtype: 'pagingtoolbar',
             dock: 'bottom',
             displayInfo: true,
+            listeners: {
+                change: function (obj) {
+                    obj.up('grid').getView().scrollTo(0, 0);
+                }
+            }
         }
     ]
 });
