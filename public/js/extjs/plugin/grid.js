@@ -19,7 +19,10 @@ Ext.define('plugin.grid', {
             displayInfo: true,
             listeners: {
                 change: function (obj) {
-                    obj.up('grid').getView().scrollTo(0, 0);
+                    let view = obj.up('grid').getView();
+                    if (typeof(view.scrollTo) == 'function') {
+                        view.scrollTo(0, 0);
+                    }
                 }
             }
         }
