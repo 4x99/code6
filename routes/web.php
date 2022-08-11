@@ -41,6 +41,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::resource('/api/codeLeak', 'CodeLeakController');
 
     Route::get('/configJob', 'ConfigJobController@view');
+    Route::get('/api/configJob/progress', 'ConfigJobController@progress');
     Route::delete('/api/configJob/batchDestroy', 'ConfigJobController@batchDestroy');
     Route::resource('/api/configJob', 'ConfigJobController');
 

@@ -98,6 +98,7 @@ class JobRunCommand extends Command
                 $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
             } while ($lastResponse['next'] && (++$page <= $configJob->scan_page));
             $configJob->save();
+            $job->delete();
         }
 
         $this->log->info('Work done');
@@ -127,7 +128,6 @@ class JobRunCommand extends Command
         if (!$job = QueueJob::orderBy('created_at')->first()) {
             return false;
         }
-        $job->delete();
         return $job;
     }
 

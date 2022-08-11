@@ -36,6 +36,14 @@
                         },
                         '->',
                         {
+                            text: '执行进度',
+                            iconCls: 'icon-page-get',
+                            handler: function () {
+                                winProgress([]);
+                            }
+                        },
+                        '-',
+                        {
                             text: '批量删除',
                             iconCls: 'icon-cross',
                             handler: function () {
@@ -327,6 +335,53 @@
                     message: content,
                 }).removeCls('x-unselectable');
             }
+
+            function winProgress() {
+                var progress = [
+                    {text: '待执行', value: 0, color: 'gray'},
+                    {text: '执行中', value: 1, color: 'green'},
+                ];
+                var tplProgress = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>');
+
+                var gridProgress = Ext.create('plugin.grid', {
+                    store: {
+                        autoLoad: true,
+                        pageSize: 1000,
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/configJob/progress',
+                        },
+                    },
+                    columns: [
+                        {
+                            text: '关键字',
+                            dataIndex: 'keyword',
+                            align: 'center',
+                            flex: 1,
+                        },
+                        {
+                            text: '执行进度',
+                            dataIndex: 'progress',
+                            align: 'center',
+                            flex: 1,
+                            renderer: function (value) {
+                                return tplProgress.apply(progress[value]);
+                            }
+                        },
+                    ]
+                });
+
+                Ext.create('Ext.window.Window', {
+                    title: '执行进度',
+                    iconCls: 'icon-page-get',
+                    width: 800,
+                    height: 500,
+                    modal: true,
+                    layout: 'fit',
+                    items: [gridProgress]
+                }).show();
+            }
+
 
             Ext.create('Ext.container.Container', {
                 renderTo: Ext.getBody(),
