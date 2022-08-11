@@ -16,11 +16,28 @@
                 }
             });
 
+            Ext.create('Ext.data.Store', {
+                storeId: 'storeProgress',
+                pageSize: 99999, // 不分页
+                autoLoad: true,
+                proxy: {
+                    type: 'ajax',
+                    url: '/api/configJob/progress',
+                }
+            });
+
             var storeType = [
                 {value: 0, text: '记录文件的每个版本', qtip: '即文件每次提交（包含关键字）都会产生一条新的未审记录'},
                 {value: 1, text: '一个文件只记录一次', qtip: '一个文件只记录一次'},
                 {value: 2, text: '一个仓库只记录一次', qtip: '一个仓库只记录一次'},
             ];
+
+            var progress = [
+                {text: '待执行', value: 0, color: 'gray'},
+                {text: '执行中', value: 1, color: 'green'},
+            ];
+
+            var tplProgress = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>');
 
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
@@ -336,13 +353,19 @@
                 }).removeCls('x-unselectable');
             }
 
-            function winProgress() {
-                var progress = [
-                    {text: '待执行', value: 0, color: 'gray'},
-                    {text: '执行中', value: 1, color: 'green'},
-                ];
-                var tplProgress = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>');
+            var taskRunner = new Ext.util.TaskRunner();
 
+            function newTask(interval, run) {
+                var task = taskRunner.newTask({
+                    run: run,
+                    interval: interval,
+                    fireOnStart: true,
+                });
+                task.start();
+                return task;
+            }
+
+            function winProgress() {
                 var gridProgress = Ext.create('plugin.grid', {
                     store: {
                         autoLoad: true,
@@ -380,6 +403,11 @@
                     layout: 'fit',
                     items: [gridProgress]
                 }).show();
+
+                // 每 5 秒自动刷新
+                newTask(5000, function () {
+                    gridProgress.store.reload();
+                });
             }
 
 
