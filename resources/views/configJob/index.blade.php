@@ -16,16 +16,6 @@
                 }
             });
 
-            Ext.create('Ext.data.Store', {
-                storeId: 'storeProgress',
-                pageSize: 99999, // 不分页
-                autoLoad: true,
-                proxy: {
-                    type: 'ajax',
-                    url: '/api/configJob/progress',
-                }
-            });
-
             var storeType = [
                 {value: 0, text: '记录文件的每个版本', qtip: '即文件每次提交（包含关键字）都会产生一条新的未审记录'},
                 {value: 1, text: '一个文件只记录一次', qtip: '一个文件只记录一次'},
