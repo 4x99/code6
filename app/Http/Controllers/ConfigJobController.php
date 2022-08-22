@@ -113,15 +113,15 @@ class ConfigJobController extends Controller
     }
 
     /**
-     * 任务执行进度
+     * 任务队列
      *
      * @return array
      */
-    public function progress()
+    public function queue()
     {
-        $data = QueueJob::get();
+        $data = QueueJob::orderBy('created_at')->get();
         foreach ($data as $k => $v) {
-            $data[$k]['progress'] = $k == 0 ? 1 : 0;
+            $data[$k]['status'] = $k == 0 ? 1 : 0;
         }
         return $data;
     }

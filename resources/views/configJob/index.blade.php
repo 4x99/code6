@@ -22,12 +22,13 @@
                 {value: 2, text: '一个仓库只记录一次', qtip: '一个仓库只记录一次'},
             ];
 
-            var progress = [
-                {text: '待执行', value: 0, color: 'gray'},
-                {text: '执行中', value: 1, color: 'green'},
-            ];
-
-            var tplProgress = new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>');
+            var queue = {
+                config: [
+                    {text: '待执行', color: 'gray'},
+                    {text: '执行中', color: 'green'},
+                ],
+                tpl: new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>'),
+            }
 
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
@@ -43,11 +44,9 @@
                         },
                         '->',
                         {
-                            text: '执行进度',
-                            iconCls: 'icon-page-get',
-                            handler: function () {
-                                winProgress([]);
-                            }
+                            text: '任务队列',
+                            iconCls: 'icon-page-db',
+                            handler: winQueue,
                         },
                         '-',
                         {
@@ -355,14 +354,19 @@
                 return task;
             }
 
-            function winProgress() {
-                var gridProgress = Ext.create('plugin.grid', {
+            function winQueue() {
+                var gridQueue = Ext.create('plugin.grid', {
+                    disableSelection: true,
+                    viewConfig: {
+                        loadMask: false,
+                        emptyText: '<div style="text-align:center;padding:20px;color:#AAA">任务队列为空..</div>'
+                    },
                     store: {
                         autoLoad: true,
-                        pageSize: 1000,
+                        pageSize: 99999,
                         proxy: {
                             type: 'ajax',
-                            url: '/api/configJob/progress',
+                            url: '/api/configJob/queue',
                         },
                     },
                     columns: [
@@ -370,36 +374,34 @@
                             text: '关键字',
                             dataIndex: 'keyword',
                             align: 'center',
-                            flex: 1,
+                            flex: 2,
                         },
                         {
-                            text: '执行进度',
-                            dataIndex: 'progress',
+                            text: '状态',
+                            dataIndex: 'status',
                             align: 'center',
                             flex: 1,
                             renderer: function (value) {
-                                return tplProgress.apply(progress[value]);
-                            }
+                                return queue.tpl.apply(queue.config[value]);
+                            },
                         },
                     ]
                 });
 
                 Ext.create('Ext.window.Window', {
-                    title: '执行进度',
-                    iconCls: 'icon-page-get',
+                    title: '任务队列',
+                    iconCls: 'icon-page-db',
                     width: 800,
                     height: 500,
-                    modal: true,
                     layout: 'fit',
-                    items: [gridProgress]
+                    items: [gridQueue],
                 }).show();
 
                 // 每 5 秒自动刷新
                 newTask(5000, function () {
-                    gridProgress.store.reload();
+                    gridQueue.store.reload();
                 });
             }
-
 
             Ext.create('Ext.container.Container', {
                 renderTo: Ext.getBody(),
