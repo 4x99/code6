@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\ConfigJob;
+use App\Models\QueueJob;
 use Cron\CronExpression;
 use Illuminate\Http\Request;
 
@@ -109,6 +110,20 @@ class ConfigJobController extends Controller
         } catch (\Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];
         }
+    }
+
+    /**
+     * 任务队列
+     *
+     * @return array
+     */
+    public function queue()
+    {
+        $data = QueueJob::orderBy('created_at')->get();
+        foreach ($data as $k => $v) {
+            $data[$k]['status'] = $k == 0 ? 1 : 0;
+        }
+        return $data;
     }
 
     /**
