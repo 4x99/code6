@@ -87,7 +87,6 @@ crontab -e -u <用户>
 
 ## 创建用户
 ```
-docker exec -it code6-server /bin/bash
 php artisan code6:user-add <邮箱> <密码>
 ```
 

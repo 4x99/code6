@@ -44,7 +44,7 @@ class GitHubService
      */
     public function init()
     {
-        $this->proxy = $this->testProxy($this->proxy) ? $this->proxy : null;
+        $this->proxy = $this->proxy ? ($this->testProxy($this->proxy) ? $this->proxy : null) : null;
         $tokens = ConfigToken::inRandomOrder()->get()->pluck('token');
         foreach ($tokens as $token) {
             $client = ['token' => $token];
