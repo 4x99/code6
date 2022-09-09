@@ -112,6 +112,9 @@
                         dataIndex: 'keyword',
                         flex: 1,
                         align: 'center',
+                        renderer: function (value) {
+                            return Ext.String.htmlEncode(value);
+                        }
                     },
                     {
                         text: '扫描页数',
@@ -161,7 +164,7 @@
                         flex: 1,
                         align: 'center',
                         renderer: function (value) {
-                            return value ? value : '-';
+                            return value ? Ext.String.htmlEncode(value) : '-';
                         }
                     },
                     {

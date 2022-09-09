@@ -96,7 +96,7 @@
                         flex: 1,
                         align: 'center',
                         renderer: function (value) {
-                            return value.split('/')[0];
+                            return Ext.String.htmlEncode(value.split('/')[0]);
                         }
                     },
                     {
@@ -105,7 +105,7 @@
                         flex: 1,
                         align: 'center',
                         renderer: function (value) {
-                            return value.split('/')[1];
+                            return Ext.String.htmlEncode(value.split('/')[1]);
                         }
                     },
                     {
