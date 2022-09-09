@@ -289,7 +289,7 @@
                         flex: 1,
                         align: 'center',
                         renderer: function (value) {
-                            return value ? value : '-';
+                            return value ? Ext.String.htmlEncode(value) : '-';
                         }
                     },
                     {
