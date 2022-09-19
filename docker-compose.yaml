@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   mysql:
-    image: mysql/mysql-server
+    image: mysql/mysql-server:5.7
     container_name: code6-mysql
     restart: always
     env_file:

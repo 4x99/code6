@@ -22,6 +22,14 @@
                 {value: 2, text: '一个仓库只记录一次', qtip: '一个仓库只记录一次'},
             ];
 
+            var queue = {
+                config: [
+                    {text: '待执行', color: 'gray'},
+                    {text: '执行中', color: 'green'},
+                ],
+                tpl: new Ext.XTemplate('<div class="tag tag-{color}">{text}</div>'),
+            }
+
             var grid = Ext.create('plugin.grid', {
                 store: Ext.data.StoreManager.lookup('store'),
                 bufferedRenderer: false,
@@ -35,6 +43,12 @@
                             handler: winHelp,
                         },
                         '->',
+                        {
+                            text: '任务队列',
+                            iconCls: 'icon-page-db',
+                            handler: winQueue,
+                        },
+                        '-',
                         {
                             text: '批量删除',
                             iconCls: 'icon-cross',
@@ -98,6 +112,9 @@
                         dataIndex: 'keyword',
                         flex: 1,
                         align: 'center',
+                        renderer: function (value) {
+                            return Ext.String.htmlEncode(value);
+                        }
                     },
                     {
                         text: '扫描页数',
@@ -147,7 +164,7 @@
                         flex: 1,
                         align: 'center',
                         renderer: function (value) {
-                            return value ? value : '-';
+                            return value ? Ext.String.htmlEncode(value) : '-';
                         }
                     },
                     {
@@ -326,6 +343,67 @@
                     iconCls: 'icon-page-star',
                     message: content,
                 }).removeCls('x-unselectable');
+            }
+
+            var taskRunner = new Ext.util.TaskRunner();
+
+            function newTask(interval, run) {
+                var task = taskRunner.newTask({
+                    run: run,
+                    interval: interval,
+                    fireOnStart: true,
+                });
+                task.start();
+                return task;
+            }
+
+            function winQueue() {
+                var gridQueue = Ext.create('plugin.grid', {
+                    disableSelection: true,
+                    viewConfig: {
+                        loadMask: false,
+                        emptyText: '<div style="text-align:center;padding:20px;color:#AAA">任务队列为空..</div>'
+                    },
+                    store: {
+                        autoLoad: true,
+                        pageSize: 99999,
+                        proxy: {
+                            type: 'ajax',
+                            url: '/api/configJob/queue',
+                        },
+                    },
+                    columns: [
+                        {
+                            text: '关键字',
+                            dataIndex: 'keyword',
+                            align: 'center',
+                            flex: 2,
+                        },
+                        {
+                            text: '状态',
+                            dataIndex: 'status',
+                            align: 'center',
+                            flex: 1,
+                            renderer: function (value) {
+                                return queue.tpl.apply(queue.config[value]);
+                            },
+                        },
+                    ]
+                });
+
+                Ext.create('Ext.window.Window', {
+                    title: '任务队列',
+                    iconCls: 'icon-page-db',
+                    width: 800,
+                    height: 500,
+                    layout: 'fit',
+                    items: [gridQueue],
+                }).show();
+
+                // 每 5 秒自动刷新
+                newTask(5000, function () {
+                    gridQueue.store.reload();
+                });
             }
 
             Ext.create('Ext.container.Container', {

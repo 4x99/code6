@@ -883,16 +883,16 @@
         },
         {
             "name": "knplabs/github-api",
-            "version": "v2.14.0",
+            "version": "v2.20.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/KnpLabs/php-github-api.git",
-                "reference": "953c9b453d3258a97755ec3557d112f271176f74"
+                "reference": "939869394c6414768547685945fdba4fe3f061b5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/953c9b453d3258a97755ec3557d112f271176f74",
-                "reference": "953c9b453d3258a97755ec3557d112f271176f74",
+                "url": "https://api.github.com/repos/KnpLabs/php-github-api/zipball/939869394c6414768547685945fdba4fe3f061b5",
+                "reference": "939869394c6414768547685945fdba4fe3f061b5",
                 "shasum": "",
                 "mirrors": [
                     {
@@ -916,12 +916,14 @@
                 "guzzlehttp/psr7": "^1.2",
                 "php-http/guzzle6-adapter": "^1.0 || ^2.0",
                 "php-http/mock-client": "^1.2",
+                "phpstan/phpstan": "^0.12.23",
                 "phpunit/phpunit": "^7.0 || ^8.0"
             },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.14.x-dev"
+                    "dev-2.x": "2.20.x-dev",
+                    "dev-master": "3.2.x-dev"
                 }
             },
             "autoload": {
@@ -952,7 +954,17 @@
                 "gist",
                 "github"
             ],
-            "time": "2020-04-25T20:36:03+00:00"
+            "support": {
+                "issues": "https://github.com/KnpLabs/php-github-api/issues",
+                "source": "https://github.com/KnpLabs/php-github-api/tree/v2.20.0"
+            },
+            "funding": [
+                {
+                    "url": "https://github.com/acrobat",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-04-16T09:36:20+00:00"
         },
         {
             "name": "laravel/framework",
@@ -7262,5 +7274,5 @@
         "php": "^7.2.5"
     },
     "platform-dev": [],
-    "plugin-api-version": "1.1.0"
+    "plugin-api-version": "2.3.0"
 }

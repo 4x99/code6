@@ -96,6 +96,9 @@
                         dataIndex: 'token',
                         width: 380,
                         align: 'center',
+                        renderer: function (value) {
+                            return Ext.String.htmlEncode(value);
+                        }
                     },
                     {
                         text: '状态',
@@ -154,7 +157,7 @@
                         align: 'center',
                         flex: 1,
                         renderer: function (value) {
-                            return value ? value : '-';
+                            return value ? Ext.String.htmlEncode(value) : '-';
                         }
                     },
                     {
