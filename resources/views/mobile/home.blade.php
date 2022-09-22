@@ -148,7 +148,7 @@
                     case 'view-source':
                         var s = me.list.selection;
                         var url = `https://github.com/${s.repo_owner}/${s.repo_name}/blob/${s.html_url_blob}/${s.path}`;
-                        window.location.href = url;
+                        window.open(url);
                         break;
                 }
             },
