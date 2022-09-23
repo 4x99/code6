@@ -82,8 +82,8 @@
         data: {
             loading: true,
             page: {
-                count: 0,
-                current: 1,
+                count: {{ $count }},
+                current: {{ $page }},
             },
             action: {
                 show: false,
@@ -100,7 +100,7 @@
                 selection: [],
             },
             tab: {
-                current: 'all',
+                current: '{{ $tab }}',
             }
         },
         methods: {
@@ -117,6 +117,11 @@
                     me.page.count = rsp.data.last_page ? rsp.data.last_page : 0;
                     me.list.data = rsp.data.data;
                     me.loading = false;
+                    history.pushState({
+                        page: me.page,
+                        data: me.list.data,
+                        tab: me.tab,
+                    }, '', '/mobile?page=' + page + '&tab=' + me.tab.current);
                 }).catch(function (rsp) {
                     me.$toast.fail(rsp.message);
                     me.loading = false;
@@ -148,7 +153,7 @@
                     case 'view-source':
                         var s = me.list.selection;
                         var url = `https://github.com/${s.repo_owner}/${s.repo_name}/blob/${s.html_url_blob}/${s.path}`;
-                        window.open(url);
+                        window.location.href = url;
                         break;
                 }
             },
@@ -168,7 +173,16 @@
             },
         },
         mounted: function () {
-            this.load(1);
+            var me = this;
+            me.load(me.page.current);
+            window.addEventListener('popstate', function (e) {
+                if (e.state && e.state.data) {
+                    me.page = e.state.page;
+                    me.list.data = e.state.data;
+                    me.tab = e.state.tab;
+                    me.loading = false;
+                }
+            })
         }
     });
 </script>
