@@ -117,11 +117,8 @@
                     me.page.count = rsp.data.last_page ? rsp.data.last_page : 0;
                     me.list.data = rsp.data.data;
                     me.loading = false;
-                    history.pushState({
-                        page: me.page,
-                        data: me.list.data,
-                        tab: me.tab,
-                    }, '', '/mobile?page=' + page + '&tab=' + me.tab.current);
+                    var data = {page: me.page, data: me.list.data, tab: me.tab};
+                    history.pushState(data, '', '/mobile?page=' + page + '&tab=' + me.tab.current);
                 }).catch(function (rsp) {
                     me.$toast.fail(rsp.message);
                     me.loading = false;
