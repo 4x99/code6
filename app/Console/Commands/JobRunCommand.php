@@ -125,7 +125,7 @@ class JobRunCommand extends Command
      */
     private function takeJob()
     {
-        if (!$job = QueueJob::orderBy('created_at')->first()) {
+        if (!$job = QueueJob::orderBy('id')->first()) {
             return false;
         }
         return $job;

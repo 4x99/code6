@@ -118,7 +118,7 @@ class ConfigJobController extends Controller
      */
     public function queue()
     {
-        $data = QueueJob::orderBy('created_at')->get();
+        $data = QueueJob::orderBy('id')->get()->toArray();
         foreach ($data as $k => $v) {
             $data[$k]['status'] = $k == 0 ? 1 : 0;
         }
