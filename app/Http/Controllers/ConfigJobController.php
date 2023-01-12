@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\ConfigJob;
 use App\Models\QueueJob;
-use Cron\CronExpression;
 use Illuminate\Http\Request;
 
 class ConfigJobController extends Controller
@@ -119,7 +118,7 @@ class ConfigJobController extends Controller
      */
     public function queue()
     {
-        $data = QueueJob::orderBy('created_at')->get();
+        $data = QueueJob::orderBy('id')->get()->toArray();
         foreach ($data as $k => $v) {
             $data[$k]['status'] = $k == 0 ? 1 : 0;
         }
@@ -134,8 +133,7 @@ class ConfigJobController extends Controller
      */
     private function getNextScanAt($interval)
     {
-        $expression = "*/$interval * * * *";
-        $cron = CronExpression::factory($expression);
-        return $cron->getNextRunDate()->format('Y-m-d H:i:s');
+        $nextScanAt = floor(LARAVEL_START - LARAVEL_START % ($interval * 60) + ($interval * 60));
+        return date('Y-m-d H:i:s', $nextScanAt);
     }
 }

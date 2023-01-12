@@ -39,20 +39,20 @@ console('Composer Package', $import ? '已导入' : '未导入', $err);
 
 // MySQL 连接
 try {
-    $err = '';
+    $dberr = '';
     $dsn = "mysql:host={$env['DB_HOST']}:{$env['DB_PORT']};dbname={$env['DB_DATABASE']}";
     $db = new PDO($dsn, $env['DB_USERNAME'], $env['DB_PASSWORD'], [PDO::ATTR_TIMEOUT => 3]);
 } catch (Exception $e) {
-    $err = $e->getMessage();
+    $dberr = $e->getMessage();
 }
-console('MySQL 连接', $err ? '失败' : '成功', $err);
+console('MySQL 连接', $dberr ? '失败' : '成功', $dberr);
 
 // MySQL 数据表
 try {
-    if ($err) {
-        throw new Exception($err);
+    if ($dberr) {
+        throw new Exception($dberr);
     }
-    $err = '';
+    $err = false;
     $tables = $db->query("show tables like 'code_leak'")->fetchAll(PDO::FETCH_ASSOC)[0];
     if (!count($tables)) {
         throw new Exception('请执行 php artisan migrate 导入数据表');
@@ -62,7 +62,34 @@ try {
 }
 console('MySQL 数据表', $err ? '未导入' : '已导入', $err);
 
-echo DIVIDER."[ 其他信息 ]\n";
+// GitHub API
+try {
+    $apierr = false;
+    $url = 'https://api.github.com';
+    $ch = curl_init($url);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_USERAGENT, 'code6');
+    $result = json_decode(curl_exec($ch), true);
+    if (empty($result)) {
+        throw new Exception("请求 $url 错误");
+    }
+    curl_close($ch);
+} catch (Exception $e) {
+    $apierr = $e->getMessage();
+}
+console('GitHub API', $apierr ? '请求错误' : '请求成功', $apierr);
+
+// PHP 禁用函数
+$disFuns = get_cfg_var('disable_functions') ?: '无';
+echo "PHP 禁用函数：$disFuns\n";
+
+// PHP 已编译模块
+$exts = implode(',', get_loaded_extensions());
+echo "PHP 已编译模块：$exts\n";
+
+echo DIVIDER."[ 系统信息 ]\n";
 
 // 码小六版本
 $version = trim(file_get_contents(ROOT.'/version'));
@@ -75,13 +102,5 @@ echo "框架运行环境：$appEnv\n";
 // 框架调试开关
 $appDebug = $env['APP_DEBUG'] ?? '无';
 echo "框架调试开关：$appDebug\n";
-
-// PHP 禁用函数
-$disFuns = get_cfg_var('disable_functions') ?: '无';
-echo "PHP 禁用函数：$disFuns\n";
-
-// PHP 已编译模块
-$exts = implode(',', get_loaded_extensions());
-echo "PHP 已编译模块：$exts\n";
 
 echo DIVIDER."\n有任何问题和建议请联系-> https://github.com/4x99/code6/issues\n\n";
