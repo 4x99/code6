@@ -202,6 +202,25 @@
                         }
                     ]
                 },
+                dockedItems: [
+                    {
+                        xtype: 'pagingtoolbar',
+                        dock: 'bottom',
+                        displayInfo: true,
+                        items: [
+                            '-',
+                            Ext.create('plugin.export'),
+                        ],
+                        listeners: {
+                            change: function (obj) {
+                                let view = obj.up('grid').getView();
+                                if (typeof (view.scrollTo) == 'function') {
+                                    view.scrollTo(0, 0);
+                                }
+                            }
+                        }
+                    }
+                ],
                 columns: [
                     {
                         text: 'ID',
