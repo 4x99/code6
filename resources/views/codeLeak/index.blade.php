@@ -480,7 +480,7 @@
                 return Ext.create('Ext.window.Window', {
                     title: '编辑信息',
                     iconCls: 'icon-add',
-                    width: 350,
+                    width: 600,
                     modal: modal,
                     layout: 'fit',
                     items: [
@@ -492,8 +492,9 @@
                                 {
                                     fieldLabel: '说明',
                                     name: 'description',
-                                    xtype: 'textfield',
+                                    xtype: 'textareafield',
                                     value: value,
+                                    fieldStyle: 'min-height:150px',
                                 }
                             ],
                             buttons: [
