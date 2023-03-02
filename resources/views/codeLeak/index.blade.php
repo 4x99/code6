@@ -50,7 +50,7 @@
                                     format: 'Y-m-d',
                                     maxValue: new Date(),
                                     emptyText: '开始日期',
-                                    width: 110,
+                                    width: 120,
                                 },
                                 {
                                     xtype: 'datefield',
@@ -58,41 +58,19 @@
                                     format: 'Y-m-d',
                                     maxValue: new Date(),
                                     emptyText: '结束日期',
-                                    width: 110,
+                                    width: 120,
                                 },
                                 {
                                     xtype: 'combo',
                                     valueField: 'value',
-                                    width: 65,
+                                    width: 120,
                                     name: 'status',
                                     emptyText: '状态',
                                     store: {data: status}
                                 },
                                 {
-                                    xtype: 'textfield',
-                                    name: 'repo_owner',
-                                    emptyText: '用户名',
-                                },
-                                {
-                                    xtype: 'textfield',
-                                    name: 'repo_name',
-                                    emptyText: '仓库名',
-                                },
-                                {
-                                    xtype: 'textfield',
-                                    name: 'path',
-                                    emptyText: '文件路径',
-                                    width: 130,
-                                },
-                                {
-                                    xtype: 'textfield',
-                                    name: 'repo_description',
-                                    emptyText: '仓库描述',
-                                    width: 130,
-                                },
-                                {
                                     xtype: 'combo',
-                                    width: 150,
+                                    width: 120,
                                     name: 'keyword',
                                     displayField: 'keyword',
                                     valueField: 'keyword',
@@ -109,6 +87,12 @@
                                             url: '/api/configJob',
                                         },
                                     },
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    width: 280,
+                                    name: 'search',
+                                    emptyText: '用户名 / 仓库名 / 文件路径 / 仓库描述',
                                 },
                                 {
                                     xtype: 'buttongroup',
