@@ -1,16 +1,18 @@
 #!/bin/bash
 
 # 项目配置
-cp -i .env.example .env
-chmod -R 755 storage
-chown -R www-data:www-data storage
-php artisan key:generate
-sed -i "s!DB_HOST=127.0.0.1.*!DB_HOST=$MYSQL_HOST!" .env
-sed -i "s!DB_PORT=3306.*!DB_PORT=$MYSQL_PORT!" .env
-sed -i "s!DB_DATABASE=code6.*!DB_DATABASE=$MYSQL_DATABASE!" .env
-sed -i "s!DB_USERNAME=.*!DB_USERNAME=$MYSQL_USERNAME!" .env
-sed -i "s!DB_PASSWORD=.*!DB_PASSWORD=$MYSQL_PASSWORD!" .env
-php artisan migrate --force
+if [ ! -e '.env' ];then
+  cp -i .env.example .env
+  chmod -R 755 storage
+  chown -R www-data:www-data storage
+  php artisan key:generate
+  sed -i "s!DB_HOST=127.0.0.1!DB_HOST=$MYSQL_HOST!" .env
+  sed -i "s!DB_PORT=3306!DB_PORT=$MYSQL_PORT!" .env
+  sed -i "s!DB_DATABASE=code6!DB_DATABASE=$MYSQL_DATABASE!" .env
+  sed -i "s!DB_USERNAME=!DB_USERNAME=$MYSQL_USERNAME!" .env
+  sed -i "s!DB_PASSWORD=!DB_PASSWORD=$MYSQL_PASSWORD!" .env
+  php artisan migrate --force
+fi
 
 # 配置任务调度
 service cron start
