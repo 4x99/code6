@@ -37,15 +37,22 @@ class CodeLeakController extends Controller
             return $query->where('status', $request->input('status'));
         });
 
-        foreach (['repo_owner', 'repo_name', 'repo_description', 'keyword', 'path'] as $field) {
-            $query->when($request->input($field), function ($query, $value) use ($field) {
-                return $query->where($field, 'like', "%$value%");
+        $query->when($request->input('keyword'), function ($query) use ($request) {
+            return $query->where('keyword', $request->input('keyword'));
+        });
+
+        $query->when($search = $request->input('search'), function ($query) use ($search) {
+            $query->where(function ($query) use ($search) {
+                $query->where('path', 'like', "%$search%");
+                foreach (['repo_name', 'repo_owner', 'repo_description', 'handle_user', 'description'] as $column) {
+                    $query->orwhere($column, 'like', "%$search%");
+                }
             });
-        }
+        });
 
         $perPage = $request->input('limit', 100);
         $data = $query->orderByDesc('id')->paginate($perPage);
-        foreach ($data->items() as &$item){
+        foreach ($data->items() as &$item) {
             $item->repo_description = htmlspecialchars($item->repo_description);
         }
         return $data;
