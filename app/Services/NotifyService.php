@@ -28,11 +28,11 @@ class NotifyService
     {
         Config::set('mail', [
             'driver' => 'smtp',
-            'encryption' => 'ssl',
             'host' => $config['host'],
             'port' => $config['port'] ?? 465,
             'username' => $config['username'],
             'password' => $config['password'],
+            'encryption' => $config['encryption'] ?? 'ssl',
         ]);
 
         try {

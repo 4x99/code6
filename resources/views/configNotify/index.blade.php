@@ -52,7 +52,25 @@
                             render: function (c) {
                                 Ext.QuickTips.register({
                                     target: c.getEl(),
-                                    text: '已启用 SSL 协议，通常使用 465 而非 25 端口',
+                                    text: '通常使用 465 端口（SSL 协议）',
+                                });
+                            }
+                        }
+                    },
+                    {
+                        xtype: 'combo',
+                        name: 'encryption',
+                        fieldLabel: '加密方式',
+                        store: {data: [{text: 'ssl'}, {text: 'tls'}]},
+                        queryMode: 'local',
+                        valueField: 'text',
+                        typeAhead: true,
+                        value: getConfig('email.value.encryption', 'ssl'),
+                        listeners: {
+                            render: function (c) {
+                                Ext.QuickTips.register({
+                                    target: c.getEl(),
+                                    text: '通常使用 SSL 协议',
                                 });
                             }
                         }
@@ -75,6 +93,7 @@
                         fieldLabel: '接收邮箱',
                         emptyText: '支持多个邮箱（一行一个）',
                         value: getConfig('email.value.to'),
+                        fieldStyle: 'min-height:50px',
                     },
                     createIntervalField('email'),
                     createTimeField('email'),
@@ -498,7 +517,7 @@
                     layout: 'form',
                     columnWidth: 1 / 3,
                     margin: 10,
-                    height: 450,
+                    height: 470,
                     bodyPadding: 20,
                     bodyStyle: 'background:#FAFAFA',
                 },
