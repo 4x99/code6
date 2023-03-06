@@ -43,13 +43,12 @@ class CodeLeakController extends Controller
 
         $query->when($search = $request->input('search'), function ($query) use ($search) {
             $query->where(function ($query) use ($search) {
-                $query->where('path', 'like', "%$search%")
-                    ->orwhere('repo_name', 'like', "%$search%")
-                    ->orwhere('repo_owner', 'like', "%$search%")
-                    ->orwhere('repo_description', 'like', "%$search%");
+                $query->where('path', 'like', "%$search%");
+                foreach (['repo_name', 'repo_owner', 'repo_description', 'handle_user', 'description'] as $column) {
+                    $query->orwhere($column, 'like', "%$search%");
+                }
             });
         });
-
 
         $perPage = $request->input('limit', 100);
         $data = $query->orderByDesc('id')->paginate($perPage);

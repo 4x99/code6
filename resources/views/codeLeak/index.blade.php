@@ -90,9 +90,9 @@
                                 },
                                 {
                                     xtype: 'textfield',
-                                    width: 280,
+                                    width: 380,
                                     name: 'search',
-                                    emptyText: '用户名 / 仓库名 / 文件路径 / 仓库描述',
+                                    emptyText: '用户名 / 仓库名 / 文件路径 / 仓库描述 / 处理人 / 说明',
                                 },
                                 {
                                     xtype: 'buttongroup',
