@@ -24,6 +24,17 @@
                     createEnableField('email'),
                     {
                         xtype: 'combo',
+                        name: 'encryption',
+                        fieldLabel: '加密方式',
+                        store: {data: [{text: 'SSL'}, {text: 'TLS'}]},
+                        queryMode: 'local',
+                        valueField: 'text',
+                        typeAhead: true,
+                        editable: false,
+                        value: getConfig('email.value.encryption', 'SSL'),
+                    },
+                    {
+                        xtype: 'combo',
                         name: 'host',
                         fieldLabel: '服 务 器',
                         store: {
@@ -48,32 +59,6 @@
                         value: getConfig('email.value.port', 465),
                         allowBlank: true,
                         allowDecimals: false,
-                        listeners: {
-                            render: function (c) {
-                                Ext.QuickTips.register({
-                                    target: c.getEl(),
-                                    text: '通常使用 465 端口（SSL 协议）',
-                                });
-                            }
-                        }
-                    },
-                    {
-                        xtype: 'combo',
-                        name: 'encryption',
-                        fieldLabel: '加密方式',
-                        store: {data: [{text: 'ssl'}, {text: 'tls'}]},
-                        queryMode: 'local',
-                        valueField: 'text',
-                        typeAhead: true,
-                        value: getConfig('email.value.encryption', 'ssl'),
-                        listeners: {
-                            render: function (c) {
-                                Ext.QuickTips.register({
-                                    target: c.getEl(),
-                                    text: '通常使用 SSL 协议',
-                                });
-                            }
-                        }
                     },
                     {
                         name: 'username',
