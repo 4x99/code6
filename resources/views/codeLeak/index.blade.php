@@ -50,7 +50,7 @@
                                     format: 'Y-m-d',
                                     maxValue: new Date(),
                                     emptyText: '开始日期',
-                                    width: 110,
+                                    width: 120,
                                 },
                                 {
                                     xtype: 'datefield',
@@ -58,41 +58,19 @@
                                     format: 'Y-m-d',
                                     maxValue: new Date(),
                                     emptyText: '结束日期',
-                                    width: 110,
+                                    width: 120,
                                 },
                                 {
                                     xtype: 'combo',
                                     valueField: 'value',
-                                    width: 65,
+                                    width: 120,
                                     name: 'status',
                                     emptyText: '状态',
                                     store: {data: status}
                                 },
                                 {
-                                    xtype: 'textfield',
-                                    name: 'repo_owner',
-                                    emptyText: '用户名',
-                                },
-                                {
-                                    xtype: 'textfield',
-                                    name: 'repo_name',
-                                    emptyText: '仓库名',
-                                },
-                                {
-                                    xtype: 'textfield',
-                                    name: 'path',
-                                    emptyText: '文件路径',
-                                    width: 130,
-                                },
-                                {
-                                    xtype: 'textfield',
-                                    name: 'repo_description',
-                                    emptyText: '仓库描述',
-                                    width: 130,
-                                },
-                                {
                                     xtype: 'combo',
-                                    width: 150,
+                                    width: 120,
                                     name: 'keyword',
                                     displayField: 'keyword',
                                     valueField: 'keyword',
@@ -109,6 +87,12 @@
                                             url: '/api/configJob',
                                         },
                                     },
+                                },
+                                {
+                                    xtype: 'textfield',
+                                    width: 380,
+                                    name: 'search',
+                                    emptyText: '用户名 / 仓库名 / 文件路径 / 仓库描述 / 处理人 / 说明',
                                 },
                                 {
                                     xtype: 'buttongroup',
@@ -202,6 +186,25 @@
                         }
                     ]
                 },
+                dockedItems: [
+                    {
+                        xtype: 'pagingtoolbar',
+                        dock: 'bottom',
+                        displayInfo: true,
+                        items: [
+                            '-',
+                            Ext.create('plugin.export'),
+                        ],
+                        listeners: {
+                            change: function (obj) {
+                                let view = obj.up('grid').getView();
+                                if (typeof (view.scrollTo) == 'function') {
+                                    view.scrollTo(0, 0);
+                                }
+                            }
+                        }
+                    }
+                ],
                 columns: [
                     {
                         text: 'ID',
@@ -461,7 +464,7 @@
                 return Ext.create('Ext.window.Window', {
                     title: '编辑信息',
                     iconCls: 'icon-add',
-                    width: 350,
+                    width: 600,
                     modal: modal,
                     layout: 'fit',
                     items: [
@@ -473,8 +476,9 @@
                                 {
                                     fieldLabel: '说明',
                                     name: 'description',
-                                    xtype: 'textfield',
+                                    xtype: 'textareafield',
                                     value: value,
+                                    fieldStyle: 'min-height:150px',
                                 }
                             ],
                             buttons: [

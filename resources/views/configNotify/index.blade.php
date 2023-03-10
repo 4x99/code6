@@ -24,8 +24,19 @@
                     createEnableField('email'),
                     {
                         xtype: 'combo',
+                        name: 'encryption',
+                        fieldLabel: '加密方式',
+                        store: {data: [{text: 'SSL'}, {text: 'TLS'}]},
+                        queryMode: 'local',
+                        valueField: 'text',
+                        typeAhead: true,
+                        editable: false,
+                        value: getConfig('email.value.encryption', 'SSL'),
+                    },
+                    {
+                        xtype: 'combo',
                         name: 'host',
-                        fieldLabel: '服 务 器',
+                        fieldLabel: '服<div style="display:inline-block;margin:0 8px">务</div>器',
                         store: {
                             data: [
                                 {text: 'smtp.qq.com'},
@@ -48,14 +59,6 @@
                         value: getConfig('email.value.port', 465),
                         allowBlank: true,
                         allowDecimals: false,
-                        listeners: {
-                            render: function (c) {
-                                Ext.QuickTips.register({
-                                    target: c.getEl(),
-                                    text: '已启用 SSL 协议，通常使用 465 而非 25 端口',
-                                });
-                            }
-                        }
                     },
                     {
                         name: 'username',
@@ -75,6 +78,7 @@
                         fieldLabel: '接收邮箱',
                         emptyText: '支持多个邮箱（一行一个）',
                         value: getConfig('email.value.to'),
+                        fieldStyle: 'min-height:50px',
                     },
                     createIntervalField('email'),
                     createTimeField('email'),
@@ -225,7 +229,7 @@
                     type: 'help',
                     tooltip: '企业微信文档',
                     handler: function () {
-                        tool.winOpen('https://developer.work.weixin.qq.com/document/path/90372');
+                        tool.winOpen('https://developer.work.weixin.qq.com/document/path/91770');
                     }
                 }],
                 items: [
@@ -498,7 +502,7 @@
                     layout: 'form',
                     columnWidth: 1 / 3,
                     margin: 10,
-                    height: 450,
+                    height: 470,
                     bodyPadding: 20,
                     bodyStyle: 'background:#FAFAFA',
                 },

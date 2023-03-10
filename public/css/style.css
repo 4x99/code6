@@ -189,6 +189,10 @@ textarea::-webkit-input-placeholder, input::-webkit-input-placeholder {
     background: url(../image/icon/email.png) no-repeat;
 }
 
+.icon-excel {
+    background: url(../image/icon/excel.png) no-repeat;
+}
+
 .icon-feishu {
     background: url(../image/icon/feishu.png) no-repeat;
 }

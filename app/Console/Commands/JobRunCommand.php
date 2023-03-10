@@ -85,19 +85,23 @@ class JobRunCommand extends Command
         $this->log->info('Get whitelist success');
 
         while ($job = $this->takeJob()) {
-            $keyword = $job->keyword;
-            $this->log->info('Get a job from the queue', ['keyword' => $keyword]);
-            $configJob = ConfigJob::where('keyword', $keyword)->first();
-            $configJob->last_scan_at = date('Y-m-d H:i:s');
-            $page = 1;
-            do {
-                $client = $this->service->getClient();
-                $data = $this->searchCode($client, $keyword, $page);
-                $count = $this->store($data, $configJob);
-                $this->log->info('Store record', ['count' => $count]);
-                $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
-            } while ($lastResponse['next'] && (++$page <= $configJob->scan_page));
-            $configJob->save();
+            try {
+                $keyword = $job->keyword;
+                $this->log->info('Get a job from the queue', ['keyword' => $keyword]);
+                $configJob = ConfigJob::where('keyword', $keyword)->first();
+                $configJob->last_scan_at = date('Y-m-d H:i:s');
+                $page = 1;
+                do {
+                    $client = $this->service->getClient();
+                    $data = $this->searchCode($client, $keyword, $page);
+                    $count = $this->store($data, $configJob);
+                    $this->log->info('Store record', ['count' => $count]);
+                    $lastResponse = ResponseMediator::getPagination($client->getLastResponse());
+                } while ($lastResponse['next'] && (++$page <= $configJob->scan_page));
+                $configJob->save();
+            } catch (Exception $exception) {
+                $this->log->error($exception->getMessage());
+            }
             $job->delete();
         }
 
