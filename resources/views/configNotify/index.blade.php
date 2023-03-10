@@ -36,7 +36,7 @@
                     {
                         xtype: 'combo',
                         name: 'host',
-                        fieldLabel: '服 务 器',
+                        fieldLabel: '服<div style="display:inline-block;margin:0 8px">务</div>器',
                         store: {
                             data: [
                                 {text: 'smtp.qq.com'},
